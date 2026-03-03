@@ -2,29 +2,33 @@ import { StyleSheet } from "react-native";
 import { COLORS } from "../../constants/colors";
 
 export const buttonStyles = StyleSheet.create({
-    white: {
-        borderBlockColor: COLORS.plum,
-        borderWidth: 1,
-    },
-    purple: {
-        backgroundColor: COLORS.plum
-    },
-    buttonText: {
-       fontSize: 14
-    },
-    buttonImage: {
-        
-    },
-    button: {
-        borderRadius: 1234, 
-        paddingHorizontal: 16,
-        paddingVertical: 10,
-        height:40
-    },
-    purpleButtonText: {
-        color: COLORS.white
-    },
-    whiteButtonText: {
-        color: COLORS.plum
-    }
-})
+	white: {
+		borderBlockColor: COLORS.plum,
+		borderWidth: 1,
+	},
+	purple: {
+		backgroundColor: COLORS.plum,
+	},
+	buttonText: {
+		fontSize: 14,
+	},
+	button: {
+		borderRadius: 1234,
+		padding: 10,
+		minHeight: 40,
+		minWidth: 40,
+	},
+	purpleButtonText: {
+		color: COLORS.white,
+	},
+	whiteButtonText: {
+		color: COLORS.plum,
+	},
+	buttonContent: {
+		flexDirection: "row",
+		gap: 8,
+	},
+	buttonWithBigPadding: {
+		paddingHorizontal: 16,
+	},
+});

@@ -1,9 +1,9 @@
-import { PressableProps } from "react-native"
-
+import { ReactNode } from "react";
+import { PressableProps } from "react-native";
 
 export interface IPressableProps extends PressableProps {
-    variant: "white" | "purple";
-    icon?: string;
-    text?: string;
-    iconAlign?: "left" | "right";
+	variant: "white" | "purple";
+	text?: string;
+	iconLeft?: ReactNode;
+	iconRight?: ReactNode;
 }

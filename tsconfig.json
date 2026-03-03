@@ -1,10 +1,10 @@
 {
-  "extends": "expo/tsconfig.base",
-  "compilerOptions": {
-    "baseUrl": "./src",
-    "paths": {
-      "@shared/*": ["./src/shared/*"]
-    },
-    "strict": true
-  }
+	"extends": "expo/tsconfig.base",
+	"compilerOptions": {
+		"baseUrl": "./src",
+		"paths": {
+			"@shared/*": ["./src/shared/*"]
+		},
+		"strict": true
+	}
 }
