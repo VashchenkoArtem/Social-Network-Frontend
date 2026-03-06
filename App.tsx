@@ -1,6 +1,7 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
 import { Button } from "./src/shared/ui/button";
+import { Input } from "./src/shared/ui/inputs";
 import {
 	ArrowIcon,
 	LogoIcon,
@@ -45,6 +46,37 @@ export default function App() {
 						iconLeft={<ExitIcon color={COLORS.white} />}
 					/>
 				</View>
+				
+				<View style={styles.inputs}>
+					<Input 
+						label="Label"
+						variant="primary" 
+						placeholder="Логін" 
+					/>
+					<Input 
+						label="Email" 
+						variant="primary" 
+						placeholder="you@example.com" 
+					/>
+					<Input 
+						label="Email" 
+						variant="secondary" 
+						placeholder="you@example.com"
+						error="Неправильний формат пошти" 
+					/>
+
+					<Input 
+						label="Password" 
+						variant="primary" 
+						isPassword={true}
+					/>
+					<Input 
+						label="Password" 
+						variant="secondary" 
+						isPassword={true} 
+						error="Неправильний пароль" 
+					/>
+				</View>
 				<StatusBar style="auto" />
 			</View>
 		</SafeAreaView>
@@ -73,6 +105,10 @@ const styles = StyleSheet.create({
 	},
 	buttons: {
 		flexDirection: "row",
+		gap: 10,
+	},
+	inputs: {
+		flexDirection: "column",
 		gap: 10,
 	},
 });
