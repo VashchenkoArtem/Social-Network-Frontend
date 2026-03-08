@@ -11,8 +11,13 @@ import {
 import { ExitIcon } from "shared/ui/icons/buttons/ExitIcon";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { COLORS } from "shared/constants/colors";
+import * as yup from 'yup';
+
+
 
 export default function App() {
+	const emailSchema = yup.string().email("Невірний формат пошти").required("Обов'язкове поле");
+	const passwordSchema = yup.string().min(6, "Мінімум 6 символів").required();
 	return (
 		<SafeAreaView>
 			<View>
@@ -49,32 +54,16 @@ export default function App() {
 				
 				<View style={styles.inputs}>
 					<Input 
-						label="Label"
-						variant="primary" 
-						placeholder="Логін" 
-					/>
-					<Input 
-						label="Email" 
-						variant="primary" 
-						placeholder="you@example.com" 
-					/>
-					<Input 
-						label="Email" 
-						variant="secondary" 
-						placeholder="you@example.com"
-						error="Неправильний формат пошти" 
+						label="Email із валідацією" 
+						placeholder="Введіть пошту"
+						validationSchema={emailSchema}
 					/>
 
 					<Input 
-						label="Password" 
-						variant="primary" 
+						label="Пароль із валідацією" 
 						isPassword={true}
-					/>
-					<Input 
-						label="Password" 
-						variant="secondary" 
-						isPassword={true} 
-						error="Неправильний пароль" 
+						placeholder="Мінімум 6 символів"
+						validationSchema={passwordSchema}
 					/>
 				</View>
 				<StatusBar style="auto" />

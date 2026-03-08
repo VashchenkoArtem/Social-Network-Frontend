@@ -11,13 +11,16 @@
   },
   "dependencies": {
     "@expo/ngrok": "4.1.0",
+    "@hookform/resolvers": "^5.2.2",
     "expo": "~55.0.4",
     "expo-status-bar": "~55.0.4",
     "react": "19.2.0",
+    "react-hook-form": "^7.71.2",
     "react-native": "0.83.2",
     "react-native-safe-area-context": "~5.6.2",
     "react-native-svg": "15.15.3",
-    "undefined": "react-native/types_generated/index"
+    "undefined": "react-native/types_generated/index",
+    "yup": "^1.7.1"
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.5",

@@ -1,6 +1,8 @@
 import { StyleSheet } from "react-native";
 import { COLORS } from "shared/constants/colors";
 
+
+
 export const inputStyles = StyleSheet.create({
     wrapper: {
         width: 340,
