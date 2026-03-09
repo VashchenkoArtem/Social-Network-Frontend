@@ -59,8 +59,8 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 	},
 	icon: {
-		width: 20,
-		height: 20,
+		width: 30,
+		height: 30,
 		zIndex: 2,
 	},
 	header: {
@@ -68,8 +68,7 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		justifyContent: "space-between",
 		width: "100%",
-		paddingHorizontal: 16,
-		height: 56,
+		paddingHorizontal: 16
 	},
 	buttons: {
 		flexDirection: "row",
