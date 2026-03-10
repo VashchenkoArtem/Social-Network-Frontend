@@ -1,5 +1,4 @@
 import { StyleSheet } from "react-native";
-import { COLORS } from "shared/constants/colors";
 
 export const styles = StyleSheet.create({
 	header: {
@@ -9,8 +8,13 @@ export const styles = StyleSheet.create({
 		width: "100%",
 		paddingHorizontal: 16,
 		height: 56,
+		backgroundColor: "white"
 	},
-
+	headerWithLogo: {
+		alignItems: "center",
+		justifyContent: "center",
+		height: 56,
+	},
     buttons: {
 		flexDirection: "row",
 		gap: 10,
