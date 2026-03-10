@@ -2,7 +2,7 @@ import * as React from "react"
 import Svg, { G, Path, Defs, ClipPath } from "react-native-svg"
 import { IIconProps } from "./types"
 
-export function PasswordEye(props: IIconProps) {
+export function PasswordEyeClose(props: IIconProps) {
   const { color = "#81818D", ...rest } = props;
 
   return (

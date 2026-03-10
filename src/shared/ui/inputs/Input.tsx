@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { View, TextInput, Pressable, Text } from "react-native";
+import * as yup from 'yup';
 import { IInputProps } from "./types";
 import { inputStyles } from "./styles"; 
-import { PasswordEye } from "../icons/inputs";
+import { PasswordEyeClose, PasswordEyeOpen } from "../icons/inputs";
 import { COLORS } from "shared/constants/colors";
-import * as yup from 'yup';
 
 export function Input(props: IInputProps) {
     const { 
@@ -13,6 +13,7 @@ export function Input(props: IInputProps) {
         iconLeft, 
         style, 
         label, 
+        name,
         error: externalError,
         validationSchema,
         onChangeText,
@@ -22,21 +23,25 @@ export function Input(props: IInputProps) {
     const [isSecure, setIsSecure] = useState(!!isPassword);
     const [internalError, setInternalError] = useState<string | null>(null);
 
-    const validate = async (text: string) => {
-        if (validationSchema) {
+    const validate = async (text: string): Promise<void> => {
+        if (validationSchema && name) {
             try {
-                await validationSchema.validate(text);
+                const fieldSchema = yup.reach(validationSchema, name) as yup.AnySchema;
+                await fieldSchema.validate(text, { abortEarly: false });
+                
                 setInternalError(null);
             } catch (err) {
                 if (err instanceof yup.ValidationError) {
-                    setInternalError(err.message);
+                    setInternalError(err.errors[0]); 
                 }
             }
         }
     };
 
-    const handleChangeText = (text: string) => {
-        if (onChangeText) onChangeText(text);
+    const handleChangeText = (text: string): void => {
+        if (onChangeText) {
+            onChangeText(text);
+        }
         validate(text);
     };
 
@@ -53,19 +58,35 @@ export function Input(props: IInputProps) {
                     style={[inputStyles.input, style]}
                     secureTextEntry={isPassword ? isSecure : false}
                     onChangeText={handleChangeText}
+                    placeholderTextColor={COLORS.gray}
+                    autoCapitalize="none"
+                    onBlur={() => validate(rest.value || '')}
                     {...rest}
                 />
+                
                 {isPassword && (
                     <Pressable 
                         onPress={() => setIsSecure(!isSecure)} 
                         style={inputStyles.eyeIcon}
                     >
-                        <PasswordEye color={isSecure ? COLORS.gray : COLORS.black} />
+                        {isSecure ? (
+                            <PasswordEyeClose 
+                                color={COLORS.gray} 
+                            />
+                        ) : (
+                            <PasswordEyeOpen 
+                                color={COLORS.gray} 
+                            />
+                        )}
                     </Pressable>
                 )}
             </View>
 
-            {displayError && <Text style={inputStyles.errorText}>{displayError}</Text>}
+            {displayError && (
+                <Text style={inputStyles.errorText}>
+                    {displayError}
+                </Text>
+            )}
         </View>
     );
 }
