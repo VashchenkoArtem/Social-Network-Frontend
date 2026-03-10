@@ -11,7 +11,7 @@ export const inputStyles = StyleSheet.create({
     label: {
         fontSize: 14,
         marginBottom: 8,
-        color: '#000',
+        color: COLORS.black,
     },
     container: {
         flexDirection: 'row',
