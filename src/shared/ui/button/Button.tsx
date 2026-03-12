@@ -4,7 +4,7 @@ import { buttonStyles } from "./styles";
 import { usePathname } from "expo-router";
 
 export function Button(props: IPressableProps) {
-	const { variant, text, iconLeft, iconRight, href } = props;
+	const { variant, text, iconLeft, iconRight, href, isSettings } = props;
 	let pathName = ""
 	if (href)  {
 		pathName = usePathname() 
@@ -16,7 +16,13 @@ export function Button(props: IPressableProps) {
 				buttonStyles.button,
 				buttonStyles[variant],
 				text && buttonStyles.buttonWithBigPadding,
-				pathName === href ? buttonStyles.selectedButton: null
+				pathName === href ? buttonStyles.selectedButton: null,
+				isSettings && (
+					pathName === "/settings/personalInformation" ||
+					pathName === "/settings/albums" ?
+					buttonStyles.selectedButton
+					: null
+				)
 			]}
 			{...props}
 		>

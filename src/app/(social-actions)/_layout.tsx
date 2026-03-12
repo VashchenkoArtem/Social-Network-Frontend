@@ -5,7 +5,6 @@ export default function SocialActionsLayout() {
         <Stack screenOptions={{
             headerShown: false
         }}>
-            <Stack.Screen name = "friends"/>
             <Stack.Screen name = "contacts"/>
             <Stack.Screen name = "notifications"/>
             <Stack.Screen name = "groupChats"/>

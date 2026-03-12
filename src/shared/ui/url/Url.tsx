@@ -15,7 +15,7 @@ export function Url(props: UrlProps) {
     if (!fontsLoaded) {
         return null;
     }
-    const { text, icon, href, isChat } = props
+    const { text, icon, href, isChat, isFriends } = props
     return (
         <Link href = {href}>
             <View
@@ -29,7 +29,15 @@ export function Url(props: UrlProps) {
                         pathName === "/groupChats"
                     )
                     ? styles.urlSelected
-                    : null
+                    : null,
+                    isFriends && (
+                        pathName === "/friends/main" ||
+                        pathName === "/friends/requests" ||
+                        pathName === "/friends/reccomended" ||
+                        pathName === "/friends/all"
+                        ? styles.urlSelected
+                        : null
+                    )
                 ]}
                 >
                 {icon}

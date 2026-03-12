@@ -7,4 +7,5 @@ export interface IPressableProps extends PressableProps {
 	iconLeft?: ReactNode;
 	iconRight?: ReactNode;
 	href?: string;
+	isSettings?: boolean
 }

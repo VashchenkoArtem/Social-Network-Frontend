@@ -25,5 +25,11 @@ export const styles = StyleSheet.create({
 		height: 20,
 		zIndex: 2,
 	},
-
+	headerForAdditionalUrls: {
+		flexDirection: "row",
+		gap: 16,
+		alignItems: "center",
+		paddingHorizontal: 16,
+		paddingTop: 24
+	}
 })

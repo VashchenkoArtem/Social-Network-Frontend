@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { View, Text } from "react-native";
 import { LogoIcon, PlusIcon, ManageIcon } from "../icons/buttons";
 import { ExitIcon } from "../icons/buttons/ExitIcon";
 import { styles } from "./styles"
@@ -11,6 +11,7 @@ import { Url } from "../url";
 import { FriendsPageIcon } from "../icons/urls/FriendsPageIcon";
 import { constStyles } from "@shared/constants/styles";
 import { ChatsPageIcon } from "../icons/urls/ChatsPageIcon";
+import { AdditionalUrl } from "../additionalUrl/AdditionalUrl";
 
 
 export function Header(props: HeaderProps){
@@ -37,9 +38,10 @@ export function Header(props: HeaderProps){
                     <Button
                         variant="white"
                         iconLeft={<ManageIcon color={COLORS.plum} style={styles.icon} />}
-                        onPress={() => push("/settings")
+                        onPress={() => push("/settings/personalInformation")
                         }
-                        href='/settings'
+                        href='/settings/personalInformation'
+                        isSettings = {true}
                         
                     ></Button>
                     <Button
@@ -57,7 +59,23 @@ export function Header(props: HeaderProps){
                     <Url href = "/groupChats" text = "Групові чати" icon={<ChatsPageIcon style={constStyles.urlIcon} color={COLORS.urlBlue}/>} />
                 </View>
             : null
-        }
+            }
+            { pathname.includes("friends")?
+                <View style={styles.headerForAdditionalUrls}>
+                    <AdditionalUrl href = "/friends/main" text = "Головна"/>
+                    <AdditionalUrl href = "/friends/requests" text = "Запити"/>
+                    <AdditionalUrl href = "/friends/reccomended" text = "Рекомендації"/>
+                    <AdditionalUrl href = "/friends/all" text = "Усі друзі"/>
+                </View>    
+            : null
+            }
+            { pathname.includes("settings") ?
+                <View style={styles.headerForAdditionalUrls}>
+                    <AdditionalUrl href = "/settings/personalInformation" text = "Особиста інформація"/>
+                    <AdditionalUrl href = "/settings/albums" text = "Альбоми"/>
+                </View>   
+                : null 
+            }
         </View>
     )
 }
