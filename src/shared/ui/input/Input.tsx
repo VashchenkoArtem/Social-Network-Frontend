@@ -1,6 +1,6 @@
-import { Text, TextInput, View } from "react-native";
-import { InputProps } from "./input.types";
-import { styles } from "./input.styles";
+import type { InputProps } from "./types";
+import { styles } from "./styles";
+import { View, Text, TextInput } from "react-native";
 
 export function Input(props: InputProps) {
 	const {
@@ -9,10 +9,10 @@ export function Input(props: InputProps) {
 
 		label,
 		labelStyle,
-
 		inputContainerStyle,
 		error,
 		style,
+		value,
 		...restProps
 	} = props
 
@@ -22,7 +22,19 @@ export function Input(props: InputProps) {
 
 			<View style={[styles.inputContainer, inputContainerStyle]}>
 				{iconLeft}
-				<TextInput style={[styles.input, style]} {...restProps} />
+
+				<TextInput 
+					style={[styles.input, style]} 
+					{...restProps}
+					maxLength={1}
+					value={value}
+					keyboardType='number-pad'
+					
+				/>
+
+				{!value && <View style={styles.underline} />}
+
+
 				{iconRight}
 			</View>
 		</View>

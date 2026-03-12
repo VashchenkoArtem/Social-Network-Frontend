@@ -7,7 +7,7 @@ export interface InputProps extends TextInputProps {
 
     label?: string,
     labelStyle?: TextStyle,
-
+    
     inputContainerStyle?: ViewStyle,
     error?: string | null
 }
