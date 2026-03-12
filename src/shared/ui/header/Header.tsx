@@ -20,14 +20,18 @@ export function Header(props: HeaderProps){
     if (pathname === "/login"){
         return (
             <View style = {styles.headerWithLogo}>
-                <LogoIcon color={COLORS.plum} width={145} height={18}></LogoIcon>
+                <Link href = "/" >
+                    <LogoIcon color={COLORS.plum} width={145} height={18}></LogoIcon>
+                </Link>
             </View>
         )
     }
     return (
         <View>
             <View style={styles.header} >
-                <LogoIcon color={COLORS.plum} width={145} height={18}></LogoIcon>
+                <Link href = "/" >
+                    <LogoIcon color={COLORS.plum} width={145} height={18}></LogoIcon>
+                </Link>
                 <View style={styles.buttons}>
                     {!cantCreatePost &&
                         <Button
