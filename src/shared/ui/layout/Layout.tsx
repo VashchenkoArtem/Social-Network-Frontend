@@ -1,14 +1,14 @@
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Urls } from "../urls/Urls";
 import { StyleSheet
 
  } from "react-native";
 import { Header } from "../header";
 import { SingleInput } from "../singleInput";
+import { Footer } from "../footer";
 export function Layout(){
     return (
         <SafeAreaView style = {styles.container}>
-            <Urls></Urls>
+            <Footer></Footer>
         </SafeAreaView>
     )
 }

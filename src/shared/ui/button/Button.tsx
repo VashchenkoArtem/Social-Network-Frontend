@@ -1,9 +1,14 @@
 import { Pressable, Text, Image, View } from "react-native";
 import { IPressableProps } from "./types";
 import { buttonStyles } from "./styles";
+import { usePathname } from "expo-router";
 
 export function Button(props: IPressableProps) {
-	const { variant, text, iconLeft, iconRight } = props;
+	const { variant, text, iconLeft, iconRight, href } = props;
+	let pathName = ""
+	if (href)  {
+		pathName = usePathname() 
+	}
 
 	return (
 		<Pressable
@@ -11,6 +16,7 @@ export function Button(props: IPressableProps) {
 				buttonStyles.button,
 				buttonStyles[variant],
 				text && buttonStyles.buttonWithBigPadding,
+				pathName === href ? buttonStyles.selectedButton: null
 			]}
 			{...props}
 		>

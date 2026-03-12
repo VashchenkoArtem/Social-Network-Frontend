@@ -22,11 +22,7 @@ export default function RootLayout(){
                                                 <Header cantCreatePost={true}/>
                                             </SafeAreaView>)
                 }}/>
-                <Stack.Screen name="(auth)" options={{
-                    header: () => (<SafeAreaView edges={["top"]} style={{ backgroundColor: "white" }}>
-                                        <Header isAuth={true}/>
-                                    </SafeAreaView>)
-                }}/>
+                <Stack.Screen name="(auth)"/>
             </Stack>
         </SafeAreaProvider>
     )

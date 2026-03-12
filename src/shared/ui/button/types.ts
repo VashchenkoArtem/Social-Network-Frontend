@@ -5,5 +5,6 @@ export interface IPressableProps extends PressableProps {
 	variant: "white" | "purple";
 	text?: string;
 	iconLeft?: ReactNode;
-	iconRight?: ReactNode
+	iconRight?: ReactNode;
+	href?: string;
 }

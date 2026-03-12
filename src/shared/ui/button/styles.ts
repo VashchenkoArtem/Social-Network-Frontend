@@ -31,4 +31,8 @@ export const buttonStyles = StyleSheet.create({
 	buttonWithBigPadding: {
 		paddingHorizontal: 16,
 	},
+
+	selectedButton: {
+		backgroundColor: COLORS.preWhite
+	}
 });

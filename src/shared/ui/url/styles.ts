@@ -14,7 +14,7 @@ export const styles = StyleSheet.create({
     },
     urlText: {
         fontSize: 14,
-        fontWeight: 500,
+        fontWeight: 600,
         fontFamily: 'GTWalsheimPro-Medium',
     },
     urlSelected: {
