@@ -24,7 +24,7 @@ export function Input(props: InputProps) {
 				{iconLeft}
 
 				<TextInput 
-					style={[styles.input, style]} 
+					style={[styles.input]} 
 					{...restProps}
 					maxLength={1}
 					value={value}

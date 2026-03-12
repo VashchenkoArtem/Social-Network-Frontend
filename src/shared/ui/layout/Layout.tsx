@@ -4,10 +4,12 @@ import { StyleSheet
 
  } from "react-native";
 import { Header } from "../header";
+import { Input } from "../input";
 export function Layout(){
     return (
         <SafeAreaView style = {styles.container}>
             <Urls></Urls>
+			<Input></Input>
         </SafeAreaView>
     )
 }
