@@ -1,7 +1,7 @@
 import * as React from "react";
 import Svg, { G, Path, Defs, ClipPath, SvgProps } from "react-native-svg";
-import { COLORS } from "shared/constants/colors";
 import { IIconProps } from "./types";
+import { COLORS } from "@shared/constants/colors";
 
 export function LogoIcon(props: IIconProps) {
 	const { color } = props;

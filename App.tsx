@@ -6,10 +6,10 @@ import {
 	LogoIcon,
 	ManageIcon,
 	PlusIcon,
-} from "shared/ui/icons/buttons";
-import { ExitIcon } from "shared/ui/icons/buttons/ExitIcon";
+} from "@shared/ui/icons/buttons";
+import { ExitIcon } from "@shared/ui/icons/buttons/ExitIcon";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { COLORS } from "shared/constants/colors";
+import { COLORS } from "@shared/constants/colors";
 
 export default function App() {
 	return (

@@ -2,7 +2,7 @@ import * as React from "react";
 import Svg, { Path } from "react-native-svg";
 import { IIconProps } from "../buttons/types";
 
-function MainPageIcon(props: IIconProps) {
+export function MainPageIcon(props: IIconProps) {
 	const { color } = props;
 	return (
 		<Svg width={20} height={20} viewBox="0 0 20 20" fill="none" {...props}>
