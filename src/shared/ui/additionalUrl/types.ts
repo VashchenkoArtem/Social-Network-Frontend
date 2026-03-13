@@ -1,4 +1,4 @@
 export interface AdditionalUrlProps {
-    text: string;
-    href: string
+	text: string;
+	href: string;
 }

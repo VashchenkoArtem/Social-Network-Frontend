@@ -1,16 +1,14 @@
 import { SafeAreaView } from "react-native-safe-area-context";
-import { StyleSheet
-
- } from "react-native";
+import { StyleSheet } from "react-native";
 import { Header } from "../header";
 import { SingleInput } from "../singleInput";
 import { Footer } from "../footer";
-export function Layout(){
-    return (
-        <SafeAreaView style = {styles.container}>
-            <Footer></Footer>
-        </SafeAreaView>
-    )
+export function Layout() {
+	return (
+		<SafeAreaView style={styles.container}>
+			<Footer></Footer>
+		</SafeAreaView>
+	);
 }
 const styles = StyleSheet.create({
 	container: {
@@ -18,6 +16,6 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		flex: 1,
 		flexGrow: 1,
-		justifyContent: 'flex-end',
+		justifyContent: "flex-end",
 	},
 });

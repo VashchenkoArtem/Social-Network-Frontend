@@ -1,3 +1,3 @@
-export interface HeaderProps{
-    cantCreatePost?: boolean;
+export interface HeaderProps {
+	cantCreatePost?: boolean;
 }

@@ -8,19 +8,19 @@ export const styles = StyleSheet.create({
 		width: "100%",
 		paddingHorizontal: 16,
 		height: 56,
-		backgroundColor: "white"
+		backgroundColor: "white",
 	},
 	headerWithLogo: {
 		alignItems: "center",
 		justifyContent: "center",
 		height: 56,
 	},
-    buttons: {
+	buttons: {
 		flexDirection: "row",
 		gap: 10,
 	},
 
-    icon: {
+	icon: {
 		width: 20,
 		height: 20,
 		zIndex: 2,
@@ -30,6 +30,6 @@ export const styles = StyleSheet.create({
 		gap: 16,
 		alignItems: "center",
 		paddingHorizontal: 16,
-		paddingTop: 24
-	}
-})
+		paddingTop: 24,
+	},
+});

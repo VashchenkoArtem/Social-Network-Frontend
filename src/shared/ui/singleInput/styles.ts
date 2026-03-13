@@ -1,17 +1,17 @@
-import { COLORS } from "@shared/constants/colors"
-import { StyleSheet } from "react-native"
+import { COLORS } from "@shared/constants/colors";
+import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
 	input: {
 		flex: 1,
 		fontSize: 20,
-		textAlign: "center"
+		textAlign: "center",
 	},
 
 	label: {
 		fontSize: 16,
 		fontWeight: "500",
-		marginBottom: 6
+		marginBottom: 6,
 	},
 
 	inputContainer: {
@@ -25,7 +25,7 @@ export const styles = StyleSheet.create({
 		alignItems: "center",
 		justifyContent: "center",
 
-		position: "relative"
+		position: "relative",
 	},
 
 	underline: {
@@ -34,6 +34,6 @@ export const styles = StyleSheet.create({
 		width: 16,
 		height: 2,
 		backgroundColor: COLORS.gray,
-		borderRadius: 2
-	}
-})
+		borderRadius: 2,
+	},
+});

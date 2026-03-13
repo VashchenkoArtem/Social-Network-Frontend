@@ -1,7 +1,5 @@
-import { Layout } from "@shared/ui/layout"
+import { Layout } from "@shared/ui/layout";
 
-export default function Index(){
-    return(
-        <Layout/>
-    )
+export default function Index() {
+	return <Layout />;
 }

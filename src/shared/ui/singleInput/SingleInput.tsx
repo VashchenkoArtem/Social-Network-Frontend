@@ -14,24 +14,23 @@ export function SingleInput(props: InputProps) {
 		style,
 		value,
 		...restProps
-	} = props
+	} = props;
 
 	return (
 		<View>
 			{label && <Text style={[styles.label, labelStyle]}>{label}</Text>}
 
 			<View style={[styles.inputContainer, inputContainerStyle]}>
-				<TextInput 
-					style={[styles.input, style]} 
+				<TextInput
+					style={[styles.input, style]}
 					maxLength={1}
 					value={value}
-					keyboardType='number-pad'
-					{...restProps }
-					
+					keyboardType="number-pad"
+					{...restProps}
 				/>
 
 				{!value && <View style={styles.underline} />}
 			</View>
 		</View>
-	)
+	);
 }
