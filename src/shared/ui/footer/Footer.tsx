@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { View, Text } from "react-native";
 import { Url } from "../url";
 import { ICONS } from "../icons/icons";
 import { styles } from "./styles";
@@ -12,23 +12,23 @@ export function Footer() {
 			<Url
 				href={"/"}
 				text="Головна"
-				icon={<MainPageIcon style={styles.urlIcon} color={COLORS.urlBlue} />}
+				icon={<MainPageIcon style={styles.urlIcon} color={COLORS.black} />}
 			></Url>
 			<Url
 				href={"/posts"}
 				text="Мої публікації"
-				icon={<MyPostsPageIcon style={styles.urlIcon} color={COLORS.urlBlue} />}
+				icon={<MyPostsPageIcon style={styles.urlIcon} color={COLORS.black} />}
 			></Url>
 			<Url
 				href={"/friends/main"}
 				text="Друзі"
-				icon={<FriendsPageIcon style={styles.urlIcon} color={COLORS.urlBlue} />}
+				icon={<FriendsPageIcon style={styles.urlIcon} color={COLORS.black} />}
 				isFriends={true}
 			></Url>
 			<Url
 				href={"/contacts"}
 				text="Чати"
-				icon={<ChatsPageIcon style={styles.urlIcon} color={COLORS.urlBlue} />}
+				icon={<ChatsPageIcon style={styles.urlIcon} color={COLORS.black} />}
 				isChat={true}
 			></Url>
 		</View>

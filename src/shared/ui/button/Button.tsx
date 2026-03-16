@@ -2,12 +2,19 @@ import { Pressable, Text, Image, View } from "react-native";
 import { IPressableProps } from "./types";
 import { buttonStyles } from "./styles";
 import { usePathname } from "expo-router";
+import { useFonts } from "expo-font";
 
 export function Button(props: IPressableProps) {
 	const { variant, text, iconLeft, iconRight, href, isSettings } = props;
-	let pathName = "";
-	if (href) {
-		pathName = usePathname();
+
+	const [fontsLoaded] = useFonts({
+		"GTWalsheimPro-Medium": require("../../../assets/fonts/GTWalsheimPro-Medium.ttf"),
+	});
+
+	const pathName = usePathname();
+
+	if (!fontsLoaded) {
+		return null;
 	}
 
 	return (
@@ -16,7 +23,7 @@ export function Button(props: IPressableProps) {
 				buttonStyles.button,
 				buttonStyles[variant],
 				text && buttonStyles.buttonWithBigPadding,
-				pathName === href ? buttonStyles.selectedButton : null,
+				href && pathName === href ? buttonStyles.selectedButton : null,
 				isSettings &&
 					(pathName === "/settings/personalInformation" ||
 					pathName === "/settings/albums"

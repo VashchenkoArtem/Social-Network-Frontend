@@ -1,8 +1,10 @@
 import { SafeAreaView } from "react-native-safe-area-context";
-import { StyleSheet } from "react-native";
+import { StyleSheet, View, Text } from "react-native";
 import { Header } from "../header";
 import { SingleInput } from "../singleInput";
 import { Footer } from "../footer";
+import { usePathname } from "expo-router";
+
 export function Layout() {
 	return (
 		<SafeAreaView style={styles.container}>
@@ -10,6 +12,7 @@ export function Layout() {
 		</SafeAreaView>
 	);
 }
+
 const styles = StyleSheet.create({
 	container: {
 		backgroundColor: "#fff",

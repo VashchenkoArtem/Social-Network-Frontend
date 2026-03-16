@@ -6,4 +6,5 @@ export interface UrlProps {
 	href: string;
 	isChat?: boolean;
 	isFriends?: boolean;
+	tabName?: string
 }

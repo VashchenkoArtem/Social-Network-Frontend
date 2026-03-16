@@ -5,6 +5,7 @@ import { IInputProps } from "./types";
 import { inputStyles } from "./styles";
 import { PasswordEyeClose, PasswordEyeOpen } from "../icons/inputs";
 import { COLORS } from "@shared/constants/colors";
+import { useFonts } from "expo-font";
 
 export function Input(props: IInputProps) {
 	const {
@@ -19,7 +20,12 @@ export function Input(props: IInputProps) {
 		onChangeText,
 		...rest
 	} = props;
-
+	const [fontsLoaded] = useFonts({
+		"GTWalsheimPro-Medium": require("../../../assets/fonts/GTWalsheimPro-Medium.ttf"),
+	});
+	if (!fontsLoaded) {
+		return null;
+	}
 	const [isSecure, setIsSecure] = useState(!!isPassword);
 	const [internalError, setInternalError] = useState<string | null>(null);
 

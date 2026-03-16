@@ -10,7 +10,8 @@ export const buttonStyles = StyleSheet.create({
 		backgroundColor: COLORS.plum,
 	},
 	buttonText: {
-		fontSize: 14,
+		fontSize: 16,
+		fontFamily: "GTWalsheimPro-Medium"
 	},
 	button: {
 		borderRadius: 1234,

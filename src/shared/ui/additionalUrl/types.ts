@@ -1,4 +1,9 @@
-export interface AdditionalUrlProps {
-	text: string;
-	href: string;
+import { ReactNode } from "react"
+
+export interface IRadioTab {
+		title: string,
+		content: ReactNode
+	}
+export interface IProps {
+	radioTabsArray: IRadioTab[]
 }

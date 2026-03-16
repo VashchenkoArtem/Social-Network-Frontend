@@ -6,8 +6,7 @@ export const COLORS = {
 	preWhite: "#E9E5EE",
 	white: "#FFFFFF",
 	plum: "#543C52",
-	urlBlue: "#070A1C",
 	foggy: "#FAF8FF",
 	red: "#FF4C4C",
 	green: "#22C55E",
-};
+}

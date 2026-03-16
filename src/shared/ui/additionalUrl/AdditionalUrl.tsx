@@ -1,31 +1,89 @@
-import { View, Text } from "react-native";
-import { AdditionalUrlProps } from "./types";
-import { Link, usePathname } from "expo-router";
+import { View, Image, Text, Pressable } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useRouter } from "expo-router";
+import { usePathname } from "expo-router";
+import { useState } from "react";
+import { IProps } from "./types";
 import { styles } from "./styles";
-import { useFonts } from "expo-font";
 
-export function AdditionalUrl(props: AdditionalUrlProps) {
-	const [fontsLoaded] = useFonts({
-		"GTWalsheimPro-Medium": require("../../../assets/fonts/GTWalsheimPro-Medium.ttf"),
-	});
-	const pathName = usePathname();
-	if (!fontsLoaded) {
-		return null;
+export function AdditionalUrls(props: IProps) {
+	const { radioTabsArray } = props;
+	const [choosedTab, setChoosedTab] = useState<string>(radioTabsArray[0].title);
+	const pathname = usePathname()
+	if (pathname.includes("chats")){
+		return (
+		<View style={styles.additionalUrls}>
+			<View style={styles.tabs}>
+				{radioTabsArray.map((element) => {
+					return (
+						<Pressable
+							key={element.title}
+							onPress={() => setChoosedTab(element.title)}
+						>
+							<Text
+								style={[
+									choosedTab === element.title ? styles.selectedAdditionalUrl : styles.notSelectedAdditionalUrl, 
+									styles.tab
+								]
+								}
+							>
+								{element.title}
+							</Text>
+						</Pressable>
+					);
+				})}
+			</View>
+
+			{radioTabsArray.map((element) => {
+				return (
+					<View
+						key={element.title}
+						style={
+							choosedTab === element.title ? styles.visible : styles.hidden
+						}
+					>
+						{element.content}
+					</View>
+				);
+			})}
+		</View>
+		)
 	}
-	const { text, href } = props;
 	return (
-		<Link
-			href={href}
-			style={pathName === href ? styles.selectedAdditionalUrl : null}
-		>
-			<Text
-				style={[
-					styles.additionalUrlText,
-					pathName === href ? styles.selectedAdditionalUrlText : null,
-				]}
-			>
-				{text}
-			</Text>
-		</Link>
+		<View style={styles.additionalUrls}>
+			<View style={styles.tabs}>
+				{radioTabsArray.map((element) => {
+					return (
+						<Pressable
+							key={element.title}
+							onPress={() => setChoosedTab(element.title)}
+						>
+							<Text
+								style={[
+									choosedTab === element.title ? styles.selectedAdditionalUrl : styles.notSelectedAdditionalUrl, 
+									styles.tab
+								]
+								}
+							>
+								{element.title}
+							</Text>
+						</Pressable>
+					);
+				})}
+			</View>
+
+			{radioTabsArray.map((element) => {
+				return (
+					<View
+						key={element.title}
+						style={
+							choosedTab === element.title ? styles.visible : styles.hidden
+						}
+					>
+						{element.content}
+					</View>
+				);
+			})}
+		</View>
 	);
 }

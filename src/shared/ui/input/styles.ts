@@ -1,5 +1,5 @@
+import { COLORS } from "@shared/constants/colors";
 import { StyleSheet } from "react-native";
-import { COLORS } from "shared/constants/colors";
 
 export const inputStyles = StyleSheet.create({
 	wrapper: {
@@ -7,14 +7,15 @@ export const inputStyles = StyleSheet.create({
 		marginBottom: 20,
 	},
 	label: {
-		fontSize: 14,
-		marginBottom: 8,
+		fontSize: 16,
+		marginBottom: 6,
 		color: COLORS.black,
+		fontFamily: "GTWalsheimPro-Medium"
 	},
 	container: {
 		flexDirection: "row",
 		alignItems: "center",
-		height: 50,
+		height: 42,
 		width: 340,
 		borderRadius: 13,
 		borderWidth: 1,
@@ -23,6 +24,7 @@ export const inputStyles = StyleSheet.create({
 	input: {
 		flex: 1,
 		paddingHorizontal: 16,
+		fontFamily: "GTWalsheimPro-Medium"
 	},
 	primary: {
 		borderColor: COLORS.gray,

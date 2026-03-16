@@ -8,4 +8,5 @@ export interface IPressableProps extends PressableProps {
 	iconRight?: ReactNode;
 	href?: string;
 	isSettings?: boolean;
+	paddingHorizontal?:number
 }
