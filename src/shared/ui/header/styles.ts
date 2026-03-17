@@ -15,7 +15,7 @@ export const styles = StyleSheet.create({
 		alignItems: "center",
 		justifyContent: "center",
 		height: 56,
-		backgroundColor: COLORS.white
+		backgroundColor: COLORS.white,
 	},
 	buttons: {
 		flexDirection: "row",
@@ -35,25 +35,31 @@ export const styles = StyleSheet.create({
 		paddingTop: 20,
 	},
 	selectedAdditionalUrl: {
-		fontWeight: 700,
 		letterSpacing: -0.66,
-		borderBottomColor: COLORS.plum,
-		borderBottomWidth: 2,
-		fontSize: 18
-	},
-	notSelectedAdditionalUrl: {
-		color: COLORS.gray,
+		borderTopWidth: 2,
+		fontSize: 18,
+		borderTopColor: COLORS.black,
 	},
 	tab: {
 		fontWeight: 500,
 		letterSpacing: -0.66,
 		fontSize: 18,
-		fontFamily: "GTWalsheimPro-Medium"
+		fontFamily: "GTWalsheimPro-Medium",
+		color: COLORS.black,
+		alignItems: "center",
+		paddingVertical: 4,
+		borderTopWidth: 2,
+		borderTopColor: "transparent",
 	},
 	tabs: {
 		flexDirection: "row",
-		gap: 16,
+		justifyContent: "space-between",
+		alignItems: "center",
 		width: "100%",
 		paddingHorizontal: 17,
+		height: 64,
+	},
+	headerLogin: {
+		justifyContent: "center",
 	},
 });

@@ -13,6 +13,7 @@ import { constStyles } from "@shared/constants/styles";
 import { ChatsPageIcon } from "../icons/urls/ChatsPageIcon";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useState } from "react";
+import { ICONS } from "../icons/icons";
 
 export function Header(props: HeaderProps) {
 	const { cantCreatePost, cantEditSelf } = props;
@@ -21,11 +22,23 @@ export function Header(props: HeaderProps) {
 	const [choosedTab, setChoosedTab] = useState("Контакти");
 
 	const chatsTabs = [
-		{ title: "Контакти", route: "/chats" },
-		{ title: "Повідомлення", route: "/notifications" },
-		{ title: "Групові чати", route: "/groupChats" },
+		{ title: "Контакти", route: "/chats", icon: ICONS.FriendsPageIcon },
+		{
+			title: "Повідомлення",
+			route: "/notifications",
+			icon: ICONS.ChatsPageIcon,
+		},
+		{ title: "Групові чати", route: "/groupChats", icon: ICONS.ChatsPageIcon },
 	];
-
+	if (pathname === "/login") {
+		return (
+			<View style={[styles.header, styles.headerLogin]}>
+				<Link href="/home">
+					<LogoIcon color={COLORS.plum} width={145} height={18} />
+				</Link>
+			</View>
+		);
+	}
 	return (
 		<View style={{ backgroundColor: COLORS.white }}>
 			<View style={styles.header}>
@@ -68,17 +81,13 @@ export function Header(props: HeaderProps) {
 							onPress={() => {
 								setChoosedTab(tab.title);
 							}}
+							style={[
+								styles.tab,
+								choosedTab === tab.title ? styles.selectedAdditionalUrl : null,
+							]}
 						>
-							<Text
-								style={[
-									styles.tab,
-									choosedTab === tab.title
-										? styles.selectedAdditionalUrl
-										: styles.notSelectedAdditionalUrl,
-								]}
-							>
-								{tab.title}
-							</Text>
+							<tab.icon color={COLORS.black}></tab.icon>
+							<Text style={[styles.tab]}>{tab.title}</Text>
 						</Pressable>
 					))}
 				</View>

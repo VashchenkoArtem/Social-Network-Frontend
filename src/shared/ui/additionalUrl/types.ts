@@ -1,9 +1,9 @@
-import { ReactNode } from "react"
+import { ReactNode } from "react";
 
 export interface IRadioTab {
-		title: string,
-		content: ReactNode
-	}
+	title: string;
+	content: ReactNode;
+}
 export interface IProps {
-	radioTabsArray: IRadioTab[]
+	radioTabsArray: IRadioTab[];
 }

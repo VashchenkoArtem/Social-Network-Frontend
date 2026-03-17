@@ -2,8 +2,7 @@ import { Stack } from "expo-router";
 
 export default function FriendsLayout() {
 	return (
-		<Stack
-		>
+		<Stack>
 			<Stack.Screen name="main" />
 			<Stack.Screen name="requests" />
 			<Stack.Screen name="reccomended" />

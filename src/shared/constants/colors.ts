@@ -9,4 +9,4 @@ export const COLORS = {
 	foggy: "#FAF8FF",
 	red: "#FF4C4C",
 	green: "#22C55E",
-}
+};

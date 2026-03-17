@@ -42,13 +42,13 @@ export function Url(props: UrlProps) {
 	);
 }
 
-function Tab(props: UrlProps){
+function Tab(props: UrlProps) {
 	const { tabName, href } = props;
-	if (!tabName) return null
+	if (!tabName) return null;
 	return (
 		<TabTrigger name={tabName} href={href}>
 			<Url {...props} />
 		</TabTrigger>
-	)
+	);
 }
-Url.Tab = Tab
+Url.Tab = Tab;

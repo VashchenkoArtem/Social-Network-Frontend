@@ -9,46 +9,6 @@ import { styles } from "./styles";
 export function AdditionalUrls(props: IProps) {
 	const { radioTabsArray } = props;
 	const [choosedTab, setChoosedTab] = useState<string>(radioTabsArray[0].title);
-	const pathname = usePathname()
-	if (pathname.includes("chats")){
-		return (
-		<View style={styles.additionalUrls}>
-			<View style={styles.tabs}>
-				{radioTabsArray.map((element) => {
-					return (
-						<Pressable
-							key={element.title}
-							onPress={() => setChoosedTab(element.title)}
-						>
-							<Text
-								style={[
-									choosedTab === element.title ? styles.selectedAdditionalUrl : styles.notSelectedAdditionalUrl, 
-									styles.tab
-								]
-								}
-							>
-								{element.title}
-							</Text>
-						</Pressable>
-					);
-				})}
-			</View>
-
-			{radioTabsArray.map((element) => {
-				return (
-					<View
-						key={element.title}
-						style={
-							choosedTab === element.title ? styles.visible : styles.hidden
-						}
-					>
-						{element.content}
-					</View>
-				);
-			})}
-		</View>
-		)
-	}
 	return (
 		<View style={styles.additionalUrls}>
 			<View style={styles.tabs}>
@@ -60,10 +20,11 @@ export function AdditionalUrls(props: IProps) {
 						>
 							<Text
 								style={[
-									choosedTab === element.title ? styles.selectedAdditionalUrl : styles.notSelectedAdditionalUrl, 
-									styles.tab
-								]
-								}
+									choosedTab === element.title
+										? styles.selectedAdditionalUrl
+										: styles.notSelectedAdditionalUrl,
+									styles.tab,
+								]}
 							>
 								{element.title}
 							</Text>

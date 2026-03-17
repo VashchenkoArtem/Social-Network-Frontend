@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
 	additionalUrls: {
-		paddingTop: 25
+		paddingTop: 25,
 	},
 	additionalUrlText: {
 		fontSize: 17,
@@ -19,7 +19,7 @@ export const styles = StyleSheet.create({
 		letterSpacing: -0.66,
 		borderBottomColor: COLORS.plum,
 		borderBottomWidth: 2,
-		fontSize: 18
+		fontSize: 18,
 	},
 	notSelectedAdditionalUrl: {
 		color: COLORS.gray,
@@ -28,7 +28,7 @@ export const styles = StyleSheet.create({
 		fontWeight: 500,
 		letterSpacing: -0.66,
 		fontSize: 18,
-		fontFamily: "GTWalsheimPro-Medium"
+		fontFamily: "GTWalsheimPro-Medium",
 	},
 	tabs: {
 		flexDirection: "row",
@@ -37,9 +37,9 @@ export const styles = StyleSheet.create({
 		paddingHorizontal: 17,
 	},
 	visible: {
-		display: "flex"
+		display: "flex",
 	},
 	hidden: {
-		display: "none"
+		display: "none",
 	},
 });

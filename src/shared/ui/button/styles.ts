@@ -11,7 +11,7 @@ export const buttonStyles = StyleSheet.create({
 	},
 	buttonText: {
 		fontSize: 16,
-		fontFamily: "GTWalsheimPro-Medium"
+		fontFamily: "GTWalsheimPro-Medium",
 	},
 	button: {
 		borderRadius: 1234,

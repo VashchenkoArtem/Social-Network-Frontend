@@ -10,7 +10,7 @@ export const inputStyles = StyleSheet.create({
 		fontSize: 16,
 		marginBottom: 6,
 		color: COLORS.black,
-		fontFamily: "GTWalsheimPro-Medium"
+		fontFamily: "GTWalsheimPro-Medium",
 	},
 	container: {
 		flexDirection: "row",
@@ -24,7 +24,7 @@ export const inputStyles = StyleSheet.create({
 	input: {
 		flex: 1,
 		paddingHorizontal: 16,
-		fontFamily: "GTWalsheimPro-Medium"
+		fontFamily: "GTWalsheimPro-Medium",
 	},
 	primary: {
 		borderColor: COLORS.gray,

@@ -5,12 +5,13 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function AuthLayout() {
 	return (
-		<SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }} edges={["top"]}>
+		<SafeAreaView
+			style={{ flex: 1, backgroundColor: COLORS.white }}
+			edges={["top"]}
+		>
 			<Stack
 				screenOptions={{
-					header: () => (
-						<Header />
-					)
+					header: () => <Header />,
 				}}
 			/>
 		</SafeAreaView>
