@@ -1,5 +1,7 @@
-import { RegistrationStepOne } from "@modules/auth/ui/registration-step-one/Registration-step-one";
+import { Redirect } from "expo-router";
+import { Text } from "react-native";
+
 
 export default function LoginScreen() {
-	return <RegistrationStepOne />;
+	return <Redirect href="/(auth)/registration" />;
 }
