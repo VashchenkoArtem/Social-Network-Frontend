@@ -13,6 +13,7 @@ export const styles = StyleSheet.create({
 
 	urls: {
 		flexDirection: "row",
+		alignItems: "center",
 		gap: 24,
 		// width: '100%'
 	},
@@ -22,5 +23,15 @@ export const styles = StyleSheet.create({
 		color: COLORS.gray,
 		fontFamily: "GTWalsheimPro-Medium",
 		fontWeight: 500,
+	},
+
+	activeUrl: {
+		fontSize: 25.5,
+		color: COLORS.black,
+		fontFamily: "GTWalsheimPro-Medium",
+		fontWeight: 700,
+		borderBottomWidth: 1,
+		borderBottomColor: COLORS.black,
+		paddingBottom: 3.5, 
 	},
 });

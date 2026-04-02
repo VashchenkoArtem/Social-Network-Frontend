@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 
 export const inputStyles = StyleSheet.create({
 	wrapper: {
-		width: 340,
+		width: "100%",
 		marginBottom: 20,
 	},
 	label: {
@@ -16,15 +16,14 @@ export const inputStyles = StyleSheet.create({
 		flexDirection: "row",
 		alignItems: "center",
 		height: 42,
-		width: 340,
+		width: "100%",
 		borderRadius: 13,
 		borderWidth: 1,
-		gap: 10,
+		paddingHorizontal: 12,
 	},
 	input: {
 		flex: 1,
-		paddingHorizontal: 16,
-		fontFamily: "GTWalsheimPro-Medium",
+  		fontFamily: "GTWalsheimPro-Medium",
 	},
 	primary: {
 		borderColor: COLORS.gray,
