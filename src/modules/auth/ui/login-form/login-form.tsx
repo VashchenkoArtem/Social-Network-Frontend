@@ -7,6 +7,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { loginValidator } from "@modules/auth/models/lib/login.validation";
 import { Modal } from "@shared/ui/modal";
 import { useLogin } from "@shared/hooks/useLogin";
+import { useRouter } from "expo-router";
 
 
 interface LoginForm {
@@ -18,10 +19,10 @@ interface LoginForm {
 export function LoginForm() {
     const { handleSubmit, control } = useForm<LoginForm>({resolver: yupResolver(loginValidator)})
     const { loginUser } = useLogin();
-    
+    const router = useRouter();
     async function onSubmit (data: LoginForm){
-        console.log(data)
         loginUser(data)
+        router.push("/(tabs)/home")
 	}
 
     return (

@@ -1,7 +1,9 @@
-import { View, Text } from "react-native";
+import { View, Text, Pressable } from "react-native";
+import { Link, useRouter, useSegments } from "expo-router";
 import { IRegistrationProps } from "./types";
 import { styles } from "./styles";
 import { useFonts } from "expo-font";
+
 
 export function Modal(props: IRegistrationProps) {
 	const { ifLogin, children, selectedTab } = props;
@@ -15,9 +17,9 @@ export function Modal(props: IRegistrationProps) {
 		<View style={styles.modalContainer}>
 			{ifLogin && (
 				<View style={styles.urls}>
-					{selectedTab === 'registration' ? <Text style={styles.activeUrl}>Реєстрація</Text> : <Text style={styles.url}>Реєстрація</Text>}
+					{selectedTab === 'registration' ? <Link style={styles.activeUrl} href="/register">Реєстрація</Link> : <Link style={styles.url} href="/registration">Реєстрація</Link>}
 
-					{ selectedTab === 'login' ? <Text style={styles.activeUrl}>Авторизація</Text> : <Text style={styles.url}>Авторизація</Text>}
+					{ selectedTab === 'login' ? <Link style={styles.activeUrl} href="/login">Авторизація</Link> : <Link style={styles.url} href="/login">Авторизація</Link>}
 				</View>
 			)}
 			{children}

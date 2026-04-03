@@ -11,12 +11,6 @@ export function useLogin(){
 
             body: JSON.stringify(data)
         });
-        const result = await response.json();
-
-        
-        router.push({
-            pathname: "/login",
-        })
     }
     return { loginUser }
 }
