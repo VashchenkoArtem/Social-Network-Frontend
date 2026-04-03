@@ -2,12 +2,7 @@ import { useState } from "react";
 import Constants from 'expo-constants';
 
 
-
-const debuggerHost = Constants.expoConfig?.hostUri?.split(':').shift();
-const SERVER_IP = debuggerHost || "10.0.2.2"; 
-const API_URL = `http://${SERVER_IP}:8000/api/user/register`;
-
-console.log("API підключено до:", API_URL);
+const API_URL = `http://192.168.0.105:8000/api/user/register`;
 
 interface RegisterPayload {
   email: string;
