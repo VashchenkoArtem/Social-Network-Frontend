@@ -6,7 +6,7 @@ import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { loginValidator } from "@modules/auth/models/lib/login.validation";
 import { Modal } from "@shared/ui/modal";
-import { useRouter } from "expo-router";
+import { useLogin } from "@shared/hooks/useLogin";
 
 
 interface LoginForm {
@@ -17,31 +17,11 @@ interface LoginForm {
 
 export function LoginForm() {
     const { handleSubmit, control } = useForm<LoginForm>({resolver: yupResolver(loginValidator)})
-    const router = useRouter()
-
+    const { loginUser } = useLogin();
+    
     async function onSubmit (data: LoginForm){
-        const response = await fetch("https://user/login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-
-            body: JSON.stringify({
-                email: data.email,
-                password: data.password,
-            })
-        });
-
-        const result = await response.json();
-
-        
-        router.push({
-            pathname: "/login",
-            params: {
-                email: data.email,
-                password: data.password,
-            }
-        })
+        console.log(data)
+        loginUser(data)
 	}
 
     return (
