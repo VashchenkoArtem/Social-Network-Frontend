@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import { OtpInput } from '@shared/ui/OptInput'; 
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useVerification } from '@modules/useVerification'; 
+import { useVerification } from '@shared/hooks/useVerification'; 
 import { styles } from './styles';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 export function RegistrationStepTwo() {
   const router = useRouter();
@@ -13,9 +13,10 @@ export function RegistrationStepTwo() {
   const { verify, isVerifying } = useVerification();
 
   const handleConfirm = async () => {
-    const result = await verify({ email, code: fullCode,password });
+    const result = await verify({ email, code: fullCode,password })
     console.log(result)
-    router.push("/(tabs)/home")
+    router.push({pathname: "/(tabs)/home", 
+                params: result.email})
     // if (result.token) {
     //     await AsyncStorage.setItem("userToken", result.token);
     //     setTimeout(() => {
@@ -25,7 +26,7 @@ export function RegistrationStepTwo() {
   };
 
   return (
-    <View style={styles.screen}>
+    <KeyboardAwareScrollView extraHeight={40} enableOnAndroid={true}contentContainerStyle={{flexGrow: 1}}>
       <View style={styles.card}>
         <Text style={styles.title}>Підтвердження пошти</Text>
         <Text style={styles.subtitle}>
@@ -48,6 +49,6 @@ export function RegistrationStepTwo() {
           <Text style={styles.backText}>Назад</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </KeyboardAwareScrollView>
   );
 }

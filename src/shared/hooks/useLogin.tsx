@@ -3,7 +3,7 @@ import { router } from "expo-router";
 
 export function useLogin(){
     async function loginUser (data: LoginForm){
-        const response = await fetch("http://192.168.0.105:8000/login", {
+        const response = await fetch("http://192.168.0.125:8000/login", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -11,6 +11,9 @@ export function useLogin(){
 
             body: JSON.stringify(data)
         });
+        const result = await response.json();
+        console.log(result)
+        return result
     }
     return { loginUser }
 }

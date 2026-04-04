@@ -5,10 +5,15 @@ import { Button } from "@shared/ui/button";
 import { Input } from "@shared/ui/input";
 import { Modal } from "@shared/ui/modal";
 import { styles } from "./styles";
-import { useRegistration } from "@modules/useRegistration";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { useRegistration } from "@shared/hooks/useRegistration";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { loginSchema } from "@shared/ui/input/validation";
 import * as yup from "yup";
+import { Controller, useForm } from "react-hook-form";
+import { RegForm } from "@modules/auth/models/types/registration.types";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { regValidator } from "@modules/auth/models/lib/registration.validation";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 
 export function RegistrationStepOne() {
@@ -20,6 +25,9 @@ export function RegistrationStepOne() {
     const [confirmPassword, setConfirmPassword] = useState("");
 
     const [errors, setErrors] = useState<Record<string, string>>({});
+
+    const { handleSubmit, control } = useForm<RegForm>({resolver: yupResolver(regValidator)})
+
 
     const handleRegister = async () => {
         setErrors({});
@@ -55,51 +63,76 @@ export function RegistrationStepOne() {
     };
 
     return (
-        <SafeAreaView>
-            <View style={[{ paddingTop: 39, paddingHorizontal: 16 }]}>
-                <Modal ifLogin={true}>
-                    <Text style={styles.modalTitle}>Приєднуйся до World IT</Text>
-                    
-                    <View style={{ width: '100%', gap: 15 }}>
-                        <Input 
-                            placeholder="you@example.com" 
-                            name="email"
-                            error={errors.email}
-                            label="Електронна пошта" 
-                            value={email}
-                            onChangeText={setEmail}
-                            keyboardType="email-address"
-                            autoCapitalize="none"
-                        />
-                        <Input 
-                            placeholder="Введи пароль"
-                            name="password"
-                            error={errors.password}
-                            label="Пароль" 
-                            isPassword={true} 
-                            value={password}
-                            onChangeText={setPassword}
-                        />
-                        <Input
-                            placeholder="Повтори пароль"
-                            name="confirmPassword"
-                            error={errors.confirmPassword}
-                            label="Підтверди пароль"
-                            isPassword={true}
-                            value={confirmPassword}
-                            onChangeText={setConfirmPassword}
-                        />
-                    </View>
+                <SafeAreaView>
+                    <KeyboardAwareScrollView extraHeight={140} enableOnAndroid={true}contentContainerStyle={{flexGrow: 1}}>
+                        <View style={[{ paddingTop: 39, paddingHorizontal: 16 }]}>
+                            <Modal ifLogin={true} selectedTab="registration">
+                                <Text style={styles.modalTitle}>Приєднуйся до World IT</Text>
+                                    
+                                <View style={{ width: '100%', gap: 15 }}>
+                                    <Controller 
+                                        name='email'
+                                        control={control}
+                                        render={({ field, fieldState }) => {
+                                            return <Input 
+                                                placeholder="you@example.com" 
+                                                // name="email"
+                                                error={errors.email}
+                                                label="Електронна пошта" 
+                                                // value={field.value}
+                                                onChangeText={setEmail}
+                                                keyboardType="email-address"
+                                                autoCapitalize="none"
+                                                {...field}
+                                            />
+                                        }}
+                                    />
 
-                    <Button
-                        variant={"purple"}
-                        text={isSubmitting ? "Надсилаємо код..." : "Створити акаунт"}
-                        style={[styles.button, styles.purple]}
-                        onPress={handleRegister}
-                        disabled={isSubmitting}
-                    />
-                </Modal>
-            </View>
-        </SafeAreaView>
+                                    <Controller 
+                                        name='password'
+                                        control={control}
+                                        render={({ field, fieldState }) => {
+                                            return <Input 
+                                                placeholder="Введи пароль"
+                                                // name="password"
+                                                error={errors.password}
+                                                label="Пароль" 
+                                                isPassword={true} 
+                                                // value={password}
+                                                onChangeText={setPassword}
+                                                {...field}
+                                            />
+                                        }}
+                                    />
+                                    
+                                    <Controller 
+                                        name='email'
+                                        control={control}
+                                        render={({ field, fieldState }) => {
+                                            return <Input
+                                                placeholder="Повтори пароль"
+                                                // name="confirmPassword"
+                                                error={errors.confirmPassword}
+                                                label="Підтверди пароль"
+                                                isPassword={true}
+                                                // value={confirmPassword}
+                                                onChangeText={setConfirmPassword}
+                                                {...field}
+                                            />
+                                        }}
+                                    />
+                                </View>
+
+                                <Button
+                                    variant={"purple"}
+                                    text={isSubmitting ? "Надсилаємо код..." : "Створити акаунт"}
+                                    style={[styles.button, styles.purple]}
+                                    onPress={handleRegister}
+                                    disabled={isSubmitting}
+                                />
+                            </Modal>
+                        </View>
+                    </KeyboardAwareScrollView>
+                </SafeAreaView>
     );
 }

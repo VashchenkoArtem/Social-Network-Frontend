@@ -29,7 +29,7 @@ export const useRegistration = () => {
     setError(null);
     
     try {
-      const response = await fetch("http://192.168.0.105:8000/send-code", {
+      const response = await fetch("http://192.168.0.125:8000/send-code", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
