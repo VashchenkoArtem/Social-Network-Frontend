@@ -1,4 +1,3 @@
-
 export interface OtpInputProps {
-  onCodeFilled: (code: string) => void;
+	onCodeFilled: (code: string) => void;
 }

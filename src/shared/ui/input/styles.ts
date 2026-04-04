@@ -23,7 +23,7 @@ export const inputStyles = StyleSheet.create({
 	},
 	input: {
 		flex: 1,
-  		fontFamily: "GTWalsheimPro-Medium",
+		fontFamily: "GTWalsheimPro-Medium",
 	},
 	primary: {
 		borderColor: COLORS.gray,

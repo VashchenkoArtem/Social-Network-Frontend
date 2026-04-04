@@ -30,7 +30,7 @@ export function Header(props: HeaderProps) {
 		},
 		{ title: "Групові чати", route: "/groupChats", icon: ICONS.ChatsPageIcon },
 	];
-	if (pathname === "/login" || pathname === "/registration") {
+	if (pathname === "/login" || pathname === "/registration" || pathname === "/verify") {
 		return (
 			<View style={[styles.header, styles.headerLogin]}>
 				<Link href="/home">

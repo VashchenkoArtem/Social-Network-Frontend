@@ -9,9 +9,10 @@ export default function AuthLayout() {
 			style={{ flex: 1, backgroundColor: COLORS.white }}
 			edges={["top"]}
 		>
+			<Header></Header>
 			<Stack
 				screenOptions={{
-					header: () => <Header />,
+					headerShown: false,
 				}}
 			/>
 		</SafeAreaView>

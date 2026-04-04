@@ -8,85 +8,83 @@ import { loginValidator } from "@modules/auth/models/lib/login.validation";
 import { Modal } from "@shared/ui/modal";
 import { useLogin } from "@shared/hooks/useLogin";
 import { useRouter } from "expo-router";
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 
 interface LoginForm {
-	email: string
-	password: string
+	email: string;
+	password: string;
 }
 
-
 export function LoginForm() {
-    const { handleSubmit, control } = useForm<LoginForm>({resolver: yupResolver(loginValidator)})
-    const { loginUser } = useLogin();
-    const router = useRouter();
-    async function onSubmit (data: LoginForm){
-        loginUser(data)
-        router.push({pathname: "/(tabs)/home", params: {name: data.email}})
+	const { handleSubmit, control } = useForm<LoginForm>({
+		resolver: yupResolver(loginValidator),
+	});
+	const { loginUser } = useLogin();
+	const router = useRouter();
+	async function onSubmit(data: LoginForm) {
+		loginUser(data);
+		router.push({ pathname: "/(tabs)/home", params: { name: data.email } });
 	}
-    
-    return (
-        <KeyboardAwareScrollView extraHeight={40} enableOnAndroid={true}contentContainerStyle={{flexGrow: 1}}>
-            <View style={styles.container}>
-                <Modal ifLogin={true} selectedTab="login">
-                    <Text style={styles.modalTitle}>Раді тебе знову бачити!</Text>
 
-                    <View style={styles.formContainer}>
-                        <View style={styles.formFields}>
-                        <Controller
-                            name="email"
-                            control={control}
-                            render={({field, fieldState}) => {
-                                
-                                return <Input
-                                    onChangeText={field.onChange}
-                                    placeholder="you@example.com"
-                                    inputMode="email"
-                                    autoCapitalize="none"
-                                    autoComplete="off"
-                                    autoCorrect={false}
-                                    label="Електронна пошта"
-                                    {...field}
-                                />
-                            }}
-                        />
+	return (
+		<KeyboardAwareScrollView bottomOffset={120} extraKeyboardSpace={20}>
+			<View style={styles.container}>
+				<Modal ifLogin={true} selectedTab="login">
+					<Text style={styles.modalTitle}>Раді тебе знову бачити!</Text>
 
-                        <Controller
-                            name="password"
-                            control={control}
-                            render={({ field }) => (
-                                <Input
-                                    placeholder="Введи пароль"
-                                    label="Пароль"
-                                    isPassword
-                                    onChangeText={field.onChange}
-                                    value={field.value}
-                                />
-                            )}
-                        />
-                    </View>
-                    </View>
+					<View style={styles.formContainer}>
+						<View style={styles.formFields}>
+							<Controller
+								name="email"
+								control={control}
+								render={({ field, fieldState }) => {
+									return (
+										<Input
+											onChangeText={field.onChange}
+											placeholder="you@example.com"
+											inputMode="email"
+											autoCapitalize="none"
+											autoComplete="off"
+											autoCorrect={false}
+											label="Електронна пошта"
+											{...field}
+										/>
+									);
+								}}
+							/>
 
-                    <Button
-                        variant={"purple"}
-                        text="Увійти"
-                        style={[styles.button, styles.purple]}
-                        onPress={handleSubmit(onSubmit)}
-                    />
-                    
-                    <View style={styles.modalQRtextContainer}>
-                        <View style={styles.line} />
-                        
-                        <Text style={styles.text}>
-                            або увійдіть за допомогою QR-коду
-                        </Text>
-                        
-                        <View style={styles.line} />
-                    </View>
+							<Controller
+								name="password"
+								control={control}
+								render={({ field }) => (
+									<Input
+										placeholder="Введи пароль"
+										label="Пароль"
+										isPassword
+										onChangeText={field.onChange}
+										value={field.value}
+									/>
+								)}
+							/>
+						</View>
+					</View>
 
-                </Modal>
-            </View>
-        </KeyboardAwareScrollView>
-    )
+					<Button
+						variant={"purple"}
+						text="Увійти"
+						style={[styles.button, styles.purple]}
+						onPress={handleSubmit(onSubmit)}
+					/>
+
+					<View style={styles.modalQRtextContainer}>
+						<View style={styles.line} />
+
+						<Text style={styles.text}>або увійдіть за допомогою QR-коду</Text>
+
+						<View style={styles.line} />
+					</View>
+				</Modal>
+			</View>
+		</KeyboardAwareScrollView>
+	);
 }

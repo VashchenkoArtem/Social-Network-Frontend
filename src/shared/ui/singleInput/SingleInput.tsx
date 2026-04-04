@@ -1,22 +1,21 @@
 import type { InputProps } from "./types";
 import { styles } from "./styles";
 import { View, Text, TextInput } from "react-native";
-import React, { forwardRef } from 'react';
+import React, { forwardRef } from "react";
 import { ref } from "yup";
 
-
 export const SingleInput = forwardRef<TextInput, InputProps>((props, ref) => {
-    const {
-        iconLeft,
-        iconRight,
-        label,
-        labelStyle,
-        inputContainerStyle,
-        error,
-        style,
-        value,
-        ...restProps
-    } = props;
+	const {
+		iconLeft,
+		iconRight,
+		label,
+		labelStyle,
+		inputContainerStyle,
+		error,
+		style,
+		value,
+		...restProps
+	} = props;
 
 	return (
 		<View>
@@ -36,7 +35,6 @@ export const SingleInput = forwardRef<TextInput, InputProps>((props, ref) => {
 			</View>
 		</View>
 	);
-}
-);
+});
 
-SingleInput.displayName = 'SingleInput';
+SingleInput.displayName = "SingleInput";

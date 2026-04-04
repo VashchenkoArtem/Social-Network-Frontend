@@ -4,7 +4,6 @@ import { IRegistrationProps } from "./types";
 import { styles } from "./styles";
 import { useFonts } from "expo-font";
 
-
 export function Modal(props: IRegistrationProps) {
 	const { ifLogin, children, selectedTab } = props;
 	const [fontsLoaded] = useFonts({
@@ -17,9 +16,25 @@ export function Modal(props: IRegistrationProps) {
 		<View style={styles.modalContainer}>
 			{ifLogin && (
 				<View style={styles.urls}>
-					{selectedTab === 'registration' ? <Link style={styles.activeUrl} href="/register">Реєстрація</Link> : <Link style={styles.url} href="/registration">Реєстрація</Link>}
+					{selectedTab === "registration" ? (
+						<Link style={styles.activeUrl} href="/registration">
+							Реєстрація
+						</Link>
+					) : (
+						<Link style={styles.url} href="/registration">
+							Реєстрація
+						</Link>
+					)}
 
-					{ selectedTab === 'login' ? <Link style={styles.activeUrl} href="/login">Авторизація</Link> : <Link style={styles.url} href="/login">Авторизація</Link>}
+					{selectedTab === "login" ? (
+						<Link style={styles.activeUrl} href="/login">
+							Авторизація
+						</Link>
+					) : (
+						<Link style={styles.url} href="/login">
+							Авторизація
+						</Link>
+					)}
 				</View>
 			)}
 			{children}
