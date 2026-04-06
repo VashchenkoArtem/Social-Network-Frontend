@@ -1,3 +1,4 @@
+import { PersonalInformation } from "@modules/settings/ui/personal-information/Personal-information";
 import { UserContext } from "@shared/context/user-context";
 import { AdditionalUrls } from "@shared/ui/additionalUrl";
 import { IRadioTab } from "@shared/ui/additionalUrl/types";
@@ -11,9 +12,7 @@ export default function Settings() {
 		{
 			title: "Особиста інформація",
 			content: (
-				<View>
-					<Text>Особиста інформація {user?.email}</Text>
-				</View>
+				<PersonalInformation/>
 			),
 		},
 		{
