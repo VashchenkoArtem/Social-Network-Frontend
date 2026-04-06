@@ -6,22 +6,25 @@ import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { loginValidator } from "@modules/auth/models/lib/login.validation";
 import { Modal } from "@shared/ui/modal";
-import { useLogin } from "@shared/hooks/useLogin";
 import { useRouter } from "expo-router";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
-
-interface LoginForm {
-	email: string;
-	password: string;
-}
+import { ILoginForm } from "@modules/auth/models/types/login.types";
+import { useContext } from "react";
+import { UserContext } from "@shared/context/user-context";
 
 export function LoginForm() {
-	const { handleSubmit, control } = useForm<LoginForm>({
+	const {
+		handleSubmit,
+		control,
+		formState: { errors },
+	} = useForm<ILoginForm>({
 		resolver: yupResolver(loginValidator),
 	});
-	const { loginUser } = useLogin();
+
+	const { loginUser } = useContext(UserContext)!;
 	const router = useRouter();
-	async function onSubmit(data: LoginForm) {
+
+	async function onSubmit(data: ILoginForm) {
 		loginUser(data);
 		router.push({ pathname: "/(tabs)/home", params: { name: data.email } });
 	}
@@ -37,22 +40,20 @@ export function LoginForm() {
 							<Controller
 								name="email"
 								control={control}
-								render={({ field, fieldState }) => {
-									return (
-										<Input
-											onChangeText={field.onChange}
-											placeholder="you@example.com"
-											inputMode="email"
-											autoCapitalize="none"
-											autoComplete="off"
-											autoCorrect={false}
-											label="Електронна пошта"
-											{...field}
-										/>
-									);
-								}}
+								render={({ field }) => (
+									<Input
+										placeholder="you@example.com"
+										inputMode="email"
+										autoCapitalize="none"
+										autoComplete="off"
+										autoCorrect={false}
+										label="Електронна пошта"
+										value={field.value}
+										onChangeText={field.onChange}
+										error={errors.email?.message}
+									/>
+								)}
 							/>
-
 							<Controller
 								name="password"
 								control={control}
@@ -61,8 +62,9 @@ export function LoginForm() {
 										placeholder="Введи пароль"
 										label="Пароль"
 										isPassword
-										onChangeText={field.onChange}
 										value={field.value}
+										onChangeText={field.onChange}
+										error={errors.password?.message}
 									/>
 								)}
 							/>
@@ -78,9 +80,9 @@ export function LoginForm() {
 
 					<View style={styles.modalQRtextContainer}>
 						<View style={styles.line} />
-
-						<Text style={styles.text}>або увійдіть за допомогою QR-коду</Text>
-
+						<Text style={styles.text}>
+							або увійдіть за допомогою QR-коду
+						</Text>
 						<View style={styles.line} />
 					</View>
 				</Modal>

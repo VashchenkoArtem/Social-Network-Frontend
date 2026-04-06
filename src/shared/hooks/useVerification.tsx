@@ -10,14 +10,12 @@ export const useVerification = () => {
 	}) => {
 		setIsVerifying(true);
 		try {
-			const response = await fetch(`http://192.168.0.125:8000/registration`, {
+			const response = await fetch(`http://192.168.0.105:8000/registration`, {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify(payload),
 			});
-			console.log(response);
 			const result = await response.json();
-			console.log(result);
 			return result;
 		} finally {
 			setIsVerifying(false);

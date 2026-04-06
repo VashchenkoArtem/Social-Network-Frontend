@@ -1,69 +1,45 @@
-import { useState } from "react";
 import { View, Text, Alert } from "react-native";
 import { useRouter } from "expo-router";
 import { Button } from "@shared/ui/button";
 import { Input } from "@shared/ui/input";
 import { Modal } from "@shared/ui/modal";
 import { styles } from "./styles";
-import { useRegistration } from "@shared/hooks/useRegistration";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { loginSchema } from "@shared/ui/input/validation";
-import * as yup from "yup";
 import { Controller, useForm } from "react-hook-form";
 import { RegForm } from "@modules/auth/models/types/registration.types";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { regValidator } from "@modules/auth/models/lib/registration.validation";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
+import { useContext } from "react";
+import { UserContext } from "@shared/context/user-context";
 
 export function RegistrationStepOne() {
 	const router = useRouter();
-	const { register, isSubmitting } = useRegistration();
+	const { register } = useContext(UserContext)!;
 
-	const [email, setEmail] = useState("");
-	const [password, setPassword] = useState("");
-	const [confirmPassword, setConfirmPassword] = useState("");
-
-	const [errors, setErrors] = useState<Record<string, string>>({});
-
-	const { handleSubmit, control } = useForm<RegForm>({
+	const {
+		handleSubmit,
+		control,
+		formState: { errors },
+	} = useForm<RegForm>({
 		resolver: yupResolver(regValidator),
 	});
 
-	const handleRegister = async () => {
-		setErrors({});
-		if (password !== confirmPassword) {
-			setErrors((prev) => ({
-				...prev,
-				confirmPassword: "Паролі не збігаються",
-			}));
-			return;
-		}
-
+	const onSubmit = async (data: RegForm) => {
 		try {
-			await loginSchema.validate({ email, password }, { abortEarly: false });
 			await register({
-				email,
-				password,
+				email: data.email,
+				password: data.password,
 			});
+
 			router.push({
 				pathname: "/verify",
-				params: { email, password },
+				params: { email: data.email, password: data.password },
 			});
 		} catch (err) {
-			if (err instanceof yup.ValidationError) {
-				const newErrors: Record<string, string> = {};
-				err.inner.forEach((error) => {
-					if (error.path) {
-						newErrors[error.path] = error.message;
-					}
-				});
-				setErrors(newErrors);
-			} else {
-				Alert.alert(
-					"Помилка",
-					err instanceof Error ? err.message : "Щось пішло не так",
-				);
-			}
+			Alert.alert(
+				"Помилка",
+				err instanceof Error ? err.message : "Щось пішло не так",
+			);
 		}
 	};
 
@@ -77,68 +53,53 @@ export function RegistrationStepOne() {
 						<Controller
 							name="email"
 							control={control}
-							render={({ field, fieldState }) => {
-								return (
-									<Input
-										placeholder="you@example.com"
-										// name="email"
-										error={errors.email}
-										label="Електронна пошта"
-										// value={field.value}
-										onChangeText={setEmail}
-										keyboardType="email-address"
-										autoCapitalize="none"
-										{...field}
-									/>
-								);
-							}}
+							render={({ field }) => (
+								<Input
+									placeholder="you@example.com"
+									error={errors.email?.message}
+									label="Електронна пошта"
+									keyboardType="email-address"
+									autoCapitalize="none"
+									value={field.value}
+									onChangeText={field.onChange}
+								/>
+							)}
 						/>
-
 						<Controller
 							name="password"
 							control={control}
-							render={({ field, fieldState }) => {
-								return (
-									<Input
-										placeholder="Введи пароль"
-										// name="password"
-										error={errors.password}
-										label="Пароль"
-										isPassword={true}
-										// value={password}
-										onChangeText={setPassword}
-										{...field}
-									/>
-								);
-							}}
+							render={({ field }) => (
+								<Input
+									placeholder="Введи пароль"
+									error={errors.password?.message}
+									label="Пароль"
+									isPassword={true}
+									value={field.value}
+									onChangeText={field.onChange}
+								/>
+							)}
 						/>
-
 						<Controller
-							name="email"
+							name="confirmPassword"
 							control={control}
-							render={({ field, fieldState }) => {
-								return (
-									<Input
-										placeholder="Повтори пароль"
-										// name="confirmPassword"
-										error={errors.confirmPassword}
-										label="Підтверди пароль"
-										isPassword={true}
-										// value={confirmPassword}
-										onChangeText={setConfirmPassword}
-										{...field}
-									/>
-								);
-							}}
+							render={({ field }) => (
+								<Input
+									placeholder="Повтори пароль"
+									error={errors.confirmPassword?.message}
+									label="Підтверди пароль"
+									isPassword={true}
+									value={field.value}
+									onChangeText={field.onChange}
+								/>
+							)}
 						/>
 					</View>
 
 					<Button
 						variant={"purple"}
-						text={isSubmitting ? "Надсилаємо код..." : "Створити акаунт"}
+						text={"Створити акаунт"}
 						style={[styles.button, styles.purple]}
-						onPress={handleRegister}
-						disabled={isSubmitting}
+						onPress={handleSubmit(onSubmit)}
 					/>
 				</Modal>
 			</View>

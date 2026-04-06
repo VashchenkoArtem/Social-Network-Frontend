@@ -4,6 +4,8 @@ import { OtpInput } from "@shared/ui/OptInput";
 import { useLocalSearchParams, usePathname, useRouter } from "expo-router";
 import { useVerification } from "@shared/hooks/useVerification";
 import { styles } from "./styles";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
+
 
 export function RegistrationStepTwo() {
 	const router = useRouter();
@@ -27,29 +29,31 @@ export function RegistrationStepTwo() {
 	};
 
 	return (
-        <View style = {styles.screen}>
-            <View style={styles.card}>
-                <Text style={styles.title}>Підтвердження пошти</Text>
-                <Text style={styles.subtitle}>
-                    Ми надіслали код на <Text style={{ fontWeight: "bold" }}>{email}</Text>
-                </Text>
-
-                <OtpInput onCodeFilled={setFullCode} />
-
-                <TouchableOpacity
-                    style={[styles.confirmButton, isVerifying && { opacity: 0.7 }]}
-                    onPress={handleConfirm}
-                    disabled={isVerifying}
-                >
-                    <Text style={styles.buttonText}>
-                        {isVerifying ? "Перевірка..." : "Підтвердити"}
+        <KeyboardAwareScrollView bottomOffset={120} extraKeyboardSpace={20}>
+            <View style = {styles.screen}>
+                <View style={styles.card}>
+                    <Text style={styles.title}>Підтвердження пошти</Text>
+                    <Text style={styles.subtitle}>
+                        Ми надіслали код на <Text style={{ fontWeight: "bold" }}>{email}</Text>
                     </Text>
-                </TouchableOpacity>
 
-                <TouchableOpacity onPress={() => router.back()}>
-                    <Text style={styles.backText}>Назад</Text>
-                </TouchableOpacity>
+                    <OtpInput onCodeFilled={setFullCode} />
+
+                    <TouchableOpacity
+                        style={[styles.confirmButton, isVerifying && { opacity: 0.7 }]}
+                        onPress={handleConfirm}
+                        disabled={isVerifying}
+                    >
+                        <Text style={styles.buttonText}>
+                            {isVerifying ? "Перевірка..." : "Підтвердити"}
+                        </Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity onPress={() => router.back()}>
+                        <Text style={styles.backText}>Назад</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
-        </View>
+        </KeyboardAwareScrollView>
 	);
 }
