@@ -5,28 +5,48 @@ import { useLocalSearchParams, usePathname, useRouter } from "expo-router";
 import { useVerification } from "@shared/hooks/useVerification";
 import { styles } from "./styles";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
+import { useRegistrationMutation } from "@modules/auth/api/userApi";
+import { SerializedError } from "@reduxjs/toolkit/react";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 
 
 export function RegistrationStepTwo() {
-	const router = useRouter();
-	const { email, password } = useLocalSearchParams<{
-		email: string;
-		password: string;
-	}>();
-	const [fullCode, setFullCode] = useState("");
-	const { verify, isVerifying } = useVerification();
-    const pathname = usePathname()
-	const handleConfirm = async () => {
-		const result = await verify({ email, code: fullCode, password });
-		console.log(result);
-		router.push({ pathname: "/(tabs)/home", params: result.email });
-		// if (result.token) {
-		//     await AsyncStorage.setItem("userToken", result.token);
-		//     setTimeout(() => {
-		//         router.replace("/(tabs)/home");
-		//     }, 100);
-		//   }
-	};
+    const router = useRouter();
+    const { email, password } = useLocalSearchParams<{
+        email: string;
+        password: string;
+    }>();
+    const [fullCode, setFullCode] = useState("");
+    const [register, { isLoading: isVerifying }] = useRegistrationMutation();
+    const handleConfirm = async () => {
+        if (fullCode.length < 6) {
+            Alert.alert("Помилка", "Будь ласка, введіть повний код");
+            return;
+        }
+
+        try {
+            const result = await register({ 
+                email, 
+                code: fullCode, 
+                password 
+            }).unwrap();
+            console.log("Успіх, токен:", result.token);
+            router.replace({
+                pathname: "/(tabs)/home",
+                params: { isNewUser: "true" }
+            });
+            
+        } catch (err) {
+            const error = err as FetchBaseQueryError | SerializedError;
+            let message = "Невірний код або користувач вже існує";
+            
+            if (error && 'data' in error && typeof error.data === 'string') {
+                message = error.data;
+            }
+
+            Alert.alert("Помилка реєстрації", message);
+        }
+    };
 
 	return (
         <KeyboardAwareScrollView bottomOffset={120} extraKeyboardSpace={20}>

@@ -11,37 +11,35 @@ import { regValidator } from "@modules/auth/models/lib/registration.validation";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { useContext } from "react";
 import { UserContext } from "@shared/context/user-context";
+import { useSendCodeMutation } from "@modules/auth/api/userApi";
+
 
 export function RegistrationStepOne() {
-	const router = useRouter();
-	const { register } = useContext(UserContext)!;
+    const router = useRouter();
+    const [sendCode, { isLoading }] = useSendCodeMutation();
 
-	const {
-		handleSubmit,
-		control,
-		formState: { errors },
-	} = useForm<RegForm>({
-		resolver: yupResolver(regValidator),
-	});
+    const {
+        handleSubmit,
+        control,
+        formState: { errors },
+    } = useForm<RegForm>({
+        resolver: yupResolver(regValidator),
+    });
 
-	const onSubmit = async (data: RegForm) => {
-		try {
-			await register({
-				email: data.email,
-				password: data.password,
-			});
-
-			router.push({
-				pathname: "/verify",
-				params: { email: data.email, password: data.password },
-			});
-		} catch (err) {
-			Alert.alert(
-				"Помилка",
-				err instanceof Error ? err.message : "Щось пішло не так",
-			);
-		}
-	};
+    const onSubmit = async (data: RegForm) => {
+        try {
+            await sendCode({ email: data.email }).unwrap();
+            router.push({
+                pathname: "/verify",
+                params: { email: data.email, password: data.password },
+            });
+        } catch (err: any) {
+            Alert.alert(
+                "Помилка",
+                err?.data || "Не вдалося надіслати код підтвердження"
+            );
+        }
+    };
 
 	return (
 		<KeyboardAwareScrollView bottomOffset={120} extraKeyboardSpace={20}>

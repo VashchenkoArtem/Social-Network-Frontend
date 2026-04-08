@@ -65,11 +65,6 @@ export const styles = StyleSheet.create({
     personalInformationFormBlock: {
 
     },
-
-    signatureBlock: {
-
-    },
-
     // Buttons
     button: {
 
@@ -80,6 +75,99 @@ export const styles = StyleSheet.create({
     },
     editPasswordBlock: {
         
-    }
+    },
 
+
+    signatureBlock: {
+        backgroundColor: '#FFF',
+        borderRadius: 28,
+        padding: 24,
+        marginTop: 16,
+    },
+
+    signatureTitle: {
+        fontSize: 16,
+        fontWeight: '700',
+        color: '#1A1A1A',
+    },
+
+    signatureOptions: {
+        marginTop: 20,
+        gap: 24,
+    },
+
+    signatureOptionRow: {
+        width: '100%',
+    },
+
+    checkboxRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 12,
+        marginBottom: 8,
+    },
+
+    customCheckbox: {
+        width: 22,
+        height: 22,
+        borderRadius: 6,
+        borderWidth: 2,
+        borderColor: '#E8E8E8',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#FFF',
+    },
+
+    customCheckboxActive: {
+        width: 22,
+        height: 22,
+        borderRadius: 6,
+        borderWidth: 2,
+        borderColor: COLORS.plum,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#FFF',
+    },
+
+    checkboxInner: {
+        width: 12,
+        height: 12,
+        borderRadius: 3,
+        backgroundColor: COLORS.plum,
+    },
+
+    checkboxLabel: {
+        fontSize: 14,
+        color: '#666',
+        fontWeight: '500',
+    },
+
+    signatureTextPreview: {
+        fontSize: 18,
+        color: '#1A1A1A',
+        paddingLeft: 34,
+        fontWeight: '400',
+    },
+
+    signatureImageWrapper: {
+        paddingLeft: 34,
+        marginTop: 4,
+    },
+
+    signatureImage: {
+        width: 150,
+        height: 60,
+        resizeMode: 'contain',
+    },
+
+    signaturePlaceholder: {
+        paddingLeft: 34,
+        marginTop: 4,
+    },
+
+    noSignatureText: {
+        color: '#BBB',
+        fontSize: 13,
+        fontStyle: 'italic',
+    },
 })
