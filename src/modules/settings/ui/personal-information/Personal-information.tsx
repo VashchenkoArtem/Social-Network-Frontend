@@ -1,5 +1,5 @@
 import { Text, View } from "react-native";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Button } from "@shared/ui/button";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { styles } from "./styles";
@@ -9,9 +9,12 @@ import { Controller, useForm } from "react-hook-form";
 import { Input } from "@shared/ui/input";
 import { ScrollView } from "react-native";
 import { useUpdateUserMutation } from "@shared/api/baseApi";
+import { UserContext } from "@shared/context/user-context"; 
 
 type FormData = {
-    name: string;
+    firstname: string;
+    lastname: string;
+    nickname: string;
     birthDate: string;
     email: string;
     password: string;
@@ -20,47 +23,53 @@ type FormData = {
 }
 
 export function PersonalInformation() {
-    const [isEditing, setIsEditing] = useState(false)
+    const [isEditingProfile, setIsEditingProfile] = useState(false)
+    const [isEditingPersonalInfo, setIsEditingPersonalInfo] = useState(false)
+    
     const [updateUser, { isLoading }] = useUpdateUserMutation()
-
+    const { user } = useContext(UserContext)!;
+    if (!user)return null
     const {
         control,
         handleSubmit,
         reset,
         formState: { isDirty }
-    } = useForm<FormData>({
-        defaultValues: {
-            name: "Li",
-            birthDate: "2001-04-15",
-            email: "you@example.com",
-            password: "******",
-            newPassword: "",
-            confirmPassword: ""
-        },
-    });
+    } = useForm<FormData>();
 
     const onSubmit = async (data: FormData) => {
         try {
             await updateUser(data).unwrap()
             reset(data)
-            setIsEditing(false)
+            setIsEditingProfile(false)
         } catch (error) {
             console.log("error:", error);
         }
     };
 
-    const handleEditPress = () => {
-        if (isEditing) {
+    const handleEditProfilePress = () => {
+        if (isEditingProfile) {
             if (isDirty) {
                 handleSubmit(onSubmit)()
             } else {
-                setIsEditing(false)
+                setIsEditingProfile(false)
             }
         } else {
-            setIsEditing(true)
+            setIsEditingProfile(true)
+        }
+    }
+
+    const handleEditPersonalInfoPress = () => {
+        if (isEditingPersonalInfo) {
+            if (isDirty) {
+                handleSubmit(onSubmit)()
+            } else {
+                setIsEditingPersonalInfo(false)
+            }
+        } else {
+            setIsEditingPersonalInfo(true)
         }
     };
-
+    
     return (
         <KeyboardAwareScrollView bottomOffset={120} extraKeyboardSpace={20}>
             <ScrollView>
@@ -74,30 +83,31 @@ export function PersonalInformation() {
                             <Button
                                 variant={"white"}
                                 iconLeft={<EditIcon color={COLORS.plum} />}
-                                text={isEditing ? "Зберегти" : ""}
-                                onPress={handleEditPress}
+                                text={isEditingProfile ? "Зберегти" : ""}
+                                onPress={handleEditProfilePress}
                                 isSettings={true}
-                                style={[styles.button, styles.white]}
                             />
                         </View>
 
                         <View style={styles.profileCardAvatarBlock}>
-                            {isEditing && (
+                            {isEditingProfile && (
                                 <Text>Оберіть або завантажте фото профілю</Text>
                             )}
 
-                            <Text style={styles.name}>Name lastname</Text>
-                            <Text style={styles.username}>@username</Text>
+                            
 
-                            {isEditing && (
+                            <Text style={styles.name}>{user.firstname} {user.lastname}</Text>
+                            <Text style={styles.username}>@{user.nickname}</Text>
+
+                            {isEditingProfile && (
                                 <Controller
-                                    name="name"
+                                    name="nickname"
                                     control={control}
                                     render={({ field }) => (
                                         <Input
                                             label="Ім'я користувача"
-                                            placeholder="@username"
-                                            value={field.value}
+                                            placeholder=""
+                                            defaultValue={user.nickname ? user.nickname : ""}
                                             onChangeText={field.onChange}
                                         />
                                     )}
@@ -110,37 +120,57 @@ export function PersonalInformation() {
                     <View style={styles.personalInformationBlock}>
                         <View style={styles.headerBlock}>
                             <Text>Особиста інформація</Text>
+
+                            <Button
+                                variant={"white"}
+                                iconLeft={<EditIcon color={COLORS.plum} />}
+                                text={isEditingPersonalInfo ? "Зберегти" : ""}
+                                onPress={handleEditPersonalInfoPress}
+                                isSettings={true}
+                            />
                         </View>
 
                         <View
                             style={[
                                 styles.personalInformationFormBlock,
-                                { opacity: isEditing ? 1 : 0.5 },
+                                { opacity: isEditingPersonalInfo ? 1 : 0.5 },
                             ]}
                         >
                             <Controller
-                                name="name"
+                                name="firstname"
                                 control={control}
                                 render={({ field }) => (
                                     <Input
-                                        label="Ім'я та прізвище"
-                                        placeholder="Ім'я"
-                                        editable={isEditing}
-                                        value={field.value}
+                                        label="Ім'я"
+                                        placeholder=""
+                                        editable={isEditingPersonalInfo}
+                                        defaultValue={user.firstname ? user.firstname : ""}
                                         onChangeText={field.onChange}
                                     />
                                 )}
                             />
-
+                            <Controller
+                                name="lastname"
+                                control={control}
+                                render={({ field }) => (
+                                    <Input
+                                        label="Прізвище"
+                                        placeholder=""
+                                        editable={isEditingPersonalInfo}
+                                        defaultValue={user.lastname ? user.lastname : ""}
+                                        onChangeText={field.onChange}
+                                    />
+                                )}
+                            />
                             <Controller
                                 name="birthDate"
                                 control={control}
                                 render={({ field }) => (
                                     <Input
                                         label="Дата народження"
-                                        placeholder="15.04.2001"
-                                        editable={isEditing}
-                                        value={field.value}
+                                        placeholder=''
+                                        editable={isEditingPersonalInfo}
+                                        defaultValue={user.birthDate ? user.birthDate :""}
                                         onChangeText={field.onChange}
                                     />
                                 )}
@@ -152,10 +182,10 @@ export function PersonalInformation() {
                                 render={({ field }) => (
                                     <Input
                                         label="Електронна пошта"
-                                        placeholder="you@example.com"
+                                        placeholder=""
                                         keyboardType="email-address"
-                                        editable={isEditing}
-                                        value={field.value}
+                                        editable={isEditingPersonalInfo}
+                                        defaultValue={user.email}
                                         onChangeText={field.onChange}
                                     />
                                 )}
@@ -167,9 +197,9 @@ export function PersonalInformation() {
                                 render={({ field }) => (
                                     <Input
                                         label="Пароль"
-                                        placeholder="****"
+                                        placeholder=""
                                         isPassword={true}
-                                        editable={isEditing}
+                                        editable={isEditingPersonalInfo}
                                         value={field.value}
                                         onChangeText={field.onChange}
                                     />
@@ -179,7 +209,7 @@ export function PersonalInformation() {
                     </View>
 
                     {/* PASSRORD */}
-                    <View style={styles.personalInformationBlock}>
+                    {/* <View style={styles.personalInformationBlock}>
                         <View style={styles.headerBlock}>
                             <Text>Пароль</Text>
                         </View>
@@ -187,7 +217,7 @@ export function PersonalInformation() {
                         <View
                             style={[
                                 styles.personalInformationFormBlock,
-                                { opacity: isEditing ? 1 : 0.5 },
+                                { opacity: isEditingProfile ? 1 : 0.5 },
                             ]}
                         >
                             <Controller
@@ -196,7 +226,7 @@ export function PersonalInformation() {
                                 render={({ field }) => (
                                     <Input
                                         label="Поточний пароль"
-                                        placeholder="******"
+                                        placeholder=""
                                         isPassword={true}
                                         editable={false}
                                         value={field.value}
@@ -213,7 +243,7 @@ export function PersonalInformation() {
                                         render={({ field }) => (
                                             <Input
                                                 label="Новий пароль"
-                                                placeholder="Введи новий пароль"
+                                                placeholder=""
                                                 isPassword={true}
                                                 editable={true}
                                                 value={field.value}
@@ -228,7 +258,7 @@ export function PersonalInformation() {
                                         render={({ field }) => (
                                             <Input
                                                 label="Підтвердження пароля"
-                                                placeholder="Повтори пароль"
+                                                placeholder=""
                                                 isPassword={true}
                                                 editable={true}
                                                 value={field.value}
@@ -239,7 +269,7 @@ export function PersonalInformation() {
                                 </>
                             )}
                         </View>
-                    </View>
+                    </View> */}
                     
                 </View>
             </ScrollView>

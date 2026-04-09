@@ -72,7 +72,8 @@ export const styles = StyleSheet.create({
 
     // Buttons
     button: {
-
+        borderBlockColor: COLORS.plum,
+        borderWidth: 1
     },
 
     white: {
