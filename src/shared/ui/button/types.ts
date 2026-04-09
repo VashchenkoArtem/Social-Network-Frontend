@@ -3,6 +3,7 @@ import { PressableProps } from "react-native";
 
 export interface IPressableProps extends PressableProps {
 	variant: "white" | "purple";
+	isBackgroundColor: "preWhite" | "prePurple";
 	text?: string;
 	iconLeft?: ReactNode;
 	iconRight?: ReactNode;

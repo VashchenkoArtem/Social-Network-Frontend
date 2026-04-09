@@ -77,6 +77,7 @@ export function WelcomeDetailsModal({ isVisible, onClose }: Props) {
                                 onPress={handleConfirm}
                                 disabled={isLoading} 
                                 style={styles.button}
+                                isBackgroundColor="preWhite"
                             />
                         </View>
                     </View>

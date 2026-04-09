@@ -25,6 +25,12 @@ export const buttonStyles = StyleSheet.create({
 	whiteButtonText: {
 		color: COLORS.plum,
 	},
+	preWhite: {
+		backgroundColor: 'red'
+	},
+	prePurple: {
+		backgroundColor: COLORS.plum
+	},
 	buttonContent: {
 		flexDirection: "row",
 		gap: 8,

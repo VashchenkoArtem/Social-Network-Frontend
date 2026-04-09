@@ -9,7 +9,7 @@ import { ApiProvider } from "@reduxjs/toolkit/query/react";
 export default function RootLayout() {
 	return (
 		<SafeAreaProvider>
-            <ApiProvider api={baseApi}>
+            <ApiProvider api = {baseApi}>
                 <KeyboardProvider>
                     <UserProvider>
                         <Stack

@@ -6,6 +6,12 @@ export interface IUser {
     nickname: string | null;
     avatar: string | null;
     signature: string | null;
-    birthDate: Date | null;
+    birthDate: string | null;
 }
 
+export interface UpdateUser {
+    name?: string;
+    email?: string;
+    birthDate?: string;
+    password?: string;
+}

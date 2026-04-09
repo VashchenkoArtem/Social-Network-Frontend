@@ -76,6 +76,7 @@ export function LoginForm() {
 						text="Увійти"
 						style={[styles.button, styles.purple]}
 						onPress={handleSubmit(onSubmit)}
+						isBackgroundColor="preWhite"
 					/>
 
 					<View style={styles.modalQRtextContainer}>

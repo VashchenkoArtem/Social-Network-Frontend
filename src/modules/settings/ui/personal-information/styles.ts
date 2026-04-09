@@ -11,8 +11,13 @@ export const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        width: '100%'
+        width: '100%',
+    },
 
+    headerBlockText: {
+        color: COLORS.black,
+        fontWeight: 600,
+        fontSize: 16
     },
 
 	profileCardBlock: {
@@ -67,12 +72,14 @@ export const styles = StyleSheet.create({
     },
     // Buttons
     button: {
-
+        borderBlockColor: COLORS.plum,
+        borderWidth: 1
     },
 
     white: {
-
+        backgroundColor: COLORS.preWhite,
     },
+    
     editPasswordBlock: {
         
     },
