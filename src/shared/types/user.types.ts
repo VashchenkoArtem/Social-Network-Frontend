@@ -9,3 +9,9 @@ export interface IUser {
     birthDate: Date | null;
 }
 
+export interface UpdateUser {
+    name?: string;
+    email?: string;
+    birthDate?: string;
+    password?: string;
+}
