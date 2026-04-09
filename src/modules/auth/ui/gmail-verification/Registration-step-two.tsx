@@ -1,56 +1,79 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Alert } from 'react-native';
-import { OtpInput } from '@shared/ui/OptInput'; 
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useVerification } from '@modules/useVerification'; 
-import { styles } from './styles';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useState } from "react";
+import { View, Text, TouchableOpacity, Alert } from "react-native";
+import { OtpInput } from "@shared/ui/OptInput";
+import { useLocalSearchParams, usePathname, useRouter } from "expo-router";
+import { useVerification } from "@shared/hooks/useVerification";
+import { styles } from "./styles";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
+import { useRegistrationMutation } from "@modules/auth/api/userApi";
+import { SerializedError } from "@reduxjs/toolkit/react";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
+
 
 export function RegistrationStepTwo() {
-  const router = useRouter();
-  const { email, password } = useLocalSearchParams<{ email: string; password: string }>(); 
-  const [fullCode, setFullCode] = useState('');
-  const { verify, isVerifying } = useVerification();
-
-  const handleConfirm = async () => {
-    try {
-      const result = await verify({ email, code: fullCode, userData: { email, password } });
-      
-      if (result.token) {
-          await AsyncStorage.setItem("userToken", result.token);
-          setTimeout(() => {
-              router.replace("/(tabs)/home");
-          }, 100);
+    const router = useRouter();
+    const { email, password } = useLocalSearchParams<{
+        email: string;
+        password: string;
+    }>();
+    const [fullCode, setFullCode] = useState("");
+    const [register, { isLoading: isVerifying }] = useRegistrationMutation();
+    const handleConfirm = async () => {
+        if (fullCode.length < 6) {
+            Alert.alert("Помилка", "Будь ласка, введіть повний код");
+            return;
         }
-    } catch (error: any) {
-        Alert.alert("Помилка", error.message || "Невірний код");
-    }
-  };
 
-  return (
-    <View style={styles.screen}>
-      <View style={styles.card}>
-        <Text style={styles.title}>Підтвердження пошти</Text>
-        <Text style={styles.subtitle}>
-          Ми надіслали код на <Text style={{ fontWeight: 'bold' }}>{email}</Text>
-        </Text>
+        try {
+            const result = await register({ 
+                email, 
+                code: fullCode, 
+                password 
+            }).unwrap();
+            console.log("Успіх, токен:", result.token);
+            router.replace({
+                pathname: "/(tabs)/home",
+                params: { isNewUser: "true" }
+            });
+            
+        } catch (err) {
+            const error = err as FetchBaseQueryError | SerializedError;
+            let message = "Невірний код або користувач вже існує";
+            
+            if (error && 'data' in error && typeof error.data === 'string') {
+                message = error.data;
+            }
 
-        <OtpInput onCodeFilled={setFullCode} />
+            Alert.alert("Помилка реєстрації", message);
+        }
+    };
 
-        <TouchableOpacity 
-          style={[styles.confirmButton, isVerifying && { opacity: 0.7 }]} 
-          onPress={handleConfirm}
-          disabled={isVerifying}
-        >
-          <Text style={styles.buttonText}>
-            {isVerifying ? "Перевірка..." : "Підтвердити"}
-          </Text>
-        </TouchableOpacity>
+	return (
+        <KeyboardAwareScrollView bottomOffset={120} extraKeyboardSpace={20}>
+            <View style = {styles.screen}>
+                <View style={styles.card}>
+                    <Text style={styles.title}>Підтвердження пошти</Text>
+                    <Text style={styles.subtitle}>
+                        Ми надіслали код на <Text style={{ fontWeight: "bold" }}>{email}</Text>
+                    </Text>
 
-        <TouchableOpacity onPress={() => router.back()}>
-          <Text style={styles.backText}>Назад</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
+                    <OtpInput onCodeFilled={setFullCode} />
+
+                    <TouchableOpacity
+                        style={[styles.confirmButton, isVerifying && { opacity: 0.7 }]}
+                        onPress={handleConfirm}
+                        disabled={isVerifying}
+                    >
+                        <Text style={styles.buttonText}>
+                            {isVerifying ? "Перевірка..." : "Підтвердити"}
+                        </Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity onPress={() => router.back()}>
+                        <Text style={styles.backText}>Назад</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        </KeyboardAwareScrollView>
+	);
 }

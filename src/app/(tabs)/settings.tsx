@@ -1,16 +1,18 @@
+import { PersonalInformation } from "@modules/settings/ui/personal-information/Personal-information";
+import { UserContext } from "@shared/context/user-context";
 import { AdditionalUrls } from "@shared/ui/additionalUrl";
 import { IRadioTab } from "@shared/ui/additionalUrl/types";
+import { useContext } from "react";
 import { View, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Settings() {
+	const { user } = useContext(UserContext)!;
 	const radioTabsArray: IRadioTab[] = [
 		{
 			title: "Особиста інформація",
 			content: (
-				<View>
-					<Text>Особиста інформація</Text>
-				</View>
+				<PersonalInformation/>
 			),
 		},
 		{

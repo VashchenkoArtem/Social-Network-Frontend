@@ -1,15 +1,14 @@
-import { StyleSheet } from 'react-native';
-
+import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
-    paddingHorizontal: 10,
-  },
-  otpSingleContainer: {
-    width: 45,
-    height: 50,
-  }
+	container: {
+		flexDirection: "row",
+		justifyContent: "space-between",
+		width: "100%",
+		paddingHorizontal: 10,
+	},
+	otpSingleContainer: {
+		width: 45,
+		height: 50,
+	},
 });

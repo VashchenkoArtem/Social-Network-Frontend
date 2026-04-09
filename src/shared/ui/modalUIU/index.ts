@@ -1,0 +1,1 @@
+export { WelcomeDetailsModal } from "./ModalUIU";

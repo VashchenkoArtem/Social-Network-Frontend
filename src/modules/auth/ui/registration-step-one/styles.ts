@@ -17,4 +17,11 @@ export const styles = StyleSheet.create({
 	purple: {
 		backgroundColor: COLORS.plum,
 	},
+	container: {
+		paddingTop: 39,
+		paddingHorizontal: 16,
+		flex: 1,
+		justifyContent: "center",
+		gap: 6,
+	},
 });

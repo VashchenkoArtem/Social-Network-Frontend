@@ -1,109 +1,106 @@
-import { useState } from "react";
 import { View, Text, Alert } from "react-native";
 import { useRouter } from "expo-router";
 import { Button } from "@shared/ui/button";
 import { Input } from "@shared/ui/input";
 import { Modal } from "@shared/ui/modal";
 import { styles } from "./styles";
-import { useRegistration } from "@modules/useRegistration";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { loginSchema } from "@shared/ui/input/validation";
-import * as yup from "yup";
+import { Controller, useForm } from "react-hook-form";
+import { RegForm } from "@modules/auth/models/types/registration.types";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { regValidator } from "@modules/auth/models/lib/registration.validation";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
+import { useContext } from "react";
+import { UserContext } from "@shared/context/user-context";
+import { useSendCodeMutation } from "@modules/auth/api/userApi";
 
 
 export function RegistrationStepOne() {
     const router = useRouter();
-    const { register, isSubmitting } = useRegistration();
+    const [sendCode, { isLoading }] = useSendCodeMutation();
 
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
+    const {
+        handleSubmit,
+        control,
+        formState: { errors },
+    } = useForm<RegForm>({
+        resolver: yupResolver(regValidator),
+    });
 
-    const [errors, setErrors] = useState<Record<string, string>>({});
-
-    const handleRegister = async () => {
-        setErrors({});
-        if (password !== confirmPassword) {
-            setErrors(prev => ({ ...prev, confirmPassword: "Паролі не збігаються" }));
-            return;
-        }
-
+    const onSubmit = async (data: RegForm) => {
         try {
-            await loginSchema.validate({ email, password }, { abortEarly: false });
-            await register({
-                email,
-                password,
-            });
+            await sendCode({ email: data.email }).unwrap();
             router.push({
                 pathname: "/verify",
-                params: { email, password }
+                params: { email: data.email, password: data.password },
             });
-
-        } catch (err) {
-            if (err instanceof yup.ValidationError) {
-                const newErrors: Record<string, string> = {};
-                err.inner.forEach((error) => {
-                    if (error.path) {
-                        newErrors[error.path] = error.message;
-                    }
-                });
-                setErrors(newErrors);
-            } else {
-                Alert.alert("Помилка", err instanceof Error ? err.message : "Щось пішло не так");
-            }
+        } catch (err: any) {
+            Alert.alert(
+                "Помилка",
+                err?.data || "Не вдалося надіслати код підтвердження"
+            );
         }
     };
 
-    return (
-        <SafeAreaView>
-            <View style={[{ paddingTop: 39, paddingHorizontal: 16 }]}>
-                <Modal ifLogin={true}>
-                    <Text style={styles.modalTitle}>Приєднуйся до World IT</Text>
-                    
-                    <View style={{ width: '100%', gap: 15 }}>
-                        <Input 
-                            placeholder="you@example.com" 
-                            name="email"
-                            error={errors.email}
-                            label="Електронна пошта" 
-                            value={email}
-                            onChangeText={setEmail}
-                            keyboardType="email-address"
-                            autoCapitalize="none"
-                        />
-                        <Input 
-                            placeholder="Введи пароль"
-                            name="password"
-                            error={errors.password}
-                            label="Пароль" 
-                            isPassword={true} 
-                            value={password}
-                            onChangeText={setPassword}
-                        />
-                        <Input
-                            placeholder="Повтори пароль"
-                            name="confirmPassword"
-                            error={errors.confirmPassword}
-                            label="Підтверди пароль"
-                            isPassword={true}
-                            value={confirmPassword}
-                            onChangeText={setConfirmPassword}
-                        />
-                    </View>
+	return (
+		<KeyboardAwareScrollView bottomOffset={120} extraKeyboardSpace={20}>
+			<View style={styles.container}>
+				<Modal ifLogin={true} selectedTab="registration">
+					<Text style={styles.modalTitle}>Приєднуйся до World IT</Text>
 
-                    <Button
-                        variant={"purple"}
-                        text={isSubmitting ? "Надсилаємо код..." : "Створити акаунт"}
-                        style={[styles.button, styles.purple]}
-                        onPress={handleRegister}
-                        disabled={isSubmitting}
-                    />
-                </Modal>
-            </View>
-        </SafeAreaView>
-    );
-}
+					<View style={{ width: "100%", gap: 15 }}>
+						<Controller
+							name="email"
+							control={control}
+							render={({ field }) => (
+								<Input
+									placeholder="you@example.com"
+									error={errors.email?.message}
+									label="Електронна пошта"
+									keyboardType="email-address"
+									autoCapitalize="none"
+									value={field.value}
+									onChangeText={field.onChange}
+								/>
+							)}
+						/>
+						<Controller
+							name="password"
+							control={control}
+							render={({ field }) => (
+								<Input
+									placeholder="Введи пароль"
+									error={errors.password?.message}
+									label="Пароль"
+									isPassword={true}
+									value={field.value}
+									onChangeText={field.onChange}
+								/>
+							)}
+						/>
+						<Controller
+							name="confirmPassword"
+							control={control}
+							render={({ field }) => (
+								<Input
+									placeholder="Повтори пароль"
+									error={errors.confirmPassword?.message}
+									label="Підтверди пароль"
+									isPassword={true}
+									value={field.value}
+									onChangeText={field.onChange}
+								/>
+							)}
+						/>
+					</View>
 
-function setErrors(arg0: {}) {
-    throw new Error("Function not implemented.");
+					<Button
+						variant={"purple"}
+						text={"Створити акаунт"}
+						style={[styles.button, styles.purple]}
+						onPress={handleSubmit(onSubmit)}
+					/>
+				</Modal>
+			</View>
+		</KeyboardAwareScrollView>
+	);
 }

@@ -4,10 +4,14 @@ import { Header } from "../header";
 import { SingleInput } from "../singleInput";
 import { Footer } from "../footer";
 import { usePathname } from "expo-router";
+import { ReactNode } from "react";
 
-export function Layout() {
+export function Layout(props: { children?: ReactNode }) {
+	const {children } = props
 	return (
 		<SafeAreaView style={styles.container}>
+			<Text>sadsadada</Text>
+			{children}
 			<Footer></Footer>
 		</SafeAreaView>
 	);

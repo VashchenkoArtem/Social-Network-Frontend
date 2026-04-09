@@ -1,7 +1,5 @@
-import { Redirect } from "expo-router";
-import { Text } from "react-native";
-
+import { LoginForm } from "@modules/auth/ui/login-form";
 
 export default function LoginScreen() {
-	return <Redirect href="/(auth)/registration" />;
+	return <LoginForm />;
 }
