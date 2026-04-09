@@ -7,12 +7,13 @@ import { COLORS } from "@shared/constants/colors";
 import { Controller } from "react-hook-form";
 import { Input } from "@shared/ui/input";
 import { ScrollView } from "react-native";
-import { useUpdateUserInfoMutation, useUpdateUserMutation } from "@modules/auth/api/userApi";
+import { useUpdateUserInfoMutation } from "@modules/auth/api/userApi";
 import { useState } from "react";
 import { WelcomeDetailsModal } from "@shared/ui/modalUIU/ModalUIU";
 import { SignatureEditor } from "@shared/ui/signatureEditor";
 import { Image } from "react-native";
 import { TouchableOpacity } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export function PersonalInformation() {
     const user = { 
@@ -21,8 +22,7 @@ export function PersonalInformation() {
         nickname: "@username", 
         signature: null
     };
-
-    const [updateUser, { isLoading }] = useUpdateUserMutation();
+    const [updateUser, { isLoading }] = useUpdateUserInfoMutation();
     const [selectedType, setSelectedType] = useState<'alias' | 'signature'>(
         user?.signature ? 'signature' : 'alias'
     );

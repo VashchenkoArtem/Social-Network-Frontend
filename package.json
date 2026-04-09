@@ -12,12 +12,8 @@
   "dependencies": {
     "@expo/ngrok": "4.1.0",
     "@hookform/resolvers": "^5.2.2",
-<<<<<<< HEAD
-    "@react-native-async-storage/async-storage": "^2.2.0",
-=======
     "@react-native-async-storage/async-storage": "2.2.0",
     "@reduxjs/toolkit": "^2.11.2",
->>>>>>> 2363807bb21531e7aa023cee80c7dc8f91d192c0
     "@types/react": "~19.2.10",
     "expo": "^55.0.11",
     "expo-constants": "~55.0.9",

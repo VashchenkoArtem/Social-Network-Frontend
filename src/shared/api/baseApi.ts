@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import Constants from 'expo-constants';
 
@@ -15,6 +16,15 @@ export const baseApi = createApi({
   reducerPath: 'api',
   baseQuery: fetchBaseQuery({ 
     baseUrl: API_BASE_URL,
+    prepareHeaders: async (headers, { getState }) => {
+      const token = await AsyncStorage.getItem("token")
+      console.log(token)
+      if (token) {
+        headers.set('Authorization', `Bearer ${token}`)
+      }
+
+      return headers
+    },
   }),
   tagTypes: ['User'],
   endpoints: () => ({}),

@@ -1,5 +1,5 @@
 import { baseApi } from '@shared/api/baseApi';
-import { RegistrationData, AuthToken, User } from './api.types';
+import { RegistrationData, AuthToken, User, ProfileData } from './api.types';
 
 export const userApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -17,22 +17,22 @@ export const userApi = baseApi.injectEndpoints({
         body,
       }),
     }),
-    updateUserInfo: builder.mutation<User, { firstname: string; nickname: string }>({
+    updateUserInfo: builder.mutation<User, ProfileData>({
       query: (body) => ({
         url: '/update-user',
         method: 'PATCH',
         body,
       }),
       invalidatesTags: ['User'],
-    }),
-    updateUser: builder.mutation<User, { firstname?: string; nickname?: string; signature?: string }>({
-      query: (body) => ({
-        url: '/user/update',
-        method: 'POST',
-        body,
-      }),
-      invalidatesTags: ['User'],
-    }),
+    })
+    // updateUser: builder.mutation<User, { firstname?: string; nickname?: string; signature?: string }>({
+    //   query: (body) => ({
+    //     url: '/update-user',
+    //     method: 'POST',
+    //     body,
+    //   }),
+    //   invalidatesTags: ['User'],
+    // }),
   }),
 });
 
@@ -40,5 +40,5 @@ export const {
   useSendCodeMutation, 
   useRegistrationMutation, 
   useUpdateUserInfoMutation, 
-  useUpdateUserMutation 
+  // useUpdateUserMutation 
 } = userApi;
