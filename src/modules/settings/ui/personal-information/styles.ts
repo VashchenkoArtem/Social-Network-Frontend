@@ -4,7 +4,8 @@ import { StyleSheet } from "react-native";
 export const styles = StyleSheet.create({
     personalInformationContainer: {
         gap: 8,
-        paddingTop: 24
+        paddingTop: 24,
+        marginBottom: 61
     },
 
     headerBlock: {
@@ -52,15 +53,31 @@ export const styles = StyleSheet.create({
         justifyContent: 'center',
         width: '100%',
         alignItems: 'center',
-        padding: 16,
-        borderWidth: 1,
-        borderColor: COLORS.lightGray,
-        borderRadius: 10,
-        gap: 16
+        // padding: 16,
+        // borderWidth: 1,
+        // borderColor: COLORS.lightGray,
+        // borderRadius: 10,
+        gap: 19
+    },
+
+    userAddAvatarButtons: {
+        alignItems: "center",
+        flexDirection: "row",
+        justifyContent: "center",
+        width: "100%",
+        gap: 24
+    },
+
+    inputButtons: {
+        alignItems: "center",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        width: "100%"
     },
 
     name: {
-
+        fontWeight: 600,
+        fontSize: 24
     },
 
     username: {
@@ -90,6 +107,8 @@ export const styles = StyleSheet.create({
         borderRadius: 28,
         padding: 24,
         marginTop: 16,
+        borderBlockColor: COLORS.lightGray,
+        borderWidth: 1
     },
 
     signatureTitle: {
@@ -97,10 +116,10 @@ export const styles = StyleSheet.create({
         fontWeight: '700',
         color: '#1A1A1A',
     },
-
     signatureOptions: {
         marginTop: 20,
         gap: 24,
+
     },
 
     signatureOptionRow: {
@@ -157,12 +176,12 @@ export const styles = StyleSheet.create({
     },
 
     signatureImageWrapper: {
-        paddingLeft: 34,
-        marginTop: 4,
+        width: "100%",
+        alignItems: "center"
     },
 
     signatureImage: {
-        width: 150,
+        width: 130,
         height: 60,
         resizeMode: 'contain',
     },
@@ -177,4 +196,57 @@ export const styles = StyleSheet.create({
         fontSize: 13,
         fontStyle: 'italic',
     },
+
+    // AVATAR
+    userAvatar: {
+        width: 96,
+        height: 96,
+        borderRadius: 50
+    },
+    screen: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        padding: 20,
+    },
+    card: {
+        backgroundColor: COLORS.white,
+        borderRadius: 24,
+        padding: 25,
+        width: "100%",
+        alignItems: "center",
+    },
+    title: {
+        fontSize: 22,
+        fontWeight: "bold",
+        color: COLORS.black,
+        marginBottom: 12,
+    },
+    subtitle: {
+        textAlign: "center",
+        color: COLORS.gray,
+        fontSize: 14,
+        marginBottom: 25,
+        lineHeight: 20,
+    },
+
+    backText: {
+        color: COLORS.lightGray,
+        fontSize: 14,
+        textDecorationLine: "underline",
+    },
+    userAvatarContainer: {},
+    modalContainer: {
+		paddingTop: 39,
+		paddingHorizontal: 16,
+		flex: 1,
+		justifyContent: "center",
+		gap: 6,
+    }
+    
+    // userAvatarContainer: {
+    //      alignItems: 'center',
+    //      justifyContent: 'center',
+    //      marginVertical: 16
+    // }
 })

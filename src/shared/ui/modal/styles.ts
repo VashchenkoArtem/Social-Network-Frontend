@@ -4,6 +4,7 @@ import { COLORS } from "@shared/constants/colors";
 export const styles = StyleSheet.create({
 	modalContainer: {
 		alignItems: "center",
+		width: "100%",
 		paddingHorizontal: 16,
 		paddingVertical: 44,
 		backgroundColor: COLORS.white,
@@ -14,6 +15,8 @@ export const styles = StyleSheet.create({
 		shadowOpacity: 0.1,
 		shadowRadius: 10,
 		elevation: 5,
+	},
+	modal: {
 	},
 
 	urls: {
@@ -38,5 +41,27 @@ export const styles = StyleSheet.create({
 		borderBottomWidth: 1,
 		borderBottomColor: COLORS.black,
 		paddingBottom: 3.5,
+	},
+	overlay: {
+		flex: 1,
+		top: 0,
+		left: 0,
+		right: 0,
+		bottom: 0,
+		justifyContent: "center",
+		alignItems: "center",
+	},
+
+	background: {
+		position: "absolute",
+		width: "100%",
+		height: "100%",
+	},
+
+	closeButton: {
+		position: "absolute",
+		top: 10,
+		right: 10,
+		zIndex: 3,
 	},
 });

@@ -74,6 +74,6 @@ export function RegistrationStepTwo() {
                     </TouchableOpacity>
                 </View>
             </View>
-        </KeyboardAwareScrollView>
+        </KeyboardAwareScrollView>  
 	);
 }

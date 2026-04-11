@@ -1,7 +1,12 @@
 import { ReactNode } from "react";
+import { StyleProp, ViewStyle } from "react-native";
 
 export interface IRegistrationProps {
-	children: ReactNode;
 	ifLogin?: boolean;
-	selectedTab?: "registration" | "login";
+	children: ReactNode;
+	selectedTab?: "login" | "registration";
+	visible?: boolean;
+	onClose?: () => void;
+	style?: StyleProp<ViewStyle>;
+
 }

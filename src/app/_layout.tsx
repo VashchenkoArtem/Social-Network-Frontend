@@ -10,8 +10,8 @@ export default function RootLayout() {
 	return (
 		<SafeAreaProvider>
             <ApiProvider api = {baseApi}>
-                <KeyboardProvider>
-                    <UserProvider>
+                <UserProvider>
+                    <KeyboardProvider>
                         <Stack
                             screenOptions={{
                                 headerShown: false,
@@ -22,8 +22,8 @@ export default function RootLayout() {
                             <Stack.Screen name="(friends)" />
                             <Stack.Screen name="settings" />
                         </Stack>
-                    </UserProvider>
-                </KeyboardProvider>
+                    </KeyboardProvider>
+                </UserProvider>
             </ApiProvider>
 		</SafeAreaProvider>
 	);

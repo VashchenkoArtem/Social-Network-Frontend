@@ -21,21 +21,22 @@ export function UserProvider(props: UserContextProviderProps) {
     const [ token, setToken ] = useState<string>("");
     const [ user, setUser ] = useState<IUser | null>(null);
     useEffect(() => {
+	    async function me(){
+			const response = await fetch("http://192.168.0.104:8000/me", {
+				headers: {
+					Authorization: `Bearer ${await AsyncStorage.getItem("token")}` 
+				},
+			})
+			const result = await response.json()
+			console.log(result, "me result")
+			setUser(result)
+		}
         me()
         console.log(token)
     },[token])
-    async function me(){
-        const response = await fetch("http://192.168.0.105:8000/me", {
-            headers: {
-                Authorization: `Bearer ${await AsyncStorage.getItem("token")}` 
-            },
-        })
-        const result = await response.json()
-        console.log(result, "me result")
-        setUser(result)
-    }
+
     async function loginUser(data: ILoginForm) {
-		const response = await fetch("http://192.168.0.105:8000/login", {
+		const response = await fetch("http://192.168.0.104:8000/login", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
@@ -49,12 +50,13 @@ export function UserProvider(props: UserContextProviderProps) {
 	}
 	async function register (data: RegisterPayload) {
 		try {
-			const response = await fetch("http://192.168.0.105:8000/send-code", {
+			const response = await fetch("http://192.168.0.102:8000/send-code", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify(data),
 			});
 			const result = await response.json();
+			console.log(result, "registration")
 			if (!response.ok) {
 				const errorData = result as ApiError;
 				throw new Error(errorData.message || "Registration failed");

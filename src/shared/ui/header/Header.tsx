@@ -12,13 +12,15 @@ import { FriendsPageIcon } from "../icons/urls/FriendsPageIcon";
 import { constStyles } from "@shared/constants/styles";
 import { ChatsPageIcon } from "../icons/urls/ChatsPageIcon";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { ICONS } from "../icons/icons";
+import { UserContext } from "@shared/context/user-context";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export function Header(props: HeaderProps) {
 	const { cantCreatePost, cantEditSelf } = props;
 	const pathname = usePathname();
-
+	const { user, token } = useContext(UserContext)!
 	const [choosedTab, setChoosedTab] = useState("Контакти");
 
 	const chatsTabs = [
@@ -67,7 +69,13 @@ export function Header(props: HeaderProps) {
 					<Button
 						variant="white"
 						iconLeft={<ExitIcon color={COLORS.plum} style={styles.icon} />}
-						onPress={() => push("/login")}
+						onPress={() => {
+							if (user){
+								AsyncStorage.setItem("token", "")
+							}
+							push("/login")}
+						}
+							
 						href="/login"
 					/>
 				</View>

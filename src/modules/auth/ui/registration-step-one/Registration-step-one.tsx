@@ -28,7 +28,7 @@ export function RegistrationStepOne() {
 
     const onSubmit = async (data: RegForm) => {
         try {
-            await sendCode({ email: data.email }).unwrap();
+            await sendCode({ email: data.email, message: "Код підтвердження" }).unwrap();
             router.push({
                 pathname: "/verify",
                 params: { email: data.email, password: data.password },

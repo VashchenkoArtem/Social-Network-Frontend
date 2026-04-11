@@ -3,7 +3,7 @@ import { RegistrationData, AuthToken, User, ProfileData } from './api.types';
 
 export const userApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    sendCode: builder.mutation<{ message: string }, { email: string }>({
+    sendCode: builder.mutation<{ message: string }, { email: string, message: string }>({
       query: (body) => ({
         url: '/send-code',
         method: 'POST',
@@ -24,7 +24,22 @@ export const userApi = baseApi.injectEndpoints({
         body,
       }),
       invalidatesTags: ['User'],
-    })
+    }),
+    updatePassword: builder.mutation<User, ProfileData>({
+      query: (body) => ({
+        url: "/update-password",
+        method: "PATCH",
+        body
+      }),
+      invalidatesTags: ['User'],
+    }),
+    me: builder.query<User, void>({
+      query: () => ({
+        url: "/me",
+        method: "GET",
+      }),
+      providesTags: ["User"],
+    }),
     // updateUser: builder.mutation<User, { firstname?: string; nickname?: string; signature?: string }>({
     //   query: (body) => ({
     //     url: '/update-user',
@@ -40,5 +55,7 @@ export const {
   useSendCodeMutation, 
   useRegistrationMutation, 
   useUpdateUserInfoMutation, 
+  useUpdatePasswordMutation,
+  useMeQuery
   // useUpdateUserMutation 
 } = userApi;
