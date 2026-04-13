@@ -11,15 +11,12 @@ import { ScrollView } from "react-native";
 import { SignatureEditor } from "@shared/ui/signatureEditor";
 import { Image } from "react-native";
 import { TouchableOpacity } from "react-native";
-import { UserContext } from "@shared/context/user-context"; 
-import { useMeQuery, useSendCodeMutation, useUpdatePasswordMutation, useUpdateUserInfoMutation } from "./../../../auth/api/userApi"
-import { opacity } from "react-native-reanimated/lib/typescript/Colors";
-import { OtpInput } from "@shared/ui/OptInput";
-import { launchImageLibraryAsync, requestMediaLibraryPermissionsAsync } from 'expo-image-picker'
+import { useSendCodeMutation, useUpdatePasswordMutation, useUpdateUserInfoMutation } from "./../../../auth/api/userApi"
 import { AvatarField } from "../avatar-field/Avatar-Field";
 import { MyPostsPageIcon } from "@shared/ui/icons/urls/MyPostsPageIcon";
 import { Modal } from "@shared/ui/modal";
 import { RecoveryPassword } from "../recovery-password/Recovery-password";
+import { UserContext } from "@modules/auth/context/user-context";
 
 type FormData = {
     firstname: string;
@@ -50,8 +47,6 @@ export function PersonalInformation() {
         user?.signature ? 'signature' : 'alias'
     );
     const [userAvatar, setUserAvatar] = useState<string>('')
-    console.log(token)
-    if (!user)return null
     const {
         control,
         handleSubmit,
@@ -59,6 +54,7 @@ export function PersonalInformation() {
         watch,
         formState: { isDirty }
     } = useForm<FormData>();
+    if (!user) return null
     const passwordValue = watch("password");
     console.log(passwordValue)
     const handleSaveSignature = async (base64: string) => {
@@ -128,50 +124,7 @@ export function PersonalInformation() {
         } else {
             setIsEditingPersonalInfo(true)
         }
-    };
-
-
-    const handleDateChange = (text: string, onChange: (value: string) => void) => {
-        const cleaned = text.replace(/\D/g, '');
-        let formatted = cleaned;
-        if (cleaned.length > 2 && cleaned.length <= 4) {
-            formatted = `${cleaned.slice(0, 2)}.${cleaned.slice(2)}`;
-        } else if (cleaned.length > 4) {
-            formatted = `${cleaned.slice(0, 2)}.${cleaned.slice(2, 4)}.${cleaned.slice(4, 8)}`;
-        }
-        onChange(formatted);
-    };
-    const updatePasswordFunc = async (password: string)=>{
-        await updatePassword({password: password})
-    }
-    const formatDate = (date: Date | string | null | undefined) => {
-       if (!date) return '';
-       const dateObject = new Date(date);
-       if (isNaN(dateObject.getTime())) return '';
-       const day = String(dateObject.getDate()).padStart(2, '0');
-       const month = String(dateObject.getMonth() + 1).padStart(2, '0');
-       const year = dateObject.getFullYear();
-       return `${day}.${month}.${year}`;
-    }
-
-    // async function userAddAvatarButtons() {
-    //     const request = await requestMediaLibraryPermissionsAsync()
-        
-    //     if (request.status !== 'granted') { return }
-    //     const result = await launchImageLibraryAsync({
-    //         quality: 1,
-    //         mediaType: "photo"
-    //     })
-    //     if (result.canceled) { return }
-
-    //     const imageNewUri = result.assets[0].uri
-    //     setUserAvatar(imageNewUri)
-
-    //     const formData = new FormData()
-    //     formData.append('')
-    // }
-
-    
+    };    
     return (
         <KeyboardAwareScrollView bottomOffset={120} extraKeyboardSpace={20}>
             <ScrollView>
@@ -434,35 +387,7 @@ export function PersonalInformation() {
                 </View>
             </ScrollView>
             <RecoveryPassword user = {user} isVisible = {isVisible} setIsVisible={() => setIsVisible(false)} password={passwordValue}/>
-            <Modal
-                visible={isModalVisible}
-                onClose={() => setModalVisible(false)}
-            >
-                <View style={{ flex: 1, backgroundColor: '#fff', paddingTop: 60 }}>
-                    <TouchableOpacity 
-                        onPress={() => setModalVisible(false)} 
-                        style={{ 
-                            paddingHorizontal: 20, 
-                            paddingVertical: 10, 
-                            alignSelf: 'flex-end',
-                            marginBottom: 10
-                        }}
-                    >
-                        <Text style={{ 
-                            color: COLORS.plum,
-                            fontSize: 18, 
-                            fontWeight: '700' 
-                        }}>
-                            Закрити
-                        </Text>
-                    </TouchableOpacity>
-                    
-                    <SignatureEditor 
-                        onOK={handleSaveSignature} 
-                        onClear={() => console.log('Canvas cleared')} 
-                    />
-                </View>
-            </Modal>
+
 
         </KeyboardAwareScrollView>
     );

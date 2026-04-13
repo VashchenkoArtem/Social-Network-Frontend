@@ -6,11 +6,12 @@ import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { loginValidator } from "@modules/auth/models/lib/login.validation";
 import { Modal } from "@shared/ui/modal";
-import { useRouter } from "expo-router";
+import { Redirect, useRouter } from "expo-router";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { ILoginForm } from "@modules/auth/models/types/login.types";
 import { useContext } from "react";
-import { UserContext } from "@shared/context/user-context";
+import { useLoginMutation } from "@modules/auth/api/userApi";
+import { UserContext } from "@modules/auth/context/user-context";
 
 export function LoginForm() {
 	const {
@@ -20,15 +21,16 @@ export function LoginForm() {
 	} = useForm<ILoginForm>({
 		resolver: yupResolver(loginValidator),
 	});
-
-	const { loginUser } = useContext(UserContext)!;
+	const { setUpdatedToken } = useContext(UserContext)!
+	const [ login ] = useLoginMutation()
 	const router = useRouter();
-
-	async function onSubmit(data: ILoginForm) {
-		loginUser(data);
-		router.push({ pathname: "/(tabs)/home", params: { name: data.email } });
+	async function onSubmit(formData: ILoginForm) {
+		const {data} = await login(formData);
+		if (data && data.token){
+			setUpdatedToken(data.token)
+			router.push({ pathname: "/(tabs)/home"});
+		}
 	}
-
 	return (
 		<KeyboardAwareScrollView bottomOffset={120} extraKeyboardSpace={20}>
 				<View style={styles.container}>
@@ -89,4 +91,5 @@ export function LoginForm() {
 				</View>
 		</KeyboardAwareScrollView>
 	);
+	
 }

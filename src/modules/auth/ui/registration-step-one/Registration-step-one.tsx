@@ -10,7 +10,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { regValidator } from "@modules/auth/models/lib/registration.validation";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { useContext } from "react";
-import { UserContext } from "@shared/context/user-context";
 import { useSendCodeMutation } from "@modules/auth/api/userApi";
 
 

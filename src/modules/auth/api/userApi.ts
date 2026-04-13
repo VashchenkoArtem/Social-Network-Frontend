@@ -1,25 +1,41 @@
 import { baseApi } from '@shared/api/baseApi';
-import { RegistrationData, AuthToken, User, ProfileData } from './api.types';
+import { RegistrationData, AuthToken, User, ProfileData, LoginData } from './api.types';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const userApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     sendCode: builder.mutation<{ message: string }, { email: string, message: string }>({
       query: (body) => ({
-        url: '/send-code',
+        url: 'send-code',
         method: 'POST',
         body,
       }),
     }),
     registration: builder.mutation<AuthToken, RegistrationData>({
       query: (body) => ({
-        url: '/registration',
+        url: 'registration',
         method: 'POST',
         body,
       }),
+      onCacheEntryAdded: async (arg, api) => {
+        const { data } = await api.cacheDataLoaded
+        AsyncStorage.setItem("token", data.token)
+      }
+    }),
+    login: builder.mutation<AuthToken, LoginData>({
+      query: (body) => ({
+        url: "login",
+        method: "POST",
+        body
+      }),
+      onCacheEntryAdded: async (arg, api) => {
+        const { data } = await api.cacheDataLoaded
+        AsyncStorage.setItem("token", data.token)
+      }
     }),
     updateUserInfo: builder.mutation<User, ProfileData>({
       query: (body) => ({
-        url: '/update-user',
+        url: 'update-user',
         method: 'PATCH',
         body,
       }),
@@ -27,7 +43,7 @@ export const userApi = baseApi.injectEndpoints({
     }),
     updatePassword: builder.mutation<User, ProfileData>({
       query: (body) => ({
-        url: "/update-password",
+        url: "update-password",
         method: "PATCH",
         body
       }),
@@ -35,7 +51,7 @@ export const userApi = baseApi.injectEndpoints({
     }),
     me: builder.query<User, void>({
       query: () => ({
-        url: "/me",
+        url: "me",
         method: "GET",
       }),
       providesTags: ["User"],
@@ -56,6 +72,6 @@ export const {
   useRegistrationMutation, 
   useUpdateUserInfoMutation, 
   useUpdatePasswordMutation,
-  useMeQuery
-  // useUpdateUserMutation 
+  useMeQuery,
+  useLoginMutation
 } = userApi;

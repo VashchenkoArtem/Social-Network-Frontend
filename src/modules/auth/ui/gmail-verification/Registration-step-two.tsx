@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { View, Text, TouchableOpacity, Alert } from "react-native";
 import { OtpInput } from "@shared/ui/OptInput";
 import { useLocalSearchParams, usePathname, useRouter } from "expo-router";
@@ -8,10 +8,12 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { useRegistrationMutation } from "@modules/auth/api/userApi";
 import { SerializedError } from "@reduxjs/toolkit/react";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import { UserContext } from "@modules/auth/context/user-context";
 
 
 export function RegistrationStepTwo() {
     const router = useRouter();
+    const { setUpdatedToken } = useContext(UserContext)!;
     const { email, password } = useLocalSearchParams<{
         email: string;
         password: string;
@@ -30,7 +32,7 @@ export function RegistrationStepTwo() {
                 code: fullCode, 
                 password 
             }).unwrap();
-            console.log("Успіх, токен:", result.token);
+            setUpdatedToken(result.token)
             router.replace({
                 pathname: "/(tabs)/home",
                 params: { isNewUser: "true" }
