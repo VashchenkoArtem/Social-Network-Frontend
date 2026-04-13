@@ -19,4 +19,7 @@ export const styles = StyleSheet.create({
 		borderTopColor: COLORS.plum,
 		borderTopWidth: 2,
 	},
+	container: {
+		flex: 1
+	}
 });

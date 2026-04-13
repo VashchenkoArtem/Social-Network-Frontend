@@ -6,7 +6,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 export default function AuthLayout() {
 	return (
 		<SafeAreaView
-			style={{ flex: 1, backgroundColor: COLORS.white }}
+			style={{ flex: 1}}
 			edges={["top"]}
 		>
 			<Header></Header>

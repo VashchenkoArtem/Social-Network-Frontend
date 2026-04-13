@@ -43,11 +43,23 @@ export const userApi = baseApi.injectEndpoints({
 			},
 		}),
 		updateUserInfo: builder.mutation<User, ProfileData>({
-			query: (body) => ({
-				url: "update-user",
-				method: "PATCH",
-				body,
-			}),
+			query: (body) => {
+				if (body.avatar){
+					const formData = new FormData()
+					formData.append('avatar', {
+						uri: body.avatar,
+						name: 'avatar.jpg',
+						type: 'image/jpeg'
+					} as unknown as Blob)	
+					console.log(formData)
+				}
+				
+				return {
+					url: "update-user",
+					method: "PATCH",
+					body
+				}
+			},
 			invalidatesTags: ["User"],
 		}),
 		updatePassword: builder.mutation<User, ProfileData>({

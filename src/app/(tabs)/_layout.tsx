@@ -27,7 +27,7 @@ const TabButton = ({ route, children, ...props }: any) => {
 export default function TabLayout() {
 	return (
 		<SafeAreaView
-			style={{ flex: 1, backgroundColor: COLORS.white }}
+			style={{ flex: 1, backgroundColor: COLORS.white}}
 			edges={["top"]}
 		>
 			<Tabs

@@ -154,7 +154,7 @@ export function PersonalInformation() {
 								<Text>Оберіть або завантажте фото профілю</Text>
 							)}
 
-							<View style={styles.userAvatarContainer}>
+							{/* <View style={styles.userAvatarContainer}>
 								<Controller
 									name="avatar"
 									control={control}
@@ -165,11 +165,11 @@ export function PersonalInformation() {
 										/>
 									)}
 								></Controller>
-								{/* <Image
-                                source={user.avatar ? { uri: user.avatar } : require('')}
+								<Image
+                                source={user.avatar ? { uri: user.avatar } : require('../../../../assets/defaultAvatar.png')}
                                 style={styles.userAvatar}
-                            /> */}
-							</View>
+                            />
+							</View> */}
 
 							{isEditingProfile && (
 								<View style={styles.userAddAvatarButtons}>
@@ -189,6 +189,21 @@ export function PersonalInformation() {
 										// onPress={chooseUserAvatar}
 										isSettings={true}
 										style={{ borderWidth: 0 }}
+									/>
+
+									<Controller
+										name="avatar"
+										control={control}
+										render={({ field }) => (
+											<AvatarField
+												value={field.value}
+												onChange={field.onChange}
+											/>
+										)}
+									></Controller>
+									<Image
+										source={user.avatar ? { uri: user.avatar } : require('../../../../assets/defaultAvatar.png')}
+										style={styles.userAvatar}
 									/>
 								</View>
 							)}
