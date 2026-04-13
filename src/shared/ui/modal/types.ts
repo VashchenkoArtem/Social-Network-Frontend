@@ -8,5 +8,4 @@ export interface IRegistrationProps {
 	visible?: boolean;
 	onClose?: () => void;
 	style?: StyleProp<ViewStyle>;
-
 }

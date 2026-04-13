@@ -9,22 +9,22 @@ import { UserProvider } from "@modules/auth/context/user-context";
 export default function RootLayout() {
 	return (
 		<SafeAreaProvider>
-            <ApiProvider api = {baseApi}>
-                <UserProvider>
-                    <KeyboardProvider>
-                        <Stack
-                            screenOptions={{
-                                headerShown: false,
-                            }}
-                        >
-                            <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-                            <Stack.Screen name="(tabs)" />
-                            <Stack.Screen name="(friends)" />
-                            <Stack.Screen name="settings" />
-                        </Stack>
-                    </KeyboardProvider>
-                </UserProvider>
-            </ApiProvider>
+			<ApiProvider api={baseApi}>
+				<UserProvider>
+					<KeyboardProvider>
+						<Stack
+							screenOptions={{
+								headerShown: false,
+							}}
+						>
+							<Stack.Screen name="(auth)" options={{ headerShown: false }} />
+							<Stack.Screen name="(tabs)" />
+							<Stack.Screen name="(friends)" />
+							<Stack.Screen name="settings" />
+						</Stack>
+					</KeyboardProvider>
+				</UserProvider>
+			</ApiProvider>
 		</SafeAreaProvider>
 	);
 }

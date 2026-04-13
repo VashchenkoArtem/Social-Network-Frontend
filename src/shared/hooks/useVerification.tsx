@@ -16,7 +16,7 @@ export const useVerification = () => {
 				body: JSON.stringify(payload),
 			});
 			const result = await response.json();
-			console.log(result)
+			console.log(result);
 			return result;
 		} finally {
 			setIsVerifying(false);

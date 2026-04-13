@@ -11,9 +11,7 @@ export default function Settings() {
 	const radioTabsArray: IRadioTab[] = [
 		{
 			title: "Особиста інформація",
-			content: (
-				<PersonalInformation/>
-			),
+			content: <PersonalInformation />,
 		},
 		{
 			title: "Альбоми",

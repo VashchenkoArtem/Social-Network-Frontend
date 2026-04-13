@@ -1,4 +1,4 @@
-import {  Text, View } from "react-native";
+import { Text, View } from "react-native";
 import { useContext, useState } from "react";
 import { Button } from "@shared/ui/button";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
@@ -11,7 +11,10 @@ import { ScrollView } from "react-native";
 import { SignatureEditor } from "@shared/ui/signatureEditor";
 import { Image } from "react-native";
 import { TouchableOpacity } from "react-native";
-import { useSendCodeMutation, useUpdatePasswordMutation, useUpdateUserInfoMutation } from "./../../../auth/api/userApi"
+import {
+	useSendCodeMutation,
+	useUpdateUserInfoMutation,
+} from "./../../../auth/api/userApi";
 import { AvatarField } from "../avatar-field/Avatar-Field";
 import { MyPostsPageIcon } from "@shared/ui/icons/urls/MyPostsPageIcon";
 import { Modal } from "@shared/ui/modal";
@@ -19,376 +22,415 @@ import { RecoveryPassword } from "../recovery-password/Recovery-password";
 import { UserContext } from "@modules/auth/context/user-context";
 
 type FormData = {
-    firstname: string;
-    lastname: string;
-    nickname: string;
-    birthDate: string;
-    email: string;
-    password: string;
-    newPassword?: string;
-    confirmPassword?: string;
-    avatar?: string
-}
+	firstname: string;
+	lastname: string;
+	nickname: string;
+	birthDate: string;
+	email: string;
+	password: string;
+	newPassword?: string;
+	confirmPassword?: string;
+	avatar?: string;
+};
 
 export function PersonalInformation() {
-    const [isEditingProfile, setIsEditingProfile] = useState(false)
-    const [isModalPasswordVisible, setIsModalPasswordVisible] = useState(false)
-    const [isEditingPersonalInfo, setIsEditingPersonalInfo] = useState(false)
-    const [isEditingPassword, setIsEditingPassword] = useState(false)
-    const [isModalVisible, setModalVisible] = useState(false);
-    const [sendCode] = useSendCodeMutation()
-    const [updateUser, { isLoading }] = useUpdateUserInfoMutation()
-    const [fullCode, setFullCode] = useState("")
-    const [open, setOpen] = useState(true)
-    const { user, token } = useContext(UserContext)!;
-    const [isVisible, setIsVisible] = useState(false)
-    const [updatePassword] = useUpdatePasswordMutation()
-    const [selectedType, setSelectedType] = useState<'alias' | 'signature'>(
-        user?.signature ? 'signature' : 'alias'
-    );
-    const [userAvatar, setUserAvatar] = useState<string>('')
-    const {
-        control,
-        handleSubmit,
-        reset,
-        watch,
-        formState: { isDirty }
-    } = useForm<FormData>();
-    if (!user) return null
-    const passwordValue = watch("password");
-    console.log(passwordValue)
-    const handleSaveSignature = async (base64: string) => {
-        try {
-            await updateUser({ signature: base64 }).unwrap();
-            setSelectedType('signature');
-            setModalVisible(false);
-        } catch (err) {
-            console.error("Error saving signature", err);
-        }
+	const [isEditingSignature, setIsEditingSignature] = useState(false);
+	const [isEditingProfile, setIsEditingProfile] = useState(false);
+	const [isModalPasswordVisible, setIsModalPasswordVisible] = useState(false);
+	const [isEditingPersonalInfo, setIsEditingPersonalInfo] = useState(false);
+	const [isEditingPassword, setIsEditingPassword] = useState(false);
+	const [isModalVisible, setModalVisible] = useState(false);
+	const [sendCode] = useSendCodeMutation();
+	const [updateUser, { isLoading }] = useUpdateUserInfoMutation();
+	const [fullCode, setFullCode] = useState("");
+	const [open, setOpen] = useState(true);
+	const { user, token } = useContext(UserContext)!;
+	const [isVisible, setIsVisible] = useState(false);
+	const [isDrawing, setIsDrawing] = useState(false);
+	const [selectedType, setSelectedType] = useState<"alias" | "signature">(
+		user?.signature ? "signature" : "alias",
+	);
+	const [userAvatar, setUserAvatar] = useState<string>("");
+	const {
+		control,
+		handleSubmit,
+		reset,
+		watch,
+		formState: { isDirty },
+	} = useForm<FormData>();
+	if (!user) return null;
+	const passwordValue = watch("password");
+	console.log(passwordValue);
+	const handleSaveSignature = async (base64: string) => {
+		try {
+			await updateUser({ signature: base64 }).unwrap();
+			setSelectedType("signature");
+			setIsEditingSignature(false);
+		} catch (err) {
+			console.error("Error saving signature", err);
+		}
+	};
+	const onSubmit = async (data: FormData) => {
+		try {
+			const payload = {
+				firstname: data.firstname,
+				lastname: data.lastname,
+				nickname: data.nickname,
+				email: data.email,
+				password: data.password,
+				...(data.newPassword && { newPassword: data.newPassword }),
+				birthDate: data.birthDate ? new Date(data.birthDate) : undefined,
+			};
+			await updateUser(payload).unwrap();
+			reset(data);
+			setIsEditingProfile(false);
+		} catch (error) {
+			console.log("error:", error);
+		}
+	};
 
-    };
-    const onSubmit = async (data: FormData) => {
-        try {
-            const payload = {
-            firstname: data.firstname,
-            lastname: data.lastname,
-            nickname: data.nickname,
-            email: data.email,
-            password: data.password,
-            ...(data.newPassword && { newPassword: data.newPassword }),
-            birthDate: data.birthDate ? new Date(data.birthDate) : undefined
-        };
-            await updateUser(payload).unwrap();
-            reset(data)
-            setIsEditingProfile(false)
-        } catch (error) {
-            console.log("error:", error);
-        }
-    };
+	const handleEditProfilePress = () => {
+		if (isEditingProfile) {
+			if (isDirty) {
+				handleSubmit(onSubmit)();
+			} else {
+				setIsEditingProfile(false);
+			}
+		} else {
+			setIsEditingProfile(true);
+		}
+	};
+	const handleEditPasswordPress = async () => {
+		if (isEditingPassword) {
+			if (isDirty) {
+				setIsVisible(true);
+				await sendCode({ email: user.email, message: "Оновлення паролю" });
+			} else {
+				setIsEditingPassword(false);
+				setIsModalPasswordVisible(false);
+				setIsVisible(false);
+			}
+		} else {
+			setIsEditingPassword(true);
+			setIsModalPasswordVisible(true);
+			setIsVisible(true);
+		}
+	};
+	const handleEditPersonalInfoPress = () => {
+		if (isEditingPersonalInfo) {
+			if (isDirty) {
+				handleSubmit(onSubmit)();
+			} else {
+				setIsEditingPersonalInfo(false);
+			}
+		} else {
+			setIsEditingPersonalInfo(true);
+		}
+	};
 
-    const handleEditProfilePress = () => {
-        if (isEditingProfile) {
-            if (isDirty) {
-                handleSubmit(onSubmit)()
-            } else {
-                setIsEditingProfile(false)
-            }
-        } else {
-            setIsEditingProfile(true)
-        }
-    }
-    const handleEditPasswordPress = async () => {
-        if (isEditingPassword) {
-            if (isDirty) {
-                setIsVisible(true)
-                await sendCode({email: user.email, message: "Оновлення паролю"})
-            } else {
-                setIsEditingPassword(false)
-                setIsModalPasswordVisible(false)
-                setIsVisible(false)
-            }
-        } else {
-            setIsEditingPassword(true)
-            setIsModalPasswordVisible(true)
-            setIsVisible(true)
+	return (
+		<KeyboardAwareScrollView bottomOffset={120} extraKeyboardSpace={20}>
+			<ScrollView
+				nestedScrollEnabled={true}
+				keyboardShouldPersistTaps="handled"
+			>
+				<View style={styles.personalInformationContainer}>
+					{/* PROFILE CARD */}
+					<View style={styles.profileCardBlock}>
+						<View style={styles.headerBlock}>
+							<Text style={styles.headerBlockText}>Картка профілю</Text>
 
-        }
-    }
-    const handleEditPersonalInfoPress = () => {
-        if (isEditingPersonalInfo) {
-            if (isDirty) {
-                handleSubmit(onSubmit)()
-            } else {
-                setIsEditingPersonalInfo(false)
-            }
-        } else {
-            setIsEditingPersonalInfo(true)
-        }
-    };    
-    return (
-        <KeyboardAwareScrollView bottomOffset={120} extraKeyboardSpace={20}>
-            <ScrollView>
-                <View style={styles.personalInformationContainer}>
+							<Button
+								variant={"white"}
+								iconLeft={<EditIcon color={COLORS.plum} />}
+								text={isEditingProfile ? "Зберегти" : ""}
+								onPress={handleEditProfilePress}
+								isSettings={true}
+							/>
+						</View>
 
-                    {/* PROFILE CARD */}
-                    <View style={styles.profileCardBlock}>
-                        <View style={styles.headerBlock}>
-                            <Text style={styles.headerBlockText}>Картка профілю</Text>
+						<View style={styles.profileCardAvatarBlock}>
+							{isEditingProfile && (
+								<Text>Оберіть або завантажте фото профілю</Text>
+							)}
 
-                            <Button
-                                variant={"white"}
-                                iconLeft={<EditIcon color={COLORS.plum} />}
-                                text={isEditingProfile ? "Зберегти" : ""}
-                                onPress={handleEditProfilePress}
-                                isSettings={true}
-                            />
-                        </View>
-
-                        <View style={styles.profileCardAvatarBlock}>
-                            {isEditingProfile && (
-                                <Text>Оберіть або завантажте фото профілю</Text>
-                            )}
-
-                        <View style={styles.userAvatarContainer}>
-                            <Controller
-                                name="avatar"
-                                control={control}
-                                render={({ field }) => (
-                                    <AvatarField value={field.value} onChange={field.onChange} />
-                                )}
-                            >
-
-                            </Controller>
-                            {/* <Image
+							<View style={styles.userAvatarContainer}>
+								<Controller
+									name="avatar"
+									control={control}
+									render={({ field }) => (
+										<AvatarField
+											value={field.value}
+											onChange={field.onChange}
+										/>
+									)}
+								></Controller>
+								{/* <Image
                                 source={user.avatar ? { uri: user.avatar } : require('')}
                                 style={styles.userAvatar}
                             /> */}
-                        </View>
+							</View>
 
-                        {isEditingProfile && (
-                            <View style={styles.userAddAvatarButtons}>
-                                <Button
-                                    variant={"white"}
-                                    iconLeft={<PlusIcon color={COLORS.plum} />}
-                                    text={'Додайте фото'}
-                                    // onPress={addUserAvatar}
-                                    isSettings={true}
-                                    style = {{ borderWidth: 0}}
-                                />
+							{isEditingProfile && (
+								<View style={styles.userAddAvatarButtons}>
+									<Button
+										variant={"white"}
+										iconLeft={<PlusIcon color={COLORS.plum} />}
+										text={"Додайте фото"}
+										// onPress={addUserAvatar}
+										isSettings={true}
+										style={{ borderWidth: 0 }}
+									/>
 
-                                <Button
-                                    variant={"white"}
-                                    iconLeft={<MyPostsPageIcon color={COLORS.plum} />}
-                                    text={'Оберіть фото'}
-                                    // onPress={chooseUserAvatar}
-                                    isSettings={true}
-                                    style = {{ borderWidth: 0}}
-                                />
-                            </View> 
-                        )}
+									<Button
+										variant={"white"}
+										iconLeft={<MyPostsPageIcon color={COLORS.plum} />}
+										text={"Оберіть фото"}
+										// onPress={chooseUserAvatar}
+										isSettings={true}
+										style={{ borderWidth: 0 }}
+									/>
+								</View>
+							)}
 
+							<Text style={styles.name}>{user.alias}</Text>
 
-                            <Text style={styles.name}>{user.firstname} {user.lastname}</Text>
+							{!isEditingProfile && (
+								<Text style={styles.username}>@{user.nickname}</Text>
+							)}
 
-                            {!isEditingProfile && (
-                                <Text style={styles.username}>@{user.nickname}</Text>
-                            )}
+							{isEditingProfile && (
+								<Controller
+									name="nickname"
+									control={control}
+									render={({ field }) => (
+										<Input
+											label="Ім'я користувача"
+											placeholder=""
+											defaultValue={user.nickname ? user.nickname : ""}
+											onChangeText={field.onChange}
+										/>
+									)}
+								/>
+							)}
+						</View>
+					</View>
 
-                            {isEditingProfile && (
-                                <Controller
-                                    name="nickname"
-                                    control={control}
-                                    render={({ field }) => (
-                                        <Input
-                                            label="Ім'я користувача"
-                                            placeholder=""
-                                            defaultValue={user.nickname ? user.nickname : ""}
-                                            onChangeText={field.onChange}
-                                        />
-                                    )}
-                                />
-                            )}
-                        </View>
-                    </View>
+					{/* PERSONAL INFF */}
+					<View style={styles.personalInformationBlock}>
+						<View style={styles.headerBlock}>
+							<Text style={styles.headerBlockText}>Особиста інформація</Text>
 
-                    {/* PERSONAL INFF */}
-                    <View style={styles.personalInformationBlock}>
-                        <View style={styles.headerBlock}>
-                            <Text style={styles.headerBlockText}>Особиста інформація</Text>
+							<Button
+								variant={"white"}
+								iconLeft={<EditIcon color={COLORS.plum} />}
+								text={isEditingPersonalInfo ? "Зберегти" : ""}
+								onPress={handleEditPersonalInfoPress}
+								isSettings={true}
+							/>
+						</View>
 
-                            <Button 
-                                variant={"white"}
-                                iconLeft={<EditIcon color={COLORS.plum} />}
-                                text={isEditingPersonalInfo ? "Зберегти" : ""}
-                                onPress={handleEditPersonalInfoPress}
-                                isSettings={true}
+						<View style={[styles.personalInformationFormBlock]}>
+							<View
+								style={[
+									{ opacity: isEditingPersonalInfo ? 1 : 0.5, width: "100%" },
+								]}
+							>
+								<Controller
+									name="firstname"
+									control={control}
+									render={({ field }) => (
+										<Input
+											label="Ім'я"
+											placeholder=""
+											editable={isEditingPersonalInfo}
+											defaultValue={user.firstname ? user.firstname : ""}
+											onChangeText={field.onChange}
+										/>
+									)}
+								/>
+								<Controller
+									name="lastname"
+									control={control}
+									render={({ field }) => (
+										<Input
+											label="Прізвище"
+											placeholder=""
+											editable={isEditingPersonalInfo}
+											defaultValue={user.lastname ? user.lastname : ""}
+											onChangeText={field.onChange}
+										/>
+									)}
+								/>
+								<Controller
+									name="birthDate"
+									control={control}
+									render={({ field }) => (
+										<Input
+											inputType="date"
+											label="Дата народження"
+											placeholder=""
+											value={field.value || ""}
+											editable={isEditingPersonalInfo}
+											onChangeText={(text) => {
+												const cleaned = text.replace(/\D/g, "");
+												let formatted = cleaned;
+												if (cleaned.length > 2 && cleaned.length <= 4) {
+													formatted = `${cleaned.slice(0, 2)}.${cleaned.slice(2)}`;
+												} else if (cleaned.length > 4) {
+													formatted = `${cleaned.slice(0, 2)}.${cleaned.slice(2, 4)}.${cleaned.slice(4, 8)}`;
+												}
+												field.onChange(formatted);
+											}}
+											keyboardType="numeric"
+											maxLength={10}
+										/>
+									)}
+								/>
 
-                            />
-                        </View>
+								<Controller
+									name="email"
+									control={control}
+									render={({ field }) => (
+										<Input
+											label="Електронна пошта"
+											placeholder=""
+											keyboardType="email-address"
+											editable={isEditingPersonalInfo}
+											defaultValue={user.email}
+											onChangeText={field.onChange}
+										/>
+									)}
+								/>
+							</View>
+						</View>
+						<View style={styles.inputButtons}>
+							<Text style={styles.headerBlockText}>Пароль</Text>
+							<Button
+								variant={"white"}
+								iconLeft={<EditIcon color={COLORS.plum} />}
+								text={isEditingPassword ? "Зберегти" : ""}
+								onPress={handleEditPasswordPress}
+								isSettings={true}
+							/>
+						</View>
+						<View
+							style={[{ opacity: isEditingPassword ? 1 : 0.5, width: "100%" }]}
+						>
+							<Controller
+								name="password"
+								control={control}
+								render={({ field }) => (
+									<View>
+										<Input
+											label="Пароль"
+											placeholder="********"
+											isPassword={true}
+											editable={isEditingPassword}
+											value={field.value}
+											onChangeText={field.onChange}
+										/>
+									</View>
+								)}
+							/>
+						</View>
+					</View>
 
-                        <View
-                            style={[
-                                styles.personalInformationFormBlock,
-                            ]}
-                        >
-                            <View style={[
-                                { opacity: isEditingPersonalInfo ? 1 : 0.5, width: "100%" },
-                            ]}>
-                                <Controller
-                                    name="firstname"
-                                    control={control}
-                                    render={({ field }) => (
-                                        <Input
-                                            label="Ім'я"
-                                            placeholder=""
-                                            editable={isEditingPersonalInfo}
-                                            defaultValue={user.firstname ? user.firstname : ""}
-                                            onChangeText={field.onChange}
-                                        />
-                                    )}
-                                />
-                                <Controller
-                                    name="lastname"
-                                    control={control}
-                                    render={({ field }) => (
-                                        <Input
-                                            label="Прізвище"
-                                            placeholder=""
-                                            editable={isEditingPersonalInfo}
-                                            defaultValue={user.lastname ? user.lastname : ""}
-                                            onChangeText={field.onChange}
-                                        />
-                                    )}
-                                />
-                                <Controller
-                                    name="birthDate"
-                                    control={control}
-                                    render={({ field }) => (
-                                        <Input
-                                            inputType="date"
-                                            label="Дата народження"
-                                            placeholder=''
-                                            value={field.value || ""}
-                                            editable={isEditingPersonalInfo}
-                                            onChangeText={(text) => {
-                                                const cleaned = text.replace(/\D/g, '');
-                                                let formatted = cleaned;
-                                                if (cleaned.length > 2 && cleaned.length <= 4) {
-                                                    formatted = `${cleaned.slice(0, 2)}.${cleaned.slice(2)}`;
-                                                } else if (cleaned.length > 4) {
-                                                    formatted = `${cleaned.slice(0, 2)}.${cleaned.slice(2, 4)}.${cleaned.slice(4, 8)}`;
-                                                }
-                                                field.onChange(formatted);
-                                            }}
-                                            keyboardType="numeric"
-                                            maxLength={10}
-                                        />
-                                    )}
-                                />
+					<View style={styles.signatureBlock}>
+						<View style={styles.headerBlock}>
+							<Text style={styles.signatureTitle}>Варіанти підпису</Text>
 
-                                <Controller
-                                    name="email"
-                                    control={control}
-                                    render={({ field }) => (
-                                        <Input
-                                            label="Електронна пошта"
-                                            placeholder=""
-                                            keyboardType="email-address"
-                                            editable={isEditingPersonalInfo}
-                                            defaultValue={user.email}
-                                            onChangeText={field.onChange}
-                                        />
-                                    )}
-                                />
+							<Button
+								variant="white"
+								iconLeft={<EditIcon color={COLORS.plum} />}
+								isSettings={true}
+								text={isEditingSignature ? "Зберегти" : ""}
+								onPress={() => {
+									if (isEditingSignature) {
+										// save happens inside canvas
+										setIsEditingSignature(false);
+									} else {
+										setIsEditingSignature(true);
+									}
+								}}
+							/>
+						</View>
 
-                            </View>
-                                
-                        </View>
-                        <View style={styles.inputButtons}>
-                            <Text style={styles.headerBlockText}>
-                                Пароль
-                            </Text>
-                            <Button
-                                variant={"white"}
-                                iconLeft={<EditIcon color={COLORS.plum} />}
-                                text={isEditingPassword ? "Зберегти" : ""}
-                                onPress={handleEditPasswordPress}
-                                isSettings={true}
-                            />
-                        </View>
-                        <View style={[
-                            { opacity: isEditingPassword ? 1 : 0.5, width: "100%" },
-                        ]}>
-                            <Controller
-                                name="password"
-                                control={control}
-                                render={({ field }) => (
-                                    <View>
-                                        <Input
-                                            label="Пароль"
-                                            placeholder="********"
-                                            isPassword={true}
-                                            editable={isEditingPassword}
-                                            value={field.value}
-                                            onChangeText={field.onChange}
-                                        /> 
-                                    </View>
-                            )}
-                            /> 
-                        </View>
-                    </View>
-                    
-                    <View style={styles.signatureBlock}>
-                        <View style={styles.headerBlock}>
-                            <Text style={styles.signatureTitle}>Варіанти підпису</Text>
-                            <Button
-                                variant="white"
-                                iconLeft={<EditIcon color={COLORS.plum} />}
-                                isSettings={true}
-                                onPress={() => setModalVisible(true)}
-                            />
-                        </View>
-                        <View style={styles.signatureOptions}>
-                            <TouchableOpacity 
-                                style={styles.checkboxRow} 
-                                onPress={() => setSelectedType('alias')}
-                            >
-                                <View style={selectedType === 'alias' ? styles.customCheckboxActive : styles.customCheckbox}>
-                                    {selectedType === 'alias' && <View style={styles.checkboxInner} />}
-                                </View>
-                                <Text style={styles.checkboxLabel}>Псевдонім автора</Text>
-                            </TouchableOpacity>
-                            <Text style={styles.signatureTextPreview}>{user?.firstname} {user?.lastname}</Text>
-                            <TouchableOpacity 
-                                style={styles.checkboxRow} 
-                                onPress={() => {
-                                    if (!user?.signature) {
-                                        setModalVisible(true);
-                                    } else {
-                                        setSelectedType('signature');
-                                    }
-                                }}
-                            >
-                                <View style={selectedType === 'signature' ? styles.customCheckboxActive : styles.customCheckbox}>
-                                    {selectedType === 'signature' && <View style={styles.checkboxInner} />}
-                                </View>
-                                <Text style={styles.checkboxLabel}>Мій електронний підпис</Text>
-                            </TouchableOpacity>
+						{/* ALIAS */}
+						<View style={styles.signatureNameContainer}>
+							<TouchableOpacity
+								style={styles.checkboxRow}
+								onPress={() => setSelectedType("alias")}
+							>
+								<View
+									style={
+										selectedType === "alias"
+											? styles.customCheckboxActive
+											: styles.customCheckbox
+									}
+								>
+									{selectedType === "alias" && (
+										<View style={styles.checkboxInner} />
+									)}
+								</View>
 
-                            {user?.signature ? (
-                                <View style={styles.signatureImageWrapper}>
-                                    <Image source={{ uri: user.signature }} style={styles.signatureImage} />
-                                </View>
-                            ) : (
-                                <Text style={[styles.noSignatureText, { marginLeft: 34 }]}>Підпис не додано</Text>
-                            )}
-                        </View>
-                    </View>
-                </View>
-            </ScrollView>
-            <RecoveryPassword user = {user} isVisible = {isVisible} setIsVisible={() => setIsVisible(false)} password={passwordValue}/>
+								<Text style={styles.checkboxLabel}>Псевдонім автора</Text>
+							</TouchableOpacity>
+							<Text style={styles.signatureTextPreview}>
+								{user?.firstname} {user?.lastname}
+							</Text>
+						</View>
 
+						<TouchableOpacity
+							style={styles.checkboxRow}
+							onPress={() => setSelectedType("signature")}
+						>
+							<View
+								style={
+									selectedType === "signature"
+										? styles.customCheckboxActive
+										: styles.customCheckbox
+								}
+							>
+								{selectedType === "signature" && (
+									<View style={styles.checkboxInner} />
+								)}
+							</View>
 
-        </KeyboardAwareScrollView>
-    );
+							<Text style={styles.checkboxLabel}>Мій електронний підпис</Text>
+						</TouchableOpacity>
+
+						{!isEditingSignature &&
+							(user?.signature ? (
+								<View style={styles.signatureImageWrapper}>
+									<Image
+										source={{ uri: user.signature }}
+										style={styles.signatureImage}
+									/>
+								</View>
+							) : (
+								<Text style={{ marginLeft: 34 }}>Підпис не додано</Text>
+							))}
+
+						{isEditingSignature && (
+							<View style={{ width: "100%" }}>
+								<SignatureEditor
+									onOK={handleSaveSignature}
+									onClear={() => console.log("Canvas cleared")}
+									onBegin={() => setIsDrawing(true)}
+									onEnd={() => setIsDrawing(false)}
+								/>
+							</View>
+						)}
+					</View>
+				</View>
+			</ScrollView>
+			<RecoveryPassword
+				user={user}
+				isVisible={isVisible}
+				setIsVisible={() => setIsVisible(false)}
+				password={passwordValue}
+			/>
+		</KeyboardAwareScrollView>
+	);
 }

@@ -1,4 +1,4 @@
 export interface Props {
-    isVisible: boolean;
-    onClose: () => void;
+	isVisible: boolean;
+	onClose: () => void;
 }

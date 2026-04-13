@@ -11,23 +11,25 @@ export function Modal(props: IRegistrationProps) {
 		"GTWalsheimPro-Medium": require("../../../assets/fonts/GTWalsheimPro-Medium.ttf"),
 	});
 
-	if (!fontsLoaded || !visible && !ifLogin) return null;
+	if (!fontsLoaded || (!visible && !ifLogin)) return null;
 
 	return (
 		<View style={[styles.overlay, style]}>
 			<Pressable style={styles.background} onPress={onClose} />
 
 			<View style={[styles.modalContainer, !ifLogin && styles.modal]}>
-				{ !ifLogin &&
+				{!ifLogin && (
 					<Pressable style={styles.closeButton} onPress={onClose}>
 						<Text style={{ fontSize: 18 }}>✕</Text>
 					</Pressable>
-				 }
+				)}
 
 				{ifLogin && (
 					<View style={styles.urls}>
 						<Link
-							style={selectedTab === "registration" ? styles.activeUrl : styles.url}
+							style={
+								selectedTab === "registration" ? styles.activeUrl : styles.url
+							}
 							href="/registration"
 						>
 							Реєстрація

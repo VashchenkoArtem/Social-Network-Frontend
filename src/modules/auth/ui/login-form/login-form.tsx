@@ -14,6 +14,7 @@ import { useLoginMutation } from "@modules/auth/api/userApi";
 import { UserContext } from "@modules/auth/context/user-context";
 
 export function LoginForm() {
+	const { user } = useContext(UserContext)!;
 	const {
 		handleSubmit,
 		control,
@@ -21,75 +22,75 @@ export function LoginForm() {
 	} = useForm<ILoginForm>({
 		resolver: yupResolver(loginValidator),
 	});
-	const { setUpdatedToken } = useContext(UserContext)!
-	const [ login ] = useLoginMutation()
+	const { setUpdatedToken } = useContext(UserContext)!;
+	const [login] = useLoginMutation();
 	const router = useRouter();
 	async function onSubmit(formData: ILoginForm) {
-		const {data} = await login(formData);
-		if (data && data.token){
-			setUpdatedToken(data.token)
-			router.push({ pathname: "/(tabs)/home"});
+		const { data } = await login(formData);
+		if (data && data.token) {
+			setUpdatedToken(data.token);
+			router.push({ pathname: "/(tabs)/home" });
 		}
+	}
+	if (user) {
+		return <Redirect href="/(tabs)/home" />;
 	}
 	return (
 		<KeyboardAwareScrollView bottomOffset={120} extraKeyboardSpace={20}>
-				<View style={styles.container}>
-					<Modal ifLogin={true} selectedTab="login" >
-						<Text style={styles.modalTitle}>Раді тебе знову бачити!</Text>
+			<View style={styles.container}>
+				<Modal ifLogin={true} selectedTab="login">
+					<Text style={styles.modalTitle}>Раді тебе знову бачити!</Text>
 
-						<View style={styles.formContainer}>
-							<View style={styles.formFields}>
-								<Controller
-									name="email"
-									control={control}
-									render={({ field }) => (
-										<Input
-											placeholder="you@example.com"
-											inputMode="email"
-											autoCapitalize="none"
-											autoComplete="off"
-											autoCorrect={false}
-											label="Електронна пошта"
-											value={field.value}
-											onChangeText={field.onChange}
-											error={errors.email?.message}
-										/>
-									)}
-								/>
-								<Controller
-									name="password"
-									control={control}
-									render={({ field }) => (
-										<Input
-											placeholder="Введи пароль"
-											label="Пароль"
-											isPassword
-											value={field.value}
-											onChangeText={field.onChange}
-											error={errors.password?.message}
-										/>
-									)}
-								/>
-							</View>
+					<View style={styles.formContainer}>
+						<View style={styles.formFields}>
+							<Controller
+								name="email"
+								control={control}
+								render={({ field }) => (
+									<Input
+										placeholder="you@example.com"
+										inputMode="email"
+										autoCapitalize="none"
+										autoComplete="off"
+										autoCorrect={false}
+										label="Електронна пошта"
+										value={field.value}
+										onChangeText={field.onChange}
+										error={errors.email?.message}
+									/>
+								)}
+							/>
+							<Controller
+								name="password"
+								control={control}
+								render={({ field }) => (
+									<Input
+										placeholder="Введи пароль"
+										label="Пароль"
+										isPassword
+										value={field.value}
+										onChangeText={field.onChange}
+										error={errors.password?.message}
+									/>
+								)}
+							/>
 						</View>
+					</View>
 
-						<Button
-							variant={"purple"}
-							text="Увійти"
-							style={[styles.button, styles.purple]}
-							onPress={handleSubmit(onSubmit)}
-						/>
+					<Button
+						variant={"purple"}
+						text="Увійти"
+						style={[styles.button, styles.purple]}
+						onPress={handleSubmit(onSubmit)}
+					/>
 
-						<View style={styles.modalQRtextContainer}>
-							<View style={styles.line} />
-							<Text style={styles.text}>
-								або увійдіть за допомогою QR-коду
-							</Text>
-							<View style={styles.line} />
-						</View>
-					</Modal>
-				</View>
+					<View style={styles.modalQRtextContainer}>
+						<View style={styles.line} />
+						<Text style={styles.text}>або увійдіть за допомогою QR-коду</Text>
+						<View style={styles.line} />
+					</View>
+				</Modal>
+			</View>
 		</KeyboardAwareScrollView>
 	);
-	
 }

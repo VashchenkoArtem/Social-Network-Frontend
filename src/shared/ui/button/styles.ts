@@ -28,7 +28,7 @@ export const buttonStyles = StyleSheet.create({
 		color: COLORS.plum,
 	},
 	prePurple: {
-		backgroundColor: COLORS.plum
+		backgroundColor: COLORS.plum,
 	},
 	buttonContent: {
 		flexDirection: "row",

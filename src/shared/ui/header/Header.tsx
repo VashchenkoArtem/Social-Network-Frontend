@@ -32,7 +32,11 @@ export function Header(props: HeaderProps) {
 		},
 		{ title: "Групові чати", route: "/groupChats", icon: ICONS.ChatsPageIcon },
 	];
-	if (pathname === "/login" || pathname === "/registration" || pathname === "/verify") {
+	if (
+		pathname === "/login" ||
+		pathname === "/registration" ||
+		pathname === "/verify"
+	) {
 		return (
 			<View style={[styles.header, styles.headerLogin]}>
 				<Link href="/home">
@@ -70,12 +74,11 @@ export function Header(props: HeaderProps) {
 						variant="white"
 						iconLeft={<ExitIcon color={COLORS.plum} style={styles.icon} />}
 						onPress={() => {
-							if (user){
-								logout()
+							if (user) {
+								logout();
 							}
-							push("/login")}
-						}
-							
+							push("/login");
+						}}
 						href="/login"
 					/>
 				</View>
