@@ -60,7 +60,6 @@ export function PersonalInformation() {
 	} = useForm<FormData>();
 	if (!user) return null;
 	const passwordValue = watch("password");
-	console.log(passwordValue);
 	const handleSaveSignature = async (base64: string) => {
 		try {
 			await updateUser({ signature: base64 }).unwrap();
@@ -79,6 +78,7 @@ export function PersonalInformation() {
 				email: data.email,
 				password: data.password,
 				...(data.newPassword && { newPassword: data.newPassword }),
+				avatar: data.avatar,
 				birthDate: data.birthDate ? new Date(data.birthDate) : undefined,
 			};
 			await updateUser(payload).unwrap();
@@ -129,10 +129,11 @@ export function PersonalInformation() {
 	};
 
 	return (
-		<KeyboardAwareScrollView bottomOffset={120} extraKeyboardSpace={20}>
-			<ScrollView
-				nestedScrollEnabled={true}
-				keyboardShouldPersistTaps="handled"
+		<>
+			<KeyboardAwareScrollView
+				bottomOffset={120}
+				extraKeyboardSpace={20}
+				scrollEnabled={!isDrawing}
 			>
 				<View style={styles.personalInformationContainer}>
 					{/* PROFILE CARD */}
@@ -154,22 +155,19 @@ export function PersonalInformation() {
 								<Text>Оберіть або завантажте фото профілю</Text>
 							)}
 
-							{/* <View style={styles.userAvatarContainer}>
+							<View style={styles.userAvatarContainer}>
 								<Controller
 									name="avatar"
 									control={control}
+									defaultValue={user.avatar || ""}
 									render={({ field }) => (
 										<AvatarField
 											value={field.value}
 											onChange={field.onChange}
 										/>
 									)}
-								></Controller>
-								<Image
-                                source={user.avatar ? { uri: user.avatar } : require('../../../../assets/defaultAvatar.png')}
-                                style={styles.userAvatar}
-                            />
-							</View> */}
+								/>
+							</View>
 
 							{isEditingProfile && (
 								<View style={styles.userAddAvatarButtons}>
@@ -189,21 +187,6 @@ export function PersonalInformation() {
 										// onPress={chooseUserAvatar}
 										isSettings={true}
 										style={{ borderWidth: 0 }}
-									/>
-
-									<Controller
-										name="avatar"
-										control={control}
-										render={({ field }) => (
-											<AvatarField
-												value={field.value}
-												onChange={field.onChange}
-											/>
-										)}
-									></Controller>
-									<Image
-										source={user.avatar ? { uri: user.avatar } : require('../../../../assets/defaultAvatar.png')}
-										style={styles.userAvatar}
 									/>
 								</View>
 							)}
@@ -432,20 +415,24 @@ export function PersonalInformation() {
 								<SignatureEditor
 									onOK={handleSaveSignature}
 									onClear={() => console.log("Canvas cleared")}
-									onBegin={() => setIsDrawing(true)}
+									onBegin={() => {
+										setIsDrawing(true);
+										console.log("asdada");
+									}}
+									setIsDriwing={setIsDrawing}
 									onEnd={() => setIsDrawing(false)}
 								/>
 							</View>
 						)}
 					</View>
 				</View>
-			</ScrollView>
-			<RecoveryPassword
-				user={user}
-				isVisible={isVisible}
-				setIsVisible={() => setIsVisible(false)}
-				password={passwordValue}
-			/>
-		</KeyboardAwareScrollView>
+				<RecoveryPassword
+					user={user}
+					isVisible={isVisible}
+					setIsVisible={() => setIsVisible(false)}
+					password={passwordValue}
+				/>
+			</KeyboardAwareScrollView>
+		</>
 	);
 }

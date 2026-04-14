@@ -7,7 +7,7 @@ import { Button } from "@shared/ui/button";
 import { Props } from "./types";
 import { styles } from "./styles";
 
-export function SignatureEditor({ onOK, onClear }: Props) {
+export function SignatureEditor({ onOK, setIsDriwing }: Props) {
 	const ref = useRef<SignatureViewRef>(null);
 
 	return (
@@ -16,6 +16,8 @@ export function SignatureEditor({ onOK, onClear }: Props) {
 				<SignatureScreen
 					ref={ref}
 					onOK={onOK}
+					onBegin={() => setIsDriwing(true)}
+					onEnd={() => setIsDriwing(false)}
 					style={{ height: 65 }}
 					webStyle={`.m-signature-pad--footer { display: none; }`}
 					autoClear={false}

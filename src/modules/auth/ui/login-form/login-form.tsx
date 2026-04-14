@@ -37,7 +37,7 @@ export function LoginForm() {
 	}
 	return (
 		<KeyboardAwareScrollView bottomOffset={120} extraKeyboardSpace={20}>
-			<View style={styles.container} >
+			<View style={styles.container}>
 				<Modal ifLogin={true} selectedTab="login">
 					<Text style={styles.modalTitle}>Раді тебе знову бачити!</Text>
 

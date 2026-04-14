@@ -11,7 +11,7 @@ export const styles = StyleSheet.create({
 	modalContainer: {
 		flex: 1,
 		justifyContent: "center",
-		backgroundColor: "red"
+		backgroundColor: "red",
 	},
 	modalTitle: {
 		fontSize: 24,

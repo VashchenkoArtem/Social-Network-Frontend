@@ -41,15 +41,7 @@ export const styles = StyleSheet.create({
 		borderBottomColor: COLORS.black,
 		paddingBottom: 3.5,
 	},
-	overlay: {
-		flex: 1,
-		top: 0,
-		left: 0,
-		right: 0,
-		bottom: 0,
-		justifyContent: "center",
-		alignItems: "center",
-	},
+	overlay: {},
 
 	background: {
 		position: "absolute",

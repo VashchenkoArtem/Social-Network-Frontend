@@ -30,10 +30,8 @@ export function WelcomeDetailsModal({ isVisible, onClose }: Props) {
 				alias: cleanAlias,
 				nickname: cleanNickname,
 			}).unwrap();
-			console.log("asdasdada");
 			onClose();
 		} catch (err) {
-			console.log(err);
 			onClose();
 		}
 	};

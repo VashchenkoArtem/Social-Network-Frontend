@@ -20,6 +20,6 @@ export const styles = StyleSheet.create({
 		borderTopWidth: 2,
 	},
 	container: {
-		flex: 1
-	}
+		flex: 1,
+	},
 });
