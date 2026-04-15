@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Modal, View, Text, TouchableOpacity, ScrollView } from "react-native";
+import { useForm, Controller } from "react-hook-form";
 import { Input } from "@shared/ui/input";
 import { Button } from "@shared/ui/button";
 import { IAlbumData } from "./types";
@@ -13,10 +14,6 @@ interface AlbumsModalProps {
 }
 
 export const AlbumsModal = ({ visible, onClose, onSubmit, initialData }: AlbumsModalProps) => {
-    const [name, setName] = useState<string>("");
-    const [theme, setTheme] = useState<string>("");
-    const [year, setYear] = useState<string>("");
-
     const [showThemes, setShowThemes] = useState(false);
     const [showYears, setShowYears] = useState(false);
 
@@ -24,30 +21,28 @@ export const AlbumsModal = ({ visible, onClose, onSubmit, initialData }: AlbumsM
     const currentYear = new Date().getFullYear();
     const years = Array.from({ length: currentYear - 1900 + 1 }, (_, i) => (currentYear - i).toString());
 
+    const { control, handleSubmit, reset, setValue, watch, formState: { isValid } } = useForm<IAlbumData>({
+        defaultValues: {
+            name: "",
+            theme: "",
+            year: ""
+        },
+        mode: "onChange"
+    });
+
+    const selectedTheme = watch("theme");
+    const selectedYear = watch("year");
+
     useEffect(() => {
         if (visible) {
-            if (initialData) {
-                setName(initialData.name || "");
-                setTheme(initialData.theme || "");
-                setYear(initialData.year || "");
-            } else {
-                setName(""); 
-                setTheme(""); 
-                setYear("");
-            }
+            reset(initialData || { name: "", theme: "", year: "" });
             setShowThemes(false);
             setShowYears(false);
         }
-    }, [initialData, visible]);
+    }, [initialData, visible, reset]);
 
-    const isFormValid = name.trim() !== "" && theme.trim() !== "" && year.trim() !== "";
-
-    const handleSave = () => {
-        if (!isFormValid) {
-            console.log("Форма не заповнена");
-            return;
-        }
-        onSubmit({ name, theme, year });
+    const handleFormSubmit = (data: IAlbumData) => {
+        onSubmit(data);
         onClose();
     };
 
@@ -65,17 +60,24 @@ export const AlbumsModal = ({ visible, onClose, onSubmit, initialData }: AlbumsM
                     </View>
 
                     <ScrollView showsVerticalScrollIndicator={false} bounces={false}>
-                        <Input 
-                            label="Назва альбому" 
-                            value={name} 
-                            onChangeText={setName} 
-                            placeholder="Настрій" 
+                        <Controller
+                            control={control}
+                            name="name"
+                            rules={{ required: true }}
+                            render={({ field: { onChange, value } }) => (
+                                <Input 
+                                    label="Назва альбому" 
+                                    value={value} 
+                                    onChangeText={onChange} 
+                                    placeholder="Настрій" 
+                                />
+                            )}
                         />
                         
                         <Text style={styles.label}>Оберіть тему</Text>
                         <TouchableOpacity onPress={() => setShowThemes(!showThemes)}>
                             <View pointerEvents="none">
-                                <Input value={theme} placeholder="Природа" editable={false} />
+                                <Input value={selectedTheme} placeholder="Природа" editable={false} />
                             </View>
                         </TouchableOpacity>
                         
@@ -85,7 +87,10 @@ export const AlbumsModal = ({ visible, onClose, onSubmit, initialData }: AlbumsM
                                     <TouchableOpacity 
                                         key={t} 
                                         style={styles.dropdownItem} 
-                                        onPress={() => {setTheme(t); setShowThemes(false)}}
+                                        onPress={() => {
+                                            setValue("theme", t, { shouldValidate: true });
+                                            setShowThemes(false);
+                                        }}
                                     >
                                         <Text style={styles.dropdownText}>{t}</Text>
                                     </TouchableOpacity>
@@ -96,7 +101,7 @@ export const AlbumsModal = ({ visible, onClose, onSubmit, initialData }: AlbumsM
                         <Text style={styles.label}>Рік альбому</Text>
                         <TouchableOpacity onPress={() => setShowYears(!showYears)}>
                             <View pointerEvents="none">
-                                <Input value={year} placeholder="Оберіть рік" editable={false} />
+                                <Input value={selectedYear} placeholder="Оберіть рік" editable={false} />
                             </View>
                         </TouchableOpacity>
 
@@ -107,7 +112,10 @@ export const AlbumsModal = ({ visible, onClose, onSubmit, initialData }: AlbumsM
                                         <TouchableOpacity 
                                             key={y} 
                                             style={styles.dropdownItem} 
-                                            onPress={() => {setYear(y); setShowYears(false)}}
+                                            onPress={() => {
+                                                setValue("year", y, { shouldValidate: true });
+                                                setShowYears(false);
+                                            }}
                                         >
                                             <Text style={styles.dropdownText}>{y}</Text>
                                         </TouchableOpacity>
@@ -126,8 +134,13 @@ export const AlbumsModal = ({ visible, onClose, onSubmit, initialData }: AlbumsM
                             <Button 
                                 variant="purple" 
                                 text="Зберегти"
-                                onPress={handleSave}
-                                style={[styles.button, styles.purple]}
+                                onPress={handleSubmit(handleFormSubmit)}
+                                disabled={!isValid}
+                                style={[
+                                    styles.button, 
+                                    styles.purple, 
+                                    { opacity: isValid ? 1 : 0.5 }
+                                ]}
                             />
                         </View>
                     </ScrollView>
