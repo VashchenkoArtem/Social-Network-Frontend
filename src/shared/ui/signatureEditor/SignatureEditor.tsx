@@ -1,43 +1,58 @@
 import React, { useRef } from "react";
-import { View, Text } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import SignatureScreen, { SignatureViewRef } from "react-native-signature-canvas";
-import { Button } from "@shared/ui/button";
-import { Props } from "./types";
+import { COLORS } from "@shared/constants/colors";
 import { styles } from "./styles";
-import { TouchableOpacity } from "react-native";
+import { Props } from "./types";
 
 
-export function SignatureEditor({ onOK, onClear }: Props) {
+
+export function SignatureEditor({ onOK, onClear, onBegin, onEnd }: Props) {
   const ref = useRef<SignatureViewRef>(null);
+
+  const handleConfirm = () => {
+    ref.current?.readSignature();
+  };
+
+  const handleClear = () => {
+    ref.current?.clearSignature();
+    onClear();
+  };
+
+  const webStyle = `
+    .m-signature-pad--footer { display: none; margin: 0px; }
+    body, html { background-color: transparent; }
+    .m-signature-pad { border: none; background-color: transparent; }
+  `;
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Намалюйте ваш підпис:</Text>
-      
       <View style={styles.canvasWrapper}>
         <SignatureScreen
           ref={ref}
           onOK={onOK}
-          webStyle={`.m-signature-pad--footer { display: none; }`}
+          webStyle={webStyle}
           autoClear={false}
           imageType="image/png"
+          scrollable={false}
+          onBegin={onBegin}
+          onEnd={onEnd}
         />
       </View>
 
       <View style={styles.row}>
         <TouchableOpacity 
           style={[styles.miniBtn, styles.btnClear]} 
-          onPress={() => {
-            ref.current?.clearSignature();
-            onClear();
-          }}
+          onPress={handleClear}
+          activeOpacity={0.7}
         >
           <Text style={styles.textClear}>Очистити</Text>
         </TouchableOpacity>
 
         <TouchableOpacity 
           style={[styles.miniBtn, styles.btnConfirm]} 
-          onPress={() => ref.current?.readSignature()}
+          onPress={handleConfirm}
+          activeOpacity={0.8}
         >
           <Text style={styles.textConfirm}>Підтвердити</Text>
         </TouchableOpacity>

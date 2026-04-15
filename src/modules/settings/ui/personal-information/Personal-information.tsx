@@ -8,11 +8,12 @@ import { Controller } from "react-hook-form";
 import { Input } from "@shared/ui/input";
 import { ScrollView } from "react-native";
 import { useUpdateUserInfoMutation, useUpdateUserMutation } from "@modules/auth/api/userApi";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { WelcomeDetailsModal } from "@shared/ui/modalUIU/ModalUIU";
 import { SignatureEditor } from "@shared/ui/signatureEditor";
 import { Image } from "react-native";
 import { TouchableOpacity } from "react-native";
+
 
 export function PersonalInformation() {
     const user = { 
@@ -22,24 +23,47 @@ export function PersonalInformation() {
         signature: null
     };
 
-    const [updateUser, { isLoading }] = useUpdateUserMutation();
+    const [updateUser] = useUpdateUserMutation();
     const [selectedType, setSelectedType] = useState<'alias' | 'signature'>(
         user?.signature ? 'signature' : 'alias'
     );
     const [isModalVisible, setModalVisible] = useState(false);
+    const [isEditingSignature, setIsEditingSignature] = useState(false);
+    
+    const [scrollEnabled, setScrollEnabled] = useState(true);
+
+    const handleCheckSignature = () => {
+        if (!user?.signature) {
+            setIsEditingSignature(true);
+        } else {
+            setSelectedType('signature');
+            setIsEditingSignature(false);
+        }
+    };
 
     const handleSaveSignature = async (base64: string) => {
         try {
             await updateUser({ signature: base64 }).unwrap();
             setSelectedType('signature');
-            setModalVisible(false);
+            setIsEditingSignature(false);
+            setScrollEnabled(true);
         } catch (err) {
-            console.error("Error saving signature", err);
+            console.error("Помилка збереження:", err);
         }
     };
+
     return (
-        <KeyboardAwareScrollView bottomOffset={120} extraKeyboardSpace={20}>
-            <ScrollView>
+        <KeyboardAwareScrollView
+                scrollEnabled={scrollEnabled}
+                bottomOffset={120}
+                extraKeyboardSpace={20}
+        >
+            <ScrollView
+                scrollEnabled={scrollEnabled}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{ paddingBottom: 150 }}
+                scrollEventThrottle={16}
+            >
                 <View style={styles.personalInformationContainer}>
                     <View style={styles.profileCardBlock}>
                         <View style={styles.headerBlock}>
@@ -152,43 +176,66 @@ export function PersonalInformation() {
                                 iconLeft={<EditIcon color={COLORS.plum} />}
                                 isSettings={true}
                                 style={[styles.button, styles.white]}
-                                onPress={() => setModalVisible(true)}
+                                onPress={() => setIsEditingSignature(!isEditingSignature)}
                             />
                         </View>
                         <View style={styles.signatureOptions}>
                             <TouchableOpacity 
-                                style={styles.checkboxRow} 
-                                onPress={() => setSelectedType('alias')}
-                            >
-                                <View style={selectedType === 'alias' ? styles.customCheckboxActive : styles.customCheckbox}>
-                                    {selectedType === 'alias' && <View style={styles.checkboxInner} />}
-                                </View>
-                                <Text style={styles.checkboxLabel}>Псевдонім автора</Text>
-                            </TouchableOpacity>
-                            <Text style={styles.signatureTextPreview}>{user?.firstname} {user?.lastname}</Text>
-                            <TouchableOpacity 
-                                style={styles.checkboxRow} 
+                                style={styles.signatureOptionRow}
+                                activeOpacity={1}
                                 onPress={() => {
-                                    if (!user?.signature) {
-                                        setModalVisible(true);
-                                    } else {
-                                        setSelectedType('signature');
-                                    }
+                                    setSelectedType('alias');
+                                    setIsEditingSignature(false);
+                                    setScrollEnabled(true);
                                 }}
                             >
-                                <View style={selectedType === 'signature' ? styles.customCheckboxActive : styles.customCheckbox}>
-                                    {selectedType === 'signature' && <View style={styles.checkboxInner} />}
+                                <View style={styles.checkboxRow}>
+                                    <View style={selectedType === 'alias' ? styles.customCheckboxActive : styles.customCheckbox}>
+                                        {selectedType === 'alias' && <View style={styles.checkboxInner} />}
+                                    </View>
+                                    <Text style={styles.checkboxLabel}>Псевдонім автора</Text>
                                 </View>
-                                <Text style={styles.checkboxLabel}>Мій електронний підпис</Text>
+                                <Text style={styles.signatureTextPreview}>{user?.firstname} {user?.lastname}</Text>
                             </TouchableOpacity>
-
-                            {user?.signature ? (
-                                <View style={styles.signatureImageWrapper}>
-                                    <Image source={{ uri: user.signature }} style={styles.signatureImage} />
+                            <TouchableOpacity 
+                                style={styles.signatureOptionRow}
+                                activeOpacity={1}
+                                onPress={handleCheckSignature}
+                            >
+                                <View style={styles.checkboxRow}>
+                                    <View style={selectedType === 'signature' ? styles.customCheckboxActive : styles.customCheckbox}>
+                                        {selectedType === 'signature' && <View style={styles.checkboxInner} />}
+                                    </View>
+                                    <Text style={styles.checkboxLabel}>Мій електронний підпис</Text>
                                 </View>
-                            ) : (
-                                <Text style={[styles.noSignatureText, { marginLeft: 34 }]}>Підпис не додано</Text>
-                            )}
+                                {isEditingSignature && (
+                                    <View 
+                                        style={{ 
+                                            marginTop: 15,
+                                            minHeight: 320,
+                                            backgroundColor: '#f9f9f9',
+                                            borderRadius: 8,
+                                            overflow: 'hidden'
+                                        }}
+                                        onStartShouldSetResponderCapture={() => {
+                                            setScrollEnabled(false);
+                                            return false;
+                                        }}
+                                        onResponderRelease={() => setScrollEnabled(true)}
+                                        onResponderTerminate={() => setScrollEnabled(true)}
+                                    >
+                                        <SignatureEditor 
+                                            onOK={handleSaveSignature} 
+                                            onClear={() => {
+                                                setIsEditingSignature(false);
+                                                setScrollEnabled(true);
+                                            }}
+                                            onBegin={() => setScrollEnabled(false)}
+                                            onEnd={() => setScrollEnabled(true)}
+                                        />
+                                    </View>
+                                )}
+                            </TouchableOpacity>
                         </View>
                     </View>
                 </View>
@@ -201,7 +248,7 @@ export function PersonalInformation() {
                 <View style={{ flex: 1, backgroundColor: '#fff', paddingTop: 60 }}>
                     <TouchableOpacity 
                         onPress={() => setModalVisible(false)} 
-                        style={{ 
+                        style={{
                             paddingHorizontal: 20, 
                             paddingVertical: 10, 
                             alignSelf: 'flex-end',
@@ -216,11 +263,22 @@ export function PersonalInformation() {
                             Закрити
                         </Text>
                     </TouchableOpacity>
-                    
-                    <SignatureEditor 
-                        onOK={handleSaveSignature} 
-                        onClear={() => console.log('Canvas cleared')} 
-                    />
+                    <View 
+                        style={{ flex: 1 }}
+                        onStartShouldSetResponderCapture={() => {
+                            return false; 
+                        }}
+                    >
+                        <SignatureEditor 
+                            onOK={(base64) => {
+                                handleSaveSignature(base64);
+                                setModalVisible(false);
+                            }} 
+                            onClear={() => console.log('Canvas cleared')}
+                            onBegin={() => setScrollEnabled(false)} 
+                            onEnd={() => setScrollEnabled(true)}
+                        />
+                    </View>
                 </View>
             </Modal>
 
