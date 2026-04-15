@@ -26,18 +26,18 @@ export const styles = StyleSheet.create({
 		fontSize: 16,
 	},
 	modalContainer: {
-		...StyleSheet.absoluteFillObject, // 💥 растягиваем на весь экран
+		position: "absolute",
+		flex: 1,
+		width: "100%",
+		height: "100%",
 		justifyContent: "center",
 		alignItems: "center",
-		backgroundColor: "rgba(0,0,0,0.5)", // затемнение
-		zIndex: 999,
 	},
 
 	modal: {
 		width: 375,
 		backgroundColor: COLORS.white,
 		borderRadius: 20,
-		padding: 20,
 	},
 
 	modalTitle: {

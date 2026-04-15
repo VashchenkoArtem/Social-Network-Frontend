@@ -43,5 +43,5 @@ export interface ProfileData {
 	password?: string;
 	avatar?: string;
 	signature?: string;
-	birthDate?: Date;
+	birthDate?: string;
 }

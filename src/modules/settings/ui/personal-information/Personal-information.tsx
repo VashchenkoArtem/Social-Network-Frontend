@@ -56,8 +56,15 @@ export function PersonalInformation() {
 		handleSubmit,
 		reset,
 		watch,
+		
 		formState: { isDirty },
-	} = useForm<FormData>();
+	} = useForm<FormData>({
+		// defaultValues: {
+		// 	birthDate: user?.birthDate
+		// 	? formatDate(user.birthDate)
+		// 	: "",
+		// },
+	});
 	if (!user) return null;
 	const passwordValue = watch("password");
 	const handleSaveSignature = async (base64: string) => {
@@ -79,7 +86,7 @@ export function PersonalInformation() {
 				password: data.password,
 				...(data.newPassword && { newPassword: data.newPassword }),
 				avatar: data.avatar,
-				birthDate: data.birthDate ? new Date(data.birthDate) : undefined,
+				birthDate: data.birthDate,
 			};
 			await updateUser(payload).unwrap();
 			reset(data);
@@ -101,20 +108,14 @@ export function PersonalInformation() {
 		}
 	};
 	const handleEditPasswordPress = async () => {
-		if (isEditingPassword) {
-			if (isDirty) {
-				setIsVisible(true);
-				await sendCode({ email: user.email, message: "Оновлення паролю" });
-			} else {
-				setIsEditingPassword(false);
-				setIsModalPasswordVisible(false);
-				setIsVisible(false);
-			}
-		} else {
-			setIsEditingPassword(true);
-			setIsModalPasswordVisible(true);
-			setIsVisible(true);
-		}
+	console.log("adasdad")
+	setIsEditingPassword(true);
+	setIsVisible(true);
+
+	await sendCode({
+		email: user.email,
+		message: "Оновлення паролю",
+	});
 	};
 	const handleEditPersonalInfoPress = () => {
 		if (isEditingPersonalInfo) {
@@ -268,6 +269,7 @@ export function PersonalInformation() {
 											inputType="date"
 											label="Дата народження"
 											placeholder=""
+											defaultValue={user.birthDate ? new Date(user.birthDate).toLocaleDateString("ua-UA") : ''}
 											value={field.value || ""}
 											editable={isEditingPersonalInfo}
 											onChangeText={(text) => {
@@ -308,7 +310,10 @@ export function PersonalInformation() {
 								variant={"white"}
 								iconLeft={<EditIcon color={COLORS.plum} />}
 								text={isEditingPassword ? "Зберегти" : ""}
-								onPress={handleEditPasswordPress}
+								onPress={() => {
+									console.log("click")
+									handleEditPasswordPress()
+								}}
 								isSettings={true}
 							/>
 						</View>
@@ -325,7 +330,6 @@ export function PersonalInformation() {
 											placeholder="********"
 											isPassword={true}
 											editable={isEditingPassword}
-											value={field.value}
 											onChangeText={field.onChange}
 										/>
 									</View>
@@ -426,13 +430,13 @@ export function PersonalInformation() {
 						)}
 					</View>
 				</View>
-				<RecoveryPassword
-					user={user}
-					isVisible={isVisible}
-					setIsVisible={() => setIsVisible(false)}
-					password={passwordValue}
-				/>
 			</KeyboardAwareScrollView>
+			<RecoveryPassword
+				user={user}
+				isVisible={isVisible}
+				setIsVisible={setIsVisible}
+				password={passwordValue}
+			/>
 		</>
 	);
 }
