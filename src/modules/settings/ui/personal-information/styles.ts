@@ -108,34 +108,34 @@ export const styles = StyleSheet.create({
     },
 
     customCheckbox: {
-        width: 22,
-        height: 22,
+        width: 20,
+        height: 20,
         borderRadius: 6,
         borderWidth: 2,
-        borderColor: '#E8E8E8',
+        borderColor: COLORS.lightestGray,
+        backgroundColor: COLORS.white,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#FFF',
     },
 
     customCheckboxActive: {
-        width: 22,
-        height: 22,
+        width: 20,
+        height: 20,
         borderRadius: 6,
         borderWidth: 2,
         borderColor: COLORS.plum,
+        backgroundColor: COLORS.white,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#FFF',
     },
 
     checkboxInner: {
-        width: 12,
-        height: 12,
-        borderRadius: 3,
+        width: 10,
+        height: 10,
+        borderRadius: 2,
         backgroundColor: COLORS.plum,
     },
-
+    
     checkboxLabel: {
         fontSize: 14,
         color: '#666',

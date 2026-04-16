@@ -1,3 +1,4 @@
+import { AlbumsPage } from "@modules/settings/ui/albums/Albums";
 import { PersonalInformation } from "@modules/settings/ui/personal-information/Personal-information";
 import { UserContext } from "@shared/context/user-context";
 import { AdditionalUrls } from "@shared/ui/additionalUrl";
@@ -18,9 +19,7 @@ export default function Settings() {
 		{
 			title: "Альбоми",
 			content: (
-				<View>
-					<Text>Альбоми</Text>
-				</View>
+				<AlbumsPage />
 			),
 		},
 	];
