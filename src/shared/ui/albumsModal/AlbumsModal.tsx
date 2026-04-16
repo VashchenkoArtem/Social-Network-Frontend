@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Modal, View, Text, TouchableOpacity, ScrollView } from "react-native";
-import { useForm, Controller } from "react-hook-form";
+import { Modal, View, Text, TouchableOpacity, ScrollView, ActivityIndicator } from "react-native";
 import { Input } from "@shared/ui/input";
 import { Button } from "@shared/ui/button";
+import { useGetTagsQuery } from "@modules/auth/api/albumsApi";
 import { IAlbumData } from "./types";
 import { styles } from "./styles";
 
@@ -14,37 +14,35 @@ interface AlbumsModalProps {
 }
 
 export const AlbumsModal = ({ visible, onClose, onSubmit, initialData }: AlbumsModalProps) => {
+    const [title, setTitle] = useState<string>("");
+    const [theme, setTheme] = useState<string>("");
+    const [year, setYear] = useState<string>("");
+
     const [showThemes, setShowThemes] = useState(false);
     const [showYears, setShowYears] = useState(false);
 
-    const availableThemes = ["Природа", "Архітектура", "Подорожі", "Настрій", "Сім'я"];
+    const { data: tags = [], isLoading: isTagsLoading } = useGetTagsQuery(undefined, {
+        skip: !visible,
+    });
+
     const currentYear = new Date().getFullYear();
     const years = Array.from({ length: currentYear - 1900 + 1 }, (_, i) => (currentYear - i).toString());
 
-    const { control, handleSubmit, reset, setValue, watch, formState: { isValid } } = useForm<IAlbumData>({
-        defaultValues: {
-            name: "",
-            theme: "",
-            year: ""
-        },
-        mode: "onChange"
-    });
-
-    const selectedTheme = watch("theme");
-    const selectedYear = watch("year");
-
     useEffect(() => {
         if (visible) {
-            reset(initialData || { name: "", theme: "", year: "" });
-            setShowThemes(false);
-            setShowYears(false);
+            setTitle(initialData?.title || "");
+            setTheme(initialData?.theme || "");
+            setYear(initialData?.year || "");
         }
-    }, [initialData, visible, reset]);
+    }, [initialData, visible]);
 
-    const handleFormSubmit = (data: IAlbumData) => {
-        onSubmit(data);
+    const handleSave = () => {
+        if (!title.trim() || !theme.trim() || !year.trim()) return;
+        onSubmit({ title, theme, year });
         onClose();
     };
+
+    const isFormValid = title.trim() !== "" && theme.trim() !== "" && year.trim() !== "";
 
     return (
         <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
@@ -60,48 +58,46 @@ export const AlbumsModal = ({ visible, onClose, onSubmit, initialData }: AlbumsM
                     </View>
 
                     <ScrollView showsVerticalScrollIndicator={false} bounces={false}>
-                        <Controller
-                            control={control}
-                            name="name"
-                            rules={{ required: true }}
-                            render={({ field: { onChange, value } }) => (
-                                <Input 
-                                    label="Назва альбому" 
-                                    value={value} 
-                                    onChangeText={onChange} 
-                                    placeholder="Настрій" 
-                                />
-                            )}
+                        <Input 
+                            label="Назва альбому" 
+                            value={title} 
+                            onChangeText={setTitle} 
+                            placeholder="Мій альбом" 
                         />
                         
                         <Text style={styles.label}>Оберіть тему</Text>
-                        <TouchableOpacity onPress={() => setShowThemes(!showThemes)}>
+                        <TouchableOpacity onPress={() => setShowThemes(!showThemes)} disabled={isTagsLoading}>
                             <View pointerEvents="none">
-                                <Input value={selectedTheme} placeholder="Природа" editable={false} />
+                                <Input 
+                                    value={theme} 
+                                    placeholder={isTagsLoading ? "Завантаження..." : "Оберіть тему"} 
+                                    editable={false} 
+                                />
                             </View>
                         </TouchableOpacity>
                         
                         {showThemes && (
                             <View style={styles.dropdown}>
-                                {availableThemes.map((t) => (
-                                    <TouchableOpacity 
-                                        key={t} 
-                                        style={styles.dropdownItem} 
-                                        onPress={() => {
-                                            setValue("theme", t, { shouldValidate: true });
-                                            setShowThemes(false);
-                                        }}
-                                    >
-                                        <Text style={styles.dropdownText}>{t}</Text>
-                                    </TouchableOpacity>
-                                ))}
+                                {isTagsLoading ? (
+                                    <ActivityIndicator size="small" style={{ padding: 10 }} />
+                                ) : (
+                                    tags.map((tag) => (
+                                        <TouchableOpacity 
+                                            key={tag.id} 
+                                            style={styles.dropdownItem} 
+                                            onPress={() => {setTheme(tag.name); setShowThemes(false)}}
+                                        >
+                                            <Text style={styles.dropdownText}>{tag.name}</Text>
+                                        </TouchableOpacity>
+                                    ))
+                                )}
                             </View>
                         )}
 
                         <Text style={styles.label}>Рік альбому</Text>
                         <TouchableOpacity onPress={() => setShowYears(!showYears)}>
                             <View pointerEvents="none">
-                                <Input value={selectedYear} placeholder="Оберіть рік" editable={false} />
+                                <Input value={year} placeholder="Оберіть рік" editable={false} />
                             </View>
                         </TouchableOpacity>
 
@@ -112,10 +108,7 @@ export const AlbumsModal = ({ visible, onClose, onSubmit, initialData }: AlbumsM
                                         <TouchableOpacity 
                                             key={y} 
                                             style={styles.dropdownItem} 
-                                            onPress={() => {
-                                                setValue("year", y, { shouldValidate: true });
-                                                setShowYears(false);
-                                            }}
+                                            onPress={() => {setYear(y); setShowYears(false)}}
                                         >
                                             <Text style={styles.dropdownText}>{y}</Text>
                                         </TouchableOpacity>
@@ -134,12 +127,11 @@ export const AlbumsModal = ({ visible, onClose, onSubmit, initialData }: AlbumsM
                             <Button 
                                 variant="purple" 
                                 text="Зберегти"
-                                onPress={handleSubmit(handleFormSubmit)}
-                                disabled={!isValid}
+                                onPress={handleSave}
                                 style={[
                                     styles.button, 
                                     styles.purple, 
-                                    { opacity: isValid ? 1 : 0.5 }
+                                    { opacity: isFormValid ? 1 : 0.5 }
                                 ]}
                             />
                         </View>

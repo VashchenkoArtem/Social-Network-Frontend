@@ -33,10 +33,10 @@ export function RegistrationStepOne() {
                 pathname: "/verify",
                 params: { email: data.email, password: data.password },
             });
-        } catch (err: any) {
+        } catch (error: any) {
             Alert.alert(
                 "Помилка",
-                err?.data || "Не вдалося надіслати код підтвердження"
+                error?.data || "Не вдалося надіслати код підтвердження"
             );
         }
     };

@@ -33,3 +33,43 @@ export interface MessageResponse {
 export interface UpdateUserRequest extends Partial<Omit<User, 'id' | 'email'>> {
   password?: string;
 }
+
+
+
+
+export interface Album {
+    id: number;
+    title: string;
+    isVisible: boolean;
+    authorId: number;
+    topicId: number;
+    dateId: number;
+    topic: {
+        id: number;
+        name: string;
+    };
+    createdAt: {
+        id: number;
+        createdAt: string;
+    };
+}
+
+export interface Tag {
+    id: number;
+    name: string;
+}
+
+export interface CreateAlbumRequest {
+    title: string;
+    theme: string;
+    year: string;
+    isVisible: boolean;
+}
+
+export type UpdateAlbumRequest = Partial<CreateAlbumRequest>;
+
+export interface IAlbumData {
+    title: string;
+    theme: string;
+    year: string;
+}

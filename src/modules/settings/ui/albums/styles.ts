@@ -86,5 +86,15 @@ export const styles = StyleSheet.create({
         aspectRatio: 1,
         borderRadius: 12,
         backgroundColor: COLORS.lightestGray,
-    }
+    },
+    manageIcon: {
+        width: 24,
+        height: 24,
+        tintColor: COLORS.gray,
+    },
+    plusIcon: {
+        width: 24,
+        height: 24,
+        tintColor: COLORS.gray,
+    },
 });

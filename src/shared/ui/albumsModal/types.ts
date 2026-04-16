@@ -1,5 +1,5 @@
 export interface IAlbumData {
-    name: string;
+    title: string;
     theme: string;
     year: string;
 }
