@@ -7,6 +7,7 @@ export const styles = StyleSheet.create({
 		justifyContent: "center",
 		alignItems: "center",
 		padding: 20,
+		paddingTop: 220
 	},
 	card: {
 		backgroundColor: COLORS.white,

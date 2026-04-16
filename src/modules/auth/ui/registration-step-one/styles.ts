@@ -18,7 +18,7 @@ export const styles = StyleSheet.create({
 		backgroundColor: COLORS.plum,
 	},
 	container: {
-		paddingTop: 39,
+		paddingTop: 115,
 		paddingHorizontal: 16,
 		flex: 1,
 		justifyContent: "center",

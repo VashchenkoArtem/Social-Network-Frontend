@@ -3,10 +3,11 @@ import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
 	container: {
+		height: "100%",
+		width: "100%",
 		paddingHorizontal: 16,
-		flex: 1,
-		justifyContent: "center",
 		gap: 6,
+
 	},
 	modalContainer: {
 		flex: 1,
