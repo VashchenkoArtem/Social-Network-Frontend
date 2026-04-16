@@ -10,4 +10,5 @@ export interface IPressableProps extends PressableProps {
 	isSettings?: boolean;
 	paddingHorizontal?: number;
 	buttonStyle?: StyleProp<ViewStyle>;
+	isBackgroundWhite?: boolean;
 }

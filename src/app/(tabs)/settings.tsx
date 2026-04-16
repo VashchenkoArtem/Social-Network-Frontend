@@ -1,4 +1,5 @@
 import { UserContext } from "@modules/auth/context/user-context";
+import { Albums } from "@modules/settings/ui/albums/Albums";
 import { PersonalInformation } from "@modules/settings/ui/personal-information/Personal-information";
 import { AdditionalUrls } from "@shared/ui/additionalUrl";
 import { IRadioTab } from "@shared/ui/additionalUrl/types";
@@ -15,11 +16,7 @@ export default function Settings() {
 		},
 		{
 			title: "Альбоми",
-			content: (
-				<View>
-					<Text>Альбоми</Text>
-				</View>
-			),
+			content: <Albums />
 		},
 	];
 	return (

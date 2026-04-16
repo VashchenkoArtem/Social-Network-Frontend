@@ -5,7 +5,7 @@ import { usePathname } from "expo-router";
 import { useFonts } from "expo-font";
 
 export function Button(props: IPressableProps) {
-	const { variant, text, iconLeft, iconRight, href, isSettings, buttonStyle } =
+	const { variant, text, iconLeft, iconRight, href, isSettings, buttonStyle, isBackgroundWhite } =
 		props;
 
 	const [fontsLoaded] = useFonts({
@@ -25,6 +25,7 @@ export function Button(props: IPressableProps) {
 				buttonStyles[variant],
 				buttonStyle,
 				text && buttonStyles.buttonWithBigPadding,
+				isBackgroundWhite && buttonStyles.whiteBackgroundButton,
 				href && pathName === href ? buttonStyles.selectedButton : null,
 				isSettings &&
 					(pathName === "/settings/personalInformation" ||
