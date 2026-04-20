@@ -112,4 +112,49 @@ export const styles = StyleSheet.create({
 		borderBlockColor: COLORS.black,
 		borderWidth: 1,
 	},
+
+
+	editAlbumModalContainer: {
+		flexDirection: 'column',
+		width: 350,
+		height: 176,
+		padding: 16,
+		gap: 16,
+		backgroundColor: COLORS.preWhite,
+		borderRadius: 10,
+		position: "absolute",
+		top: 20,
+		right: 3,
+		zIndex: 1
+	},
+
+	albumEditBtn: {
+		flexDirection: 'row',
+		justifyContent: 'flex-start',
+		gap: 10, 
+		textAlign: 'left',
+		width: '100%',
+	},
+
+	closeModalBtn: {
+		display: 'none'
+	},
+
+	dotIconContainer: {
+		width: '100%',
+		alignItems: 'flex-end'
+	},
+
+	albumEditText: {
+		fontWeight: 500,
+		fontSize: 16
+	},
+
+	devider: {
+		width: '100%',
+		height: 1,
+		backgroundColor: COLORS.gray,
+		borderRadius: 1
+	},
+
 });

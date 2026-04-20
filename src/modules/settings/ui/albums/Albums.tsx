@@ -19,6 +19,7 @@ import { Image } from "react-native";
 import { AddAlbumPhoto } from "../albumAddPhoto/addPhoto";
 import { Link, Redirect } from "expo-router";
 import { UserContext } from "@modules/auth/context/user-context";
+import { Modal } from "@shared/ui/modal";
 type AlbumForm = {
 	id: number;
 	title: string;
@@ -36,6 +37,8 @@ export const AlbumsPage = () => {
 	const [modalVisible, setModalVisible] = useState(false);
 	const [selectedAlbum, setSelectedAlbum] = useState<Album | null>(null);
 	const [scrollEnabled, setScrollEnabled] = useState(true);
+	const [editAlbumModalVisibile, setEditAlbumModalVisibile] = useState<boolean>(false)
+
 	const handleCreateNew = () => {
 		setSelectedAlbum(null);
 		setModalVisible(true);
@@ -45,6 +48,11 @@ export const AlbumsPage = () => {
 		setSelectedAlbum(album);
 		setModalVisible(true);
 	};
+	
+	const handleEditAlbum = () => {
+		setEditAlbumModalVisibile(true)
+	}
+	
 	const toForm = (album: Album): AlbumForm => ({
 		id: album.id,
 		title: album.title,
@@ -95,67 +103,116 @@ export const AlbumsPage = () => {
 							<ICONS.PlusIcon color="#000" />
 						</TouchableOpacity>
 					</View>
-
+					
 					{albums.map((album) => (
 						<View key={album.id} style={styles.albumCard}>
-							<View style={styles.albumHeader}>
-								<View style={styles.albumContainer}>
-									<Text style={styles.albumTitle}>{album.title}</Text>
-									<View style={styles.albumInfoContainer}>
-										<Text style={{ color: COLORS.black, fontSize: 16 }}>
-											{album.topic.name}
-										</Text>
-										<Text style={styles.albumInfo}>{album.year.year} рік</Text>
-									</View>
-								</View>
-								<View style={styles.actions}>
-									<TouchableOpacity style={styles.plusBtn}>
-										<ICONS.EyeOpen color="#000" />
-									</TouchableOpacity>
-									<TouchableOpacity onPress={() => handleEdit(album)}>
-										<ICONS.DotsIcon color="#000" />
-									</TouchableOpacity>
-								</View>
-							</View>
-							<View
-								style={{
-									flexDirection: "row",
-									flexWrap: "wrap",
-									marginTop: 10,
-								}}
-							>
-								{album.photos.map((photo) => (
-									<View key={photo.id}>
-										<Image
-											source={{
-												uri: `http://192.168.0.103:8000/media/thumb/${photo.filename}`,
-											}}
-											style={{
-												width: 162,
-												height: 162,
-												margin: 4,
-												borderRadius: 10,
-												backgroundColor: "#eee",
-											}}
-										/>
-										<View style={styles.photoBtns}>
-											<TouchableOpacity
-												style={styles.photoBtn}
-												onPress={() =>
-													toggleVisibility({ id: Number(album.id) })
-												}
-											>
-												<ICONS.EyeOpen color={COLORS.plum} />
-											</TouchableOpacity>
-											<TouchableOpacity style={styles.photoBtn}>
-												<ICONS.DeleteIcon color={COLORS.plum} />
-											</TouchableOpacity>
+								<View style={styles.albumHeader}>
+									<View style={styles.albumContainer}>
+										<Text style={styles.albumTitle}>{album.title}</Text>
+										<View style={styles.albumInfoContainer}>
+											<Text style={{ color: COLORS.black, fontSize: 16 }}>
+												{album.topic.name}
+											</Text>
+											<Text style={styles.albumInfo}>{album.year.year} рік</Text>
 										</View>
 									</View>
-								))}
-								<AddAlbumPhoto albumId={album.id} />
-							</View>
+									<View style={styles.actions}>
+										<TouchableOpacity style={styles.plusBtn} onPress={() =>
+													{
+														updateAlbum({
+															id: album.id,
+															data: {
+																isVisible: !album.isVisible
+															}
+														})
+
+													}}>
+											{ album.isVisible ? <ICONS.EyeOpen color="#000" /> : <ICONS.EyeClose color="#000" /> }
+											
+										</TouchableOpacity>
+										{/* <TouchableOpacity onPress={() => handleEdit(album)}> */}
+										<TouchableOpacity onPress={() => handleEditAlbum()}>
+											<ICONS.DotsIcon color="#000" />
+										</TouchableOpacity>
+										{ editAlbumModalVisibile && 
+											// <Modal style={styles.editAlbumModal} ifLogin={false} visible={editAlbumModalVisibile}>
+											<View style={styles.editAlbumModalContainer}>
+													<TouchableOpacity style={styles.dotIconContainer} onPress={() => {setEditAlbumModalVisibile(false)}}>
+														<ICONS.DotsIcon color={COLORS.gray} />
+													</TouchableOpacity>
+
+													<View>
+														{ album.isVisible ? 
+															<View style={styles.albumEditBtn}>
+																<ICONS.EyeClose color={COLORS.black}/>
+																<Text style={styles.albumEditText}>Цей альбом бачите тільки ви</Text>
+															</View>
+															: 
+															<View style={styles.albumEditBtn}>
+																<ICONS.EyeOpen color={COLORS.black}/>
+																<Text style={styles.albumEditText}>Цей альбом бачать усі користувачі</Text>
+															</View>			
+														}
+													</View>
+													<TouchableOpacity  onPress={() => {handleEdit(album)}} style={styles.albumEditBtn}>
+														<ICONS.EditIcon color={COLORS.black}/>
+														<Text style={styles.albumEditText}>Редагувати альбом</Text>
+													</TouchableOpacity>
+
+													<View style={styles.devider}></View>
+
+													<View style={styles.albumEditBtn}>
+														<ICONS.DeleteIcon color={COLORS.black}/>
+														<Text style={styles.albumEditText}>Видалити альбом</Text>
+													</View>
+											</View>
+											// </Modal>
+											}
+
+										
+									</View>
+								</View>
+								<View
+									style={{
+										flexDirection: "row",
+										flexWrap: "wrap",
+										marginTop: 10,
+									}}
+								>
+									{album.photos.map((photo) => (
+										<View key={photo.id}>
+											<Image
+												source={{
+													uri: `http://192.168.0.104:8000/media/thumb/${photo.filename}`,
+												}}
+												style={{
+													width: 162,
+													height: 162,
+													margin: 4,
+													borderRadius: 10,
+													backgroundColor: "#eee",
+												}}
+											/>
+											<View style={styles.photoBtns}>
+												<TouchableOpacity
+													style={styles.photoBtn}
+													onPress={() =>
+														toggleVisibility({ id: Number(album.id) })
+													}
+												>
+													<ICONS.EyeOpen color={COLORS.plum} 	
+														 />
+												</TouchableOpacity>
+												<TouchableOpacity style={styles.photoBtn}>
+													<ICONS.DeleteIcon color={COLORS.plum} />
+												</TouchableOpacity>
+											</View>
+										</View>
+									))}
+									<AddAlbumPhoto albumId={album.id} />
+								</View>
 						</View>
+						
 					))}
 				</View>
 			</ScrollView>

@@ -10,10 +10,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const userApi = baseApi.injectEndpoints({
 	endpoints: (builder) => ({
-		sendCode: builder.mutation<
-			{ message: string },
-			{ email: string; message: string }
-		>({
+		sendCode: builder.mutation<{ message: string },{ email: string; message: string }>({
 			query: (body) => ({
 				url: "send-code",
 				method: "POST",

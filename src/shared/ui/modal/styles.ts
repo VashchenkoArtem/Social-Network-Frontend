@@ -55,4 +55,8 @@ export const styles = StyleSheet.create({
 		right: 10,
 		zIndex: 3,
 	},
+
+	closeModalBtn: {
+		fontSize: 18
+	}
 });

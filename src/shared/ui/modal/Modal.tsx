@@ -11,7 +11,9 @@ export function Modal(props: IRegistrationProps) {
 		"GTWalsheimPro-Medium": require("../../../assets/fonts/GTWalsheimPro-Medium.ttf"),
 	});
 
-	if (!fontsLoaded || (!visible && !ifLogin)) return null;
+	if (!fontsLoaded || (!visible && !ifLogin)) {
+		return null
+	}
 
 	return (
 		<View style={[styles.overlay, style]}>
@@ -20,7 +22,7 @@ export function Modal(props: IRegistrationProps) {
 			<View style={[styles.modalContainer, !ifLogin && styles.modal]}>
 				{!ifLogin && (
 					<Pressable style={styles.closeButton} onPress={onClose}>
-						<Text style={{ fontSize: 18 }}>✕</Text>
+						<Text style={styles.closeModalBtn}>✕</Text>
 					</Pressable>
 				)}
 

@@ -32,6 +32,7 @@ export interface UpdateAlbumDto {
 	title?: string;
 	topicId?: number;
 	yearId?: number;
+	isVisible?: boolean
 }
 export const albumApi = baseApi.injectEndpoints({
 	endpoints: (builder) => ({
