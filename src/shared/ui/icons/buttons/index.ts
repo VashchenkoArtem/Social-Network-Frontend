@@ -1,5 +1,8 @@
+export { DeleteIcon } from "./deleteIcon";
+export { DotsIcon } from "./dotsIcon";
 export { LogoIcon } from "./LogoIcon";
 export { ManageIcon } from "./Manage";
 export { PlusIcon } from "./Plus";
 export { ArrowIcon } from "./ArrowIcon";
 export { EditIcon } from "./editIcon";
+export { ExitIcon } from "./ExitIcon";

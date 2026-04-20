@@ -36,8 +36,13 @@ export function LoginForm() {
 		return <Redirect href="/(tabs)/home" />;
 	}
 	return (
-		<KeyboardAwareScrollView bottomOffset={120} extraKeyboardSpace={20} style={styles.container} contentContainerStyle = {{justifyContent: "center"}}>
-			<Modal style = {{paddingTop: 115}} ifLogin={true} selectedTab="login">
+		<KeyboardAwareScrollView
+			bottomOffset={120}
+			extraKeyboardSpace={20}
+			style={styles.container}
+			contentContainerStyle={{ justifyContent: "center" }}
+		>
+			<Modal style={{ paddingTop: 115 }} ifLogin={true} selectedTab="login">
 				<Text style={styles.modalTitle}>Раді тебе знову бачити!</Text>
 
 				<View style={styles.formContainer}>
@@ -82,12 +87,6 @@ export function LoginForm() {
 					style={[styles.button, styles.purple]}
 					onPress={handleSubmit(onSubmit)}
 				/>
-
-				<View style={styles.modalQRtextContainer}>
-					<View style={styles.line} />
-					<Text style={styles.text}>або увійдіть за допомогою QR-коду</Text>
-					<View style={styles.line} />
-				</View>
 			</Modal>
 		</KeyboardAwareScrollView>
 	);

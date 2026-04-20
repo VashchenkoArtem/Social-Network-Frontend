@@ -44,16 +44,22 @@ export const userApi = baseApi.injectEndpoints({
 		}),
 		updateUserInfo: builder.mutation<User, ProfileData>({
 			query: (body) => {
+				const formData = new FormData();
+
+				formData.append("firstname", body.firstname ?? "");
+				formData.append("lastname", body.lastname ?? "");
+				formData.append("nickname", body.nickname ?? "");
+				formData.append("email", body.email ?? "");
+				formData.append("birthDate", body.birthDate ?? "");
+				formData.append("password", body.password ?? "");
+
 				if (body.avatar) {
-					const formData = new FormData();
-					formData.append("avatar", {
+					formData.append("file", {
 						uri: body.avatar,
 						name: "avatar.jpg",
 						type: "image/jpeg",
-					} as unknown as Blob);
-					console.log(formData);
+					} as any);
 				}
-
 				return {
 					url: "update-user",
 					method: "PATCH",
@@ -63,11 +69,13 @@ export const userApi = baseApi.injectEndpoints({
 			invalidatesTags: ["User"],
 		}),
 		updatePassword: builder.mutation<User, ProfileData>({
-			query: (body) => ({
-				url: "update-password",
-				method: "PATCH",
-				body,
-			}),
+			query: (body) => {
+				return {
+					url: "update-password",
+					method: "PATCH",
+					body,
+				};
+			},
 			invalidatesTags: ["User"],
 		}),
 		me: builder.query<User, void>({

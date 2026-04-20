@@ -30,7 +30,12 @@ export function RecoveryPassword(props: {
 		await updatePassword({ password: password });
 	};
 	return (
-		<View style = {[styles.modalContainer, isVisible && {backgroundColor: "rgba(0,0,0,0.5)"}]}>
+		<View
+			style={[
+				styles.modalContainer,
+				isVisible && { backgroundColor: "rgba(0,0,0,0.5)" },
+			]}
+		>
 			<Modal
 				visible={isVisible}
 				onClose={() => setIsVisible(false)}
@@ -39,8 +44,8 @@ export function RecoveryPassword(props: {
 				<View>
 					<Text style={styles.modalTitle}>Підтвердження для зміни паролю</Text>
 					<Text style={styles.subtitle}>
-						Ми надіслали 6-значний код на вашу пошту ({user.email}). Введіть його
-						нижче, щоб підтвердити акаунт
+						Ми надіслали 6-значний код на вашу пошту ({user.email}). Введіть
+						його нижче, щоб підтвердити акаунт
 					</Text>
 				</View>
 				<View style={styles.inputsFrame}>

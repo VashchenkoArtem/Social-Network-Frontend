@@ -34,19 +34,23 @@ export function UserProvider(props: IUserContextProvider) {
 	}, []);
 
 	useEffect(() => {
-		if (data) {
+		if (data && token) {
 			setUser(data);
+		} else if (!token) {
+			setUser(null);
 		}
-	}, [data]);
+	}, [data, token]);
 
 	async function setUpdatedToken(newToken: string) {
 		setToken(newToken);
 		await AsyncStorage.setItem("token", newToken);
 	}
 	async function logout() {
+		console.log(token, user);
 		await AsyncStorage.removeItem("token");
 		setToken("");
 		setUser(null);
+		console.log(token, user);
 	}
 	return (
 		<UserContext value={{ user, token, setUpdatedToken, logout }}>

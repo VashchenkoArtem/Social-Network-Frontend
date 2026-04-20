@@ -20,6 +20,7 @@ import { MyPostsPageIcon } from "@shared/ui/icons/urls/MyPostsPageIcon";
 import { Modal } from "@shared/ui/modal";
 import { RecoveryPassword } from "../recovery-password/Recovery-password";
 import { UserContext } from "@modules/auth/context/user-context";
+import { Redirect } from "expo-router";
 
 type FormData = {
 	firstname: string;
@@ -56,7 +57,7 @@ export function PersonalInformation() {
 		handleSubmit,
 		reset,
 		watch,
-		
+
 		formState: { isDirty },
 	} = useForm<FormData>({
 		// defaultValues: {
@@ -65,7 +66,9 @@ export function PersonalInformation() {
 		// 	: "",
 		// },
 	});
-	if (!user) return null;
+	if (!user) {
+		return <Redirect href={"/login"}></Redirect>;
+	}
 	const passwordValue = watch("password");
 	const handleSaveSignature = async (base64: string) => {
 		try {
@@ -77,6 +80,7 @@ export function PersonalInformation() {
 		}
 	};
 	const onSubmit = async (data: FormData) => {
+		console.log("asdasda");
 		try {
 			const payload = {
 				firstname: data.firstname,
@@ -108,14 +112,12 @@ export function PersonalInformation() {
 		}
 	};
 	const handleEditPasswordPress = async () => {
-	console.log("adasdad")
-	setIsEditingPassword(true);
-	setIsVisible(true);
+		setIsVisible(true);
 
-	await sendCode({
-		email: user.email,
-		message: "Оновлення паролю",
-	});
+		await sendCode({
+			email: user.email,
+			message: "Оновлення паролю",
+		});
 	};
 	const handleEditPersonalInfoPress = () => {
 		if (isEditingPersonalInfo) {
@@ -269,7 +271,11 @@ export function PersonalInformation() {
 											inputType="date"
 											label="Дата народження"
 											placeholder=""
-											defaultValue={user.birthDate ? new Date(user.birthDate).toLocaleDateString("ua-UA") : ''}
+											defaultValue={
+												user.birthDate
+													? new Date(user.birthDate).toLocaleDateString("ua-UA")
+													: ""
+											}
 											value={field.value || ""}
 											editable={isEditingPersonalInfo}
 											onChangeText={(text) => {
@@ -311,8 +317,11 @@ export function PersonalInformation() {
 								iconLeft={<EditIcon color={COLORS.plum} />}
 								text={isEditingPassword ? "Зберегти" : ""}
 								onPress={() => {
-									console.log("click")
-									handleEditPasswordPress()
+									if (isEditingPassword) {
+										handleEditPasswordPress();
+									} else {
+										setIsEditingPassword(true);
+									}
 								}}
 								isSettings={true}
 							/>

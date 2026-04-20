@@ -75,9 +75,9 @@ export function Header(props: HeaderProps) {
 						iconLeft={<ExitIcon color={COLORS.plum} style={styles.icon} />}
 						onPress={() => {
 							if (user) {
+								console.log("logaut");
 								logout();
 							}
-							push("/login");
 						}}
 						href="/login"
 					/>
