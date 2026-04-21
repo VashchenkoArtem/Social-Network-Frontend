@@ -1,136 +1,227 @@
-import React, { useState, useMemo } from "react";
-import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator } from "react-native";
-import { ICONS } from "@shared/ui"; 
+import React, { useContext, useState } from "react";
+import { View, Text, ScrollView, TouchableOpacity } from "react-native";
+import { ICONS } from "@shared/ui";
 import { AlbumsModal } from "@shared/ui/albumsModal/AlbumsModal";
 import { IAlbumData } from "@shared/ui/albumsModal/types";
 import { styles } from "./styles";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
-import { 
-    useGetAlbumsQuery, 
-    useCreateAlbumMutation, 
-    useUpdateAlbumMutation 
-} from "@modules/auth/api/albumsApi";
-import { Album, CreateAlbumRequest } from "@modules/auth/api/api.types";
+import {
+	Album,
+	CreateAlbumDto,
+	UpdateAlbumDto,
+	useCreateAlbumMutation,
+	useGetAlbumsQuery,
+	useToggleVisibilityMutation,
+	useUpdateAlbumMutation,
+} from "@modules/settings/api/albumApi";
 import { COLORS } from "@shared/constants/colors";
-
+import { Image } from "react-native";
+import { AddAlbumPhoto } from "../albumAddPhoto/addPhoto";
+import { Link, Redirect } from "expo-router";
+import { UserContext } from "@modules/auth/context/user-context";
+import { Modal } from "@shared/ui/modal";
+type AlbumForm = {
+	id: number;
+	title: string;
+	topicId: number;
+	yearId: number;
+};
 export const AlbumsPage = () => {
-    const { data: albums = [], isLoading } = useGetAlbumsQuery();
-    const [createAlbum] = useCreateAlbumMutation();
-    const [updateAlbum] = useUpdateAlbumMutation();
+	const { data: albums = [] } = useGetAlbumsQuery(undefined, {
+		pollingInterval: 3000,
+	});
+	const [createAlbum] = useCreateAlbumMutation();
+	const [updateAlbum] = useUpdateAlbumMutation();
+	const [toggleVisibility] = useToggleVisibilityMutation();
+	const { user } = useContext(UserContext)!;
+	const [modalVisible, setModalVisible] = useState(false);
+	const [selectedAlbum, setSelectedAlbum] = useState<Album | null>(null);
+	const [scrollEnabled, setScrollEnabled] = useState(true);
+	const [editAlbumModalVisibile, setEditAlbumModalVisibile] = useState<boolean>(false)
 
-    const [modalVisible, setModalVisible] = useState(false);
-    const [selectedAlbum, setSelectedAlbum] = useState<Album | null>(null);
+	const handleCreateNew = () => {
+		setSelectedAlbum(null);
+		setModalVisible(true);
+	};
 
-    const modalInitialData = useMemo(() => {
-        if (!selectedAlbum) return null;
-        
-        return {
-            title: selectedAlbum.title || "",
-            theme: selectedAlbum.topic?.name || "", 
-            year: selectedAlbum.createdAt?.createdAt 
-                ? new Date(selectedAlbum.createdAt.createdAt).getFullYear().toString() 
-                : new Date().getFullYear().toString()
-        };
-    }, [selectedAlbum]);
+	const handleEdit = (album: Album) => {
+		setSelectedAlbum(album);
+		setModalVisible(true);
+	};
+	
+	const handleEditAlbum = () => {
+		setEditAlbumModalVisibile(true)
+	}
+	
+	const toForm = (album: Album): AlbumForm => ({
+		id: album.id,
+		title: album.title,
+		topicId: album.topic.id,
+		yearId: album.year.id,
+	});
+	const handleSave = async (data: AlbumForm) => {
+		const payload: CreateAlbumDto = {
+			title: data.title,
+			topicId: data.topicId!,
+			yearId: data.yearId!,
+		};
 
-    const handleSave = async (formData: IAlbumData) => {
-        try {
-            const payload: CreateAlbumRequest = {
-                title: formData.title,
-                theme: formData.theme,
-                year: formData.year,
-                isVisible: true,
-            };
+		if (selectedAlbum) {
+			await updateAlbum({
+				id: selectedAlbum.id,
+				data: payload,
+			}).unwrap();
+		} else {
+			await createAlbum(payload).unwrap();
+		}
 
-            if (selectedAlbum) {
-                await updateAlbum({ 
-                    id: selectedAlbum.id, 
-                    ...payload
-                }).unwrap();
-            } else {
-                await createAlbum(payload).unwrap();
-            }
-            
-            closeModal();
-        } catch (e) {
-            console.error("Помилка при збереженні:", e);
-        }
-    };
+		setModalVisible(false);
+	};
+	if (!user) {
+		return <Redirect href={"/login"}></Redirect>;
+	}
+	return (
+		<KeyboardAwareScrollView
+			scrollEnabled={scrollEnabled}
+			bottomOffset={120}
+			extraKeyboardSpace={20}
+		>
+			<ScrollView
+				scrollEnabled={scrollEnabled}
+				showsVerticalScrollIndicator={false}
+				contentContainerStyle={{ paddingBottom: 150 }}
+				scrollEventThrottle={16}
+			>
+				<View style={styles.contentContainer}>
+					<View style={styles.createCard}>
+						<Text style={styles.createCardText}>
+							{albums.length > 0
+								? "Створити альбом"
+								: "Немає ще жодного альбому"}
+						</Text>
+						<TouchableOpacity style={styles.plusBtn} onPress={handleCreateNew}>
+							<ICONS.PlusIcon color="#000" />
+						</TouchableOpacity>
+					</View>
+					
+					{albums.map((album) => (
+						<View key={album.id} style={styles.albumCard}>
+								<View style={styles.albumHeader}>
+									<View style={styles.albumContainer}>
+										<Text style={styles.albumTitle}>{album.title}</Text>
+										<View style={styles.albumInfoContainer}>
+											<Text style={{ color: COLORS.black, fontSize: 16 }}>
+												{album.topic.name}
+											</Text>
+											<Text style={styles.albumInfo}>{album.year.year} рік</Text>
+										</View>
+									</View>
+									<View style={styles.actions}>
+										<TouchableOpacity style={styles.plusBtn} onPress={() =>
+													{
+														updateAlbum({
+															id: album.id,
+															data: {
+																isVisible: !album.isVisible
+															}
+														})
 
-    const closeModal = () => {
-        setModalVisible(false);
-        setSelectedAlbum(null);
-    };
+													}}>
+											{ album.isVisible ? <ICONS.EyeOpen color="#000" /> : <ICONS.EyeClose color="#000" /> }
+											
+										</TouchableOpacity>
+										{/* <TouchableOpacity onPress={() => handleEdit(album)}> */}
+										<TouchableOpacity onPress={() => handleEditAlbum()}>
+											<ICONS.DotsIcon color="#000" />
+										</TouchableOpacity>
+										{ editAlbumModalVisibile && 
+											// <Modal style={styles.editAlbumModal} ifLogin={false} visible={editAlbumModalVisibile}>
+											<View style={styles.editAlbumModalContainer}>
+													<TouchableOpacity style={styles.dotIconContainer} onPress={() => {setEditAlbumModalVisibile(false)}}>
+														<ICONS.DotsIcon color={COLORS.gray} />
+													</TouchableOpacity>
 
-    const openCreateModal = () => {
-        setSelectedAlbum(null);
-        setModalVisible(true);
-    };
+													<View>
+														{ album.isVisible ? 
+															<View style={styles.albumEditBtn}>
+																<ICONS.EyeClose color={COLORS.black}/>
+																<Text style={styles.albumEditText}>Цей альбом бачите тільки ви</Text>
+															</View>
+															: 
+															<View style={styles.albumEditBtn}>
+																<ICONS.EyeOpen color={COLORS.black}/>
+																<Text style={styles.albumEditText}>Цей альбом бачать усі користувачі</Text>
+															</View>			
+														}
+													</View>
+													<TouchableOpacity  onPress={() => {handleEdit(album)}} style={styles.albumEditBtn}>
+														<ICONS.EditIcon color={COLORS.black}/>
+														<Text style={styles.albumEditText}>Редагувати альбом</Text>
+													</TouchableOpacity>
 
-    const openEditModal = (album: Album) => {
-        setSelectedAlbum(album);
-        setModalVisible(true);
-    };
+													<View style={styles.devider}></View>
 
-    if (isLoading) {
-        return (
-            <View style={[styles.contentContainer, { justifyContent: 'center', flex: 1 }]}>
-                <ActivityIndicator size="large" />
-            </View>
-        );
-    }
+													<View style={styles.albumEditBtn}>
+														<ICONS.DeleteIcon color={COLORS.black}/>
+														<Text style={styles.albumEditText}>Видалити альбом</Text>
+													</View>
+											</View>
+											// </Modal>
+											}
 
-    return (
-        <KeyboardAwareScrollView bottomOffset={120} extraKeyboardSpace={20}>
-            <ScrollView 
-                showsVerticalScrollIndicator={false} 
-                contentContainerStyle={{ paddingBottom: 150 }}
-            >
-                <View style={styles.contentContainer}>
-                    <TouchableOpacity 
-                        style={styles.createCard} 
-                        onPress={openCreateModal}
-                    >
-                        <Text style={styles.createCardText}>
-                            {albums.length > 0 ? "Створити альбом" : "Немає ще жодного альбому"}
-                        </Text>
-                        <View style={styles.plusBtn}>
-                            <ICONS.PlusIcon color="#000" />
-                        </View>
-                    </TouchableOpacity>
-
-                    {albums.map((album) => (
-                        <View key={album.id} style={styles.albumCard}>
-                            <View style={styles.albumHeader}>
-                                <View>
-                                    <Text style={styles.albumTitle}>
-                                        {album.title}
-                                    </Text>
-                                    <Text style={styles.albumInfo}>
-                                        {album.topic?.name} • {new Date(album.createdAt.createdAt).getFullYear()}
-                                    </Text>
-                                </View>
-                                <View style={styles.actions}>
-                                    <TouchableOpacity onPress={() => openEditModal(album)}>
-                                        <ICONS.ManageIcon color={COLORS.gray} />
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
-                            
-                            <TouchableOpacity style={styles.addPhotoDashed}>
-                                <ICONS.PlusIcon color={COLORS.gray} />
-                            </TouchableOpacity>
-                        </View>
-                    ))}
-                </View>
-            </ScrollView>
-
-            <AlbumsModal 
-                visible={modalVisible}
-                onClose={closeModal}
-                onSubmit={handleSave}
-                initialData={modalInitialData} 
-            />
-        </KeyboardAwareScrollView>
-    );
+										
+									</View>
+								</View>
+								<View
+									style={{
+										flexDirection: "row",
+										flexWrap: "wrap",
+										marginTop: 10,
+									}}
+								>
+									{album.photos.map((photo) => (
+										<View key={photo.id}>
+											<Image
+												source={{
+													uri: `http://192.168.0.104:8000/media/thumb/${photo.filename}`,
+												}}
+												style={{
+													width: 162,
+													height: 162,
+													margin: 4,
+													borderRadius: 10,
+													backgroundColor: "#eee",
+												}}
+											/>
+											<View style={styles.photoBtns}>
+												<TouchableOpacity
+													style={styles.photoBtn}
+													onPress={() =>
+														toggleVisibility({ id: Number(album.id) })
+													}
+												>
+													<ICONS.EyeOpen color={COLORS.plum} 	
+														 />
+												</TouchableOpacity>
+												<TouchableOpacity style={styles.photoBtn}>
+													<ICONS.DeleteIcon color={COLORS.plum} />
+												</TouchableOpacity>
+											</View>
+										</View>
+									))}
+									<AddAlbumPhoto albumId={album.id} />
+								</View>
+						</View>
+						
+					))}
+				</View>
+			</ScrollView>
+			<AlbumsModal
+				visible={modalVisible}
+				onClose={() => setModalVisible(false)}
+				onSubmit={handleSave}
+				initialData={selectedAlbum ? toForm(selectedAlbum) : null}
+			/>
+		</KeyboardAwareScrollView>
+	);
 };

@@ -7,7 +7,7 @@ import { usePathname } from "expo-router";
 import { ReactNode } from "react";
 
 export function Layout(props: { children?: ReactNode }) {
-	const {children } = props
+	const { children } = props;
 	return (
 		<SafeAreaView style={styles.container}>
 			<Text>sadsadada</Text>

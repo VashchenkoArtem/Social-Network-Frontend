@@ -10,4 +10,5 @@ export interface IInputProps extends TextInputProps {
 	label?: string;
 	error?: string;
 	validationSchema?: yup.AnySchema;
+	inputType?: "text" | "password" | "date";
 }

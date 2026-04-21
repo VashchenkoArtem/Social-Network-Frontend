@@ -14,6 +14,8 @@ export const buttonStyles = StyleSheet.create({
 		fontFamily: "GTWalsheimPro-Medium",
 	},
 	button: {
+		alignItems: "center",
+		justifyContent: "center",
 		borderRadius: 1234,
 		padding: 10,
 		minHeight: 40,
@@ -24,6 +26,9 @@ export const buttonStyles = StyleSheet.create({
 	},
 	whiteButtonText: {
 		color: COLORS.plum,
+	},
+	prePurple: {
+		backgroundColor: COLORS.plum,
 	},
 	buttonContent: {
 		flexDirection: "row",

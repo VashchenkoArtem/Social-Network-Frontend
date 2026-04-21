@@ -1,6 +1,6 @@
+import { UserContext } from "@modules/auth/context/user-context";
 import { AlbumsPage } from "@modules/settings/ui/albums/Albums";
 import { PersonalInformation } from "@modules/settings/ui/personal-information/Personal-information";
-import { UserContext } from "@shared/context/user-context";
 import { AdditionalUrls } from "@shared/ui/additionalUrl";
 import { IRadioTab } from "@shared/ui/additionalUrl/types";
 import { useContext } from "react";
@@ -12,15 +12,11 @@ export default function Settings() {
 	const radioTabsArray: IRadioTab[] = [
 		{
 			title: "Особиста інформація",
-			content: (
-				<PersonalInformation/>
-			),
+			content: <PersonalInformation />,
 		},
 		{
 			title: "Альбоми",
-			content: (
-				<AlbumsPage />
-			),
+			content: <AlbumsPage />,
 		},
 	];
 	return (

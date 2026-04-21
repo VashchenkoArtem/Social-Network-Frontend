@@ -5,7 +5,8 @@ import { usePathname } from "expo-router";
 import { useFonts } from "expo-font";
 
 export function Button(props: IPressableProps) {
-	const { variant, text, iconLeft, iconRight, href, isSettings } = props;
+	const { variant, text, iconLeft, iconRight, href, isSettings, buttonStyle } =
+		props;
 
 	const [fontsLoaded] = useFonts({
 		"GTWalsheimPro-Medium": require("../../../assets/fonts/GTWalsheimPro-Medium.ttf"),
@@ -22,6 +23,7 @@ export function Button(props: IPressableProps) {
 			style={[
 				buttonStyles.button,
 				buttonStyles[variant],
+				buttonStyle,
 				text && buttonStyles.buttonWithBigPadding,
 				href && pathName === href ? buttonStyles.selectedButton : null,
 				isSettings &&

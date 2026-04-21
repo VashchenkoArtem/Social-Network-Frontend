@@ -5,139 +5,218 @@ import { Button } from "@shared/ui/button";
 import { useGetTagsQuery } from "@modules/auth/api/albumsApi";
 import { IAlbumData } from "./types";
 import { styles } from "./styles";
+import {
+	useCreateAlbumMutation,
+	useGetTopicsQuery,
+	useGetYearsQuery,
+	useUpdateAlbumMutation,
+} from "@modules/settings/api/albumApi";
+import { Controller, useForm } from "react-hook-form";
 
 interface AlbumsModalProps {
-    visible: boolean;
-    onClose: () => void;
-    onSubmit: (data: IAlbumData) => void;
-    initialData?: IAlbumData | null;
+	visible: boolean;
+	onClose: () => void;
+	onSubmit: (data: {
+		id: number;
+		title: string;
+		topicId: number;
+		yearId: number;
+	}) => void;
+	initialData?: {
+		id: number;
+		title: string;
+		topicId: number;
+		yearId: number;
+	} | null;
+	isEdit?: boolean;
 }
+type Form = {
+	title: string;
+	themeId: number | null;
+	yearId: number | null;
+};
+export const AlbumsModal = ({
+	visible,
+	onClose,
+	onSubmit,
+	initialData,
+}: AlbumsModalProps) => {
+	const [showThemes, setShowThemes] = useState(false);
+	const [showYears, setShowYears] = useState(false);
+	const { data } = useGetYearsQuery(undefined, {
+		pollingInterval: 3000,
+	});
+	const { data: availableThemes } = useGetTopicsQuery(undefined, {
+		pollingInterval: 3000,
+	});
+	const [createAlbum] = useCreateAlbumMutation();
+	const [updateAlbum] = useUpdateAlbumMutation();
+	const {
+		control,
+		handleSubmit,
+		reset,
+		setValue,
+		watch,
+		formState: { isValid },
+	} = useForm<Form>({
+		defaultValues: {
+			title: "",
+			themeId: null,
+			yearId: null,
+		},
+		mode: "onChange",
+	});
 
-export const AlbumsModal = ({ visible, onClose, onSubmit, initialData }: AlbumsModalProps) => {
-    const [title, setTitle] = useState<string>("");
-    const [theme, setTheme] = useState<string>("");
-    const [year, setYear] = useState<string>("");
+	const selectedThemeId = watch("themeId");
+	const selectedYearId = watch("yearId");
 
-    const [showThemes, setShowThemes] = useState(false);
-    const [showYears, setShowYears] = useState(false);
+	const selectedTheme = availableThemes?.find((t) => t.id === selectedThemeId);
+	const selectedYear = data?.find((y) => y.id === selectedYearId);
 
-    const { data: tags = [], isLoading: isTagsLoading } = useGetTagsQuery(undefined, {
-        skip: !visible,
-    });
+	useEffect(() => {
+		if (!visible) return;
 
-    const currentYear = new Date().getFullYear();
-    const years = Array.from({ length: currentYear - 1900 + 1 }, (_, i) => (currentYear - i).toString());
+		reset({
+			title: initialData?.title ?? "",
+			themeId: initialData?.topicId ?? null,
+			yearId: initialData?.yearId ?? null,
+		});
 
-    useEffect(() => {
-        if (visible) {
-            setTitle(initialData?.title || "");
-            setTheme(initialData?.theme || "");
-            setYear(initialData?.year || "");
-        }
-    }, [initialData, visible]);
+		setShowThemes(false);
+		setShowYears(false);
+	}, [visible]);
 
-    const handleSave = () => {
-        if (!title.trim() || !theme.trim() || !year.trim()) return;
-        onSubmit({ title, theme, year });
-        onClose();
-    };
+	const handleFormSubmit = async (data: Form) => {
+		const payload = {
+			title: data.title,
+			topicId: data.themeId!,
+			yearId: data.yearId!,
+		};
+		if (initialData) {
+			console.log();
+			await updateAlbum({
+				id: initialData.id,
+				data: payload,
+			});
+		} else {
+			await createAlbum(payload);
+		}
+		onClose();
+	};
 
-    const isFormValid = title.trim() !== "" && theme.trim() !== "" && year.trim() !== "";
+	return (
+		<Modal
+			visible={visible}
+			transparent
+			animationType="fade"
+			onRequestClose={onClose}
+		>
+			<View style={styles.modalOverlay}>
+				<View style={styles.modalContainer}>
+					<View style={styles.modalHeader}>
+						<Text style={styles.modalTitle}>
+							{initialData ? "Редагувати альбом" : "Створити альбом"}
+						</Text>
+						<TouchableOpacity onPress={onClose} hitSlop={15}>
+							<Text style={styles.closeIcon}>✕</Text>
+						</TouchableOpacity>
+					</View>
 
-    return (
-        <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
-            <View style={styles.modalOverlay}>
-                <View style={styles.modalContainer}>
-                    <View style={styles.modalHeader}>
-                        <Text style={styles.modalTitle}>
-                            {initialData ? "Редагувати альбом" : "Створити альбом"}
-                        </Text>
-                        <TouchableOpacity onPress={onClose} hitSlop={15}>
-                            <Text style={styles.closeIcon}>✕</Text>
-                        </TouchableOpacity>
-                    </View>
+					<ScrollView showsVerticalScrollIndicator={false} bounces={false}>
+						<Controller
+							control={control}
+							name="title"
+							rules={{ required: true }}
+							render={({ field: { onChange, value } }) => (
+								<Input
+									label="Назва альбому"
+									defaultValue={value}
+									onChangeText={onChange}
+									placeholder="Настрій"
+								/>
+							)}
+						/>
 
-                    <ScrollView showsVerticalScrollIndicator={false} bounces={false}>
-                        <Input 
-                            label="Назва альбому" 
-                            value={title} 
-                            onChangeText={setTitle} 
-                            placeholder="Мій альбом" 
-                        />
-                        
-                        <Text style={styles.label}>Оберіть тему</Text>
-                        <TouchableOpacity onPress={() => setShowThemes(!showThemes)} disabled={isTagsLoading}>
-                            <View pointerEvents="none">
-                                <Input 
-                                    value={theme} 
-                                    placeholder={isTagsLoading ? "Завантаження..." : "Оберіть тему"} 
-                                    editable={false} 
-                                />
-                            </View>
-                        </TouchableOpacity>
-                        
-                        {showThemes && (
-                            <View style={styles.dropdown}>
-                                {isTagsLoading ? (
-                                    <ActivityIndicator size="small" style={{ padding: 10 }} />
-                                ) : (
-                                    tags.map((tag) => (
-                                        <TouchableOpacity 
-                                            key={tag.id} 
-                                            style={styles.dropdownItem} 
-                                            onPress={() => {setTheme(tag.name); setShowThemes(false)}}
-                                        >
-                                            <Text style={styles.dropdownText}>{tag.name}</Text>
-                                        </TouchableOpacity>
-                                    ))
-                                )}
-                            </View>
-                        )}
+						<Text style={styles.label}>Оберіть тему</Text>
+						<TouchableOpacity onPress={() => setShowThemes(!showThemes)}>
+							<View pointerEvents="none">
+								<Input
+									value={selectedTheme?.name ?? ""}
+									placeholder="Природа"
+									editable={false}
+								/>
+							</View>
+						</TouchableOpacity>
 
-                        <Text style={styles.label}>Рік альбому</Text>
-                        <TouchableOpacity onPress={() => setShowYears(!showYears)}>
-                            <View pointerEvents="none">
-                                <Input value={year} placeholder="Оберіть рік" editable={false} />
-                            </View>
-                        </TouchableOpacity>
+						{showThemes && (
+							<View style={styles.dropdown}>
+								{availableThemes?.map((topic) => (
+									<TouchableOpacity
+										key={topic.id}
+										style={styles.dropdownItem}
+										onPress={() => {
+											setValue("themeId", topic.id);
+											setShowThemes(false);
+										}}
+									>
+										<Text style={styles.dropdownText}>{topic.name}</Text>
+									</TouchableOpacity>
+								))}
+							</View>
+						)}
 
-                        {showYears && (
-                            <View style={styles.dropdown}>
-                                <ScrollView style={{ maxHeight: 150 }} nestedScrollEnabled>
-                                    {years.map((y) => (
-                                        <TouchableOpacity 
-                                            key={y} 
-                                            style={styles.dropdownItem} 
-                                            onPress={() => {setYear(y); setShowYears(false)}}
-                                        >
-                                            <Text style={styles.dropdownText}>{y}</Text>
-                                        </TouchableOpacity>
-                                    ))}
-                                </ScrollView>
-                            </View>
-                        )}
+						<Text style={styles.label}>Рік альбому</Text>
+						<TouchableOpacity onPress={() => setShowYears(!showYears)}>
+							<View pointerEvents="none">
+								<Input
+									value={selectedYear?.year?.toString() ?? ""}
+									placeholder="Оберіть рік"
+									editable={false}
+								/>
+							</View>
+						</TouchableOpacity>
 
-                        <View style={styles.modalFooter}>
-                            <Button 
-                                variant="white" 
-                                text="Скасувати" 
-                                onPress={onClose} 
-                                style={[styles.button, styles.white]}
-                            />
-                            <Button 
-                                variant="purple" 
-                                text="Зберегти"
-                                onPress={handleSave}
-                                style={[
-                                    styles.button, 
-                                    styles.purple, 
-                                    { opacity: isFormValid ? 1 : 0.5 }
-                                ]}
-                            />
-                        </View>
-                    </ScrollView>
-                </View>
-            </View>
-        </Modal>
-    );
+						{showYears && (
+							<View style={styles.dropdown}>
+								<ScrollView style={{ maxHeight: 150 }} nestedScrollEnabled>
+									{data?.map((y) => (
+										<TouchableOpacity
+											key={y.id}
+											style={styles.dropdownItem}
+											onPress={() => {
+												setValue("yearId", y.id);
+												setShowYears(false);
+											}}
+										>
+											<Text style={styles.dropdownText}>{y.year}</Text>
+										</TouchableOpacity>
+									))}
+								</ScrollView>
+							</View>
+						)}
+
+						<View style={styles.modalFooter}>
+							<Button
+								variant="white"
+								text="Скасувати"
+								onPress={onClose}
+								style={[styles.button, styles.white]}
+							/>
+							<Button
+								variant="purple"
+								text="Зберегти"
+								onPress={handleSubmit(handleFormSubmit)}
+								disabled={!isValid}
+								style={[
+									styles.button,
+									styles.purple,
+									{ opacity: isValid ? 1 : 0.5 },
+								]}
+							/>
+						</View>
+					</ScrollView>
+				</View>
+			</View>
+		</Modal>
+	);
 };

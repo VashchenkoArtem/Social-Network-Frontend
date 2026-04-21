@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { PressableProps } from "react-native";
+import { PressableProps, StyleProp, ViewStyle } from "react-native";
 
 export interface IPressableProps extends PressableProps {
 	variant: "white" | "purple";
@@ -9,4 +9,5 @@ export interface IPressableProps extends PressableProps {
 	href?: string;
 	isSettings?: boolean;
 	paddingHorizontal?: number;
+	buttonStyle?: StyleProp<ViewStyle>;
 }

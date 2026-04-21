@@ -12,13 +12,15 @@ import { FriendsPageIcon } from "../icons/urls/FriendsPageIcon";
 import { constStyles } from "@shared/constants/styles";
 import { ChatsPageIcon } from "../icons/urls/ChatsPageIcon";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { ICONS } from "../icons/icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { UserContext } from "@modules/auth/context/user-context";
 
 export function Header(props: HeaderProps) {
 	const { cantCreatePost, cantEditSelf } = props;
 	const pathname = usePathname();
-
+	const { user, logout } = useContext(UserContext)!;
 	const [choosedTab, setChoosedTab] = useState("Контакти");
 
 	const chatsTabs = [
@@ -30,7 +32,11 @@ export function Header(props: HeaderProps) {
 		},
 		{ title: "Групові чати", route: "/groupChats", icon: ICONS.ChatsPageIcon },
 	];
-	if (pathname === "/login" || pathname === "/registration" || pathname === "/verify") {
+	if (
+		pathname === "/login" ||
+		pathname === "/registration" ||
+		pathname === "/verify"
+	) {
 		return (
 			<View style={[styles.header, styles.headerLogin]}>
 				<Link href="/home">
@@ -67,7 +73,12 @@ export function Header(props: HeaderProps) {
 					<Button
 						variant="white"
 						iconLeft={<ExitIcon color={COLORS.plum} style={styles.icon} />}
-						onPress={() => push("/login")}
+						onPress={() => {
+							if (user) {
+								console.log("logaut");
+								logout();
+							}
+						}}
 						href="/login"
 					/>
 				</View>

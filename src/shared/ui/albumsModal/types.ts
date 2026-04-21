@@ -1,10 +1,10 @@
 export interface IAlbumData {
-    title: string;
-    theme: string;
-    year: string;
+	title: string;
+	theme: string;
+	year: string;
 }
 
 export interface IAlbum extends IAlbumData {
-    id: string;
-    isVisible: boolean;
+	id: number;
+	isVisible: boolean;
 }

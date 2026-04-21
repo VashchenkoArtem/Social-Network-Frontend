@@ -1,44 +1,103 @@
-import { baseApi } from '@shared/api/baseApi';
-import { RegistrationData, AuthToken, User } from './api.types';
+import { baseApi } from "@shared/api/baseApi";
+import {
+	RegistrationData,
+	AuthToken,
+	User,
+	ProfileData,
+	LoginData,
+} from "./api.types";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const userApi = baseApi.injectEndpoints({
-  endpoints: (builder) => ({
-    sendCode: builder.mutation<{ message: string }, { email: string }>({
-      query: (body) => ({
-        url: '/send-code',
-        method: 'POST',
-        body,
-      }),
-    }),
-    registration: builder.mutation<AuthToken, RegistrationData>({
-      query: (body) => ({
-        url: '/registration',
-        method: 'POST',
-        body,
-      }),
-    }),
-    updateUserInfo: builder.mutation<User, { firstname: string; nickname: string }>({
-      query: (body) => ({
-        url: '/update-user',
-        method: 'PATCH',
-        body,
-      }),
-      invalidatesTags: ['User'],
-    }),
-    updateUser: builder.mutation<User, { firstname?: string; nickname?: string; signature?: string }>({
-      query: (body) => ({
-        url: '/user/update',
-        method: 'POST',
-        body,
-      }),
-      invalidatesTags: ['User'],
-    }),
-  }),
+	endpoints: (builder) => ({
+		sendCode: builder.mutation<{ message: string },{ email: string; message: string }>({
+			query: (body) => ({
+				url: "send-code",
+				method: "POST",
+				body,
+			}),
+		}),
+		registration: builder.mutation<AuthToken, RegistrationData>({
+			query: (body) => ({
+				url: "registration",
+				method: "POST",
+				body,
+			}),
+			onCacheEntryAdded: async (arg, api) => {
+				const { data } = await api.cacheDataLoaded;
+				AsyncStorage.setItem("token", data.token);
+			},
+		}),
+		login: builder.mutation<AuthToken, LoginData>({
+			query: (body) => ({
+				url: "login",
+				method: "POST",
+				body,
+			}),
+			onCacheEntryAdded: async (arg, api) => {
+				const { data } = await api.cacheDataLoaded;
+				AsyncStorage.setItem("token", data.token);
+			},
+		}),
+		updateUserInfo: builder.mutation<User, ProfileData>({
+			query: (body) => {
+				const formData = new FormData();
+
+				formData.append("firstname", body.firstname ?? "");
+				formData.append("lastname", body.lastname ?? "");
+				formData.append("nickname", body.nickname ?? "");
+				formData.append("email", body.email ?? "");
+				formData.append("birthDate", body.birthDate ?? "");
+				formData.append("password", body.password ?? "");
+
+				if (body.avatar) {
+					formData.append("file", {
+						uri: body.avatar,
+						name: "avatar.jpg",
+						type: "image/jpeg",
+					} as any);
+				}
+				return {
+					url: "update-user",
+					method: "PATCH",
+					body,
+				};
+			},
+			invalidatesTags: ["User"],
+		}),
+		updatePassword: builder.mutation<User, ProfileData>({
+			query: (body) => {
+				return {
+					url: "update-password",
+					method: "PATCH",
+					body,
+				};
+			},
+			invalidatesTags: ["User"],
+		}),
+		me: builder.query<User, void>({
+			query: () => ({
+				url: "me",
+				method: "GET",
+			}),
+			providesTags: ["User"],
+		}),
+		// updateUser: builder.mutation<User, { firstname?: string; nickname?: string; signature?: string }>({
+		//   query: (body) => ({
+		//     url: '/update-user',
+		//     method: 'POST',
+		//     body,
+		//   }),
+		//   invalidatesTags: ['User'],
+		// }),
+	}),
 });
 
-export const { 
-  useSendCodeMutation, 
-  useRegistrationMutation, 
-  useUpdateUserInfoMutation, 
-  useUpdateUserMutation 
+export const {
+	useSendCodeMutation,
+	useRegistrationMutation,
+	useUpdateUserInfoMutation,
+	useUpdatePasswordMutation,
+	useMeQuery,
+	useLoginMutation,
 } = userApi;

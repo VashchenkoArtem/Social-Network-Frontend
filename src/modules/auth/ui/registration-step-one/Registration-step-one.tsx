@@ -1,5 +1,5 @@
 import { View, Text, Alert } from "react-native";
-import { useRouter } from "expo-router";
+import { Redirect, useRouter } from "expo-router";
 import { Button } from "@shared/ui/button";
 import { Input } from "@shared/ui/input";
 import { Modal } from "@shared/ui/modal";
@@ -10,37 +10,42 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { regValidator } from "@modules/auth/models/lib/registration.validation";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { useContext } from "react";
-import { UserContext } from "@shared/context/user-context";
 import { useSendCodeMutation } from "@modules/auth/api/userApi";
-
+import { UserContext } from "@modules/auth/context/user-context";
 
 export function RegistrationStepOne() {
-    const router = useRouter();
-    const [sendCode, { isLoading }] = useSendCodeMutation();
 
-    const {
-        handleSubmit,
-        control,
-        formState: { errors },
-    } = useForm<RegForm>({
-        resolver: yupResolver(regValidator),
-    });
+	const router = useRouter();
+	const [sendCode, { isLoading }] = useSendCodeMutation();
+	const { user } = useContext(UserContext)!;
+	const {
+		handleSubmit,
+		control,
+		formState: { errors },
+	} = useForm<RegForm>({
+		resolver: yupResolver(regValidator),
+	});
 
-    const onSubmit = async (data: RegForm) => {
-        try {
-            await sendCode({ email: data.email }).unwrap();
-            router.push({
-                pathname: "/verify",
-                params: { email: data.email, password: data.password },
-            });
-        } catch (error: any) {
-            Alert.alert(
-                "Помилка",
-                error?.data || "Не вдалося надіслати код підтвердження"
-            );
-        }
-    };
-
+	const onSubmit = async (data: RegForm) => {
+		try {
+			await sendCode({
+				email: data.email,
+				message: "Код підтвердження",
+			}).unwrap();
+			router.push({
+				pathname: "/verify",
+				params: { email: data.email, password: data.password },
+			});
+		} catch (err: any) {
+			Alert.alert(
+				"Помилка",
+				err?.data || "Не вдалося надіслати код підтвердження",
+			);
+		}
+	};
+	if (user) {
+		return <Redirect href="/(tabs)/home" />;
+	}
 	return (
 		<KeyboardAwareScrollView bottomOffset={120} extraKeyboardSpace={20}>
 			<View style={styles.container}>
