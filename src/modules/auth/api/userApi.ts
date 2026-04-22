@@ -7,6 +7,7 @@ import {
 	LoginData,
 } from "./api.types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { IUser } from "@shared/types/user.types";
 
 export const userApi = baseApi.injectEndpoints({
 	endpoints: (builder) => ({
@@ -43,14 +44,15 @@ export const userApi = baseApi.injectEndpoints({
 			query: (body) => {
 				const formData = new FormData();
 
-				formData.append("firstname", body.firstname ?? "");
-				formData.append("lastname", body.lastname ?? "");
-				formData.append("nickname", body.nickname ?? "");
-				formData.append("email", body.email ?? "");
-				formData.append("birthDate", body.birthDate ?? "");
-				formData.append("password", body.password ?? "");
+				if (body.firstname) formData.append("firstname", body.firstname);
+				if (body.lastname) formData.append("lastname", body.lastname);
+				if (body.nickname) formData.append("nickname", body.nickname);
+				if (body.email) formData.append("email", body.email);
+				if (body.birthDate) formData.append("birthDate", body.birthDate);
+				if (body.password) formData.append("password", body.password);
 
 				if (body.avatar) {
+					console.log(body.avatar)
 					formData.append("file", {
 						uri: body.avatar,
 						name: "avatar.jpg",
@@ -60,7 +62,7 @@ export const userApi = baseApi.injectEndpoints({
 				return {
 					url: "update-user",
 					method: "PATCH",
-					body,
+					body: formData,
 				};
 			},
 			invalidatesTags: ["User"],
@@ -75,7 +77,7 @@ export const userApi = baseApi.injectEndpoints({
 			},
 			invalidatesTags: ["User"],
 		}),
-		me: builder.query<User, void>({
+		me: builder.query<IUser, void>({
 			query: () => ({
 				url: "me",
 				method: "GET",

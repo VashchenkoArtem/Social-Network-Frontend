@@ -17,8 +17,14 @@ export const styles = StyleSheet.create({
         alignItems: "center"
     },
     title: {
+        fontFamily: "",
         fontSize: 16,
-        color: COLORS.black
+        color: COLORS.black,
+        fontWeight: 600
     },
-    avatars: {}
+    avatars: {
+        flexDirection: "row",
+        gap: 5,
+        flexWrap: "wrap"
+    }
 })

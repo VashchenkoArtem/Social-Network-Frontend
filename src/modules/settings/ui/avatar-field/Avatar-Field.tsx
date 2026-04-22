@@ -10,9 +10,11 @@ import { COLORS } from "@shared/constants/colors";
 interface AvatarFieldProps {
 	value?: string;
 	onChange: (uri: string) => void;
+	avatar: string | null
 }
 
-export function AvatarField({ value, onChange }: AvatarFieldProps) {
+export function AvatarField({ value, onChange, avatar }: AvatarFieldProps) {
+	console.log(avatar)
 	async function pickImage() {
 		const result = await ImagePicker.launchImageLibraryAsync({
 			mediaTypes: ["images"],
@@ -32,8 +34,8 @@ export function AvatarField({ value, onChange }: AvatarFieldProps) {
 			<View style={styles.AvatarView}>
 				<Image
 					source={
-						value
-							? { uri: value }
+							avatar
+							? { uri: `http://192.168.0.104:8000/media/thumb/${avatar}`, }
 							: require("../../../../assets/defaultAvatar.png")
 					}
 					style={value ? styles.SelectedAvatar : styles.DefaultAvatar}

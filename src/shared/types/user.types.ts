@@ -5,11 +5,17 @@ export interface IUser {
 	lastname: string | null;
 	nickname: string | null;
 	alias: string | null;
-	avatar: string | null;
+	avatars: IAvatar[]
 	signature: string | null;
 	birthDate: string | null;
 }
-
+export interface IAvatar{
+	id: number;
+	filename: string;
+	albumId?: number;
+	userId?: number;
+	avatarForId: number
+	}
 export interface UpdateUser {
 	name?: string;
 	email?: string;

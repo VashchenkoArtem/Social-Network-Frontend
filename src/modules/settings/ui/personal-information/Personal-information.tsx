@@ -80,7 +80,6 @@ export function PersonalInformation() {
 		}
 	};
 	const onSubmit = async (data: FormData) => {
-		console.log("asdasda");
 		try {
 			const payload = {
 				firstname: data.firstname,
@@ -162,11 +161,11 @@ export function PersonalInformation() {
 								<Controller
 									name="avatar"
 									control={control}
-									defaultValue={user.avatar || ""}
 									render={({ field }) => (
 										<AvatarField
-											value={field.value}
-											onChange={field.onChange}
+										value={field.value}
+										onChange={field.onChange}
+										avatar = {user.avatars[user.avatars.length - 1].filename}
 										/>
 									)}
 								/>

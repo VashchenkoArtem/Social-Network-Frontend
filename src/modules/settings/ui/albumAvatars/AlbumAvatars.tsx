@@ -16,14 +16,14 @@ export function AlbumAvatars(props: AvatarsProps){
             <View style = {styles.avatars}>
                 { avatars.map((avatar) => {
                     return (
-                        <View key={avatar}>
+                        <View key={avatar.id}>
                             <Image
                                 source={{
-                                    uri: avatar,
+                                    uri: `http://192.168.0.104:8000/media/thumb/${avatar.filename}`,
                                 }}
                                 style={{
-                                    width: 200,
-                                    height: 200,
+                                    width: 162,
+                                    height: 162,
                                     margin: 4,
                                     borderRadius: 10,
                                     backgroundColor: "#eee",

@@ -94,8 +94,8 @@ export const AlbumsPage = () => {
 				scrollEventThrottle={16}
 			>
 				<View style={styles.contentContainer}>
-					{ user.avatar && 
-						<AlbumAvatars avatars={[user?.avatar]}/>
+					{ user.avatars && 
+						<AlbumAvatars avatars={user?.avatars}/>
 					}
 					{ albums.length === 0 &&
 						<View style={styles.createCard}>
@@ -185,7 +185,7 @@ export const AlbumsPage = () => {
 										<View key={photo.id}>
 											<Image
 												source={{
-													uri: `http://192.168.0.113:8000/media/thumb/${photo.filename}`,
+													uri: `http://192.168.0.104:8000/media/thumb/${photo.filename}`,
 												}}
 												style={{
 													width: 162,
