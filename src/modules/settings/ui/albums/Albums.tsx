@@ -20,6 +20,7 @@ import { AddAlbumPhoto } from "../albumAddPhoto/addPhoto";
 import { Link, Redirect } from "expo-router";
 import { UserContext } from "@modules/auth/context/user-context";
 import { Modal } from "@shared/ui/modal";
+import { AlbumAvatars } from "../albumAvatars/AlbumAvatars";
 type AlbumForm = {
 	id: number;
 	title: string;
@@ -93,16 +94,17 @@ export const AlbumsPage = () => {
 				scrollEventThrottle={16}
 			>
 				<View style={styles.contentContainer}>
-					<View style={styles.createCard}>
-						<Text style={styles.createCardText}>
-							{albums.length > 0
-								? "Створити альбом"
-								: "Немає ще жодного альбому"}
-						</Text>
-						<TouchableOpacity style={styles.plusBtn} onPress={handleCreateNew}>
-							<ICONS.PlusIcon color="#000" />
-						</TouchableOpacity>
-					</View>
+					{ user.avatar && 
+						<AlbumAvatars avatars={[user?.avatar]}/>
+					}
+					{ albums.length === 0 &&
+						<View style={styles.createCard}>
+							<Text style={styles.createCardText}>Немає ще жодного альбому</Text>
+							<TouchableOpacity style={styles.plusBtn} onPress={handleCreateNew}>
+								<ICONS.PlusIcon color="#000" />
+							</TouchableOpacity>
+						</View>
+					}
 					
 					{albums.map((album) => (
 						<View key={album.id} style={styles.albumCard}>
@@ -183,7 +185,7 @@ export const AlbumsPage = () => {
 										<View key={photo.id}>
 											<Image
 												source={{
-													uri: `http://192.168.0.104:8000/media/thumb/${photo.filename}`,
+													uri: `http://192.168.0.113:8000/media/thumb/${photo.filename}`,
 												}}
 												style={{
 													width: 162,

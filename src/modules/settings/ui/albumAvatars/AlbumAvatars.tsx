@@ -1,0 +1,38 @@
+import { COLORS } from "@shared/constants/colors";
+import { ICONS } from "@shared/ui";
+import { Button } from "@shared/ui/button";
+import { View, Text, Image } from "react-native";
+import { AvatarsProps } from "./albumAvatars.types";
+import { styles } from "./styles";
+
+export function AlbumAvatars(props: AvatarsProps){
+    const { avatars } = props
+    return (
+        <View style = {styles.albumAvatarsContainer}>
+            <View style = {styles.albumTitleContainer}>
+                <Text style = {styles.title}>Мої фото</Text>
+                <Button variant="white" text = "Додати фото" iconLeft={<ICONS.MyPostsPageIcon color = {COLORS.plum}/>}></Button>
+            </View>
+            <View style = {styles.avatars}>
+                { avatars.map((avatar) => {
+                    return (
+                        <View key={avatar}>
+                            <Image
+                                source={{
+                                    uri: avatar,
+                                }}
+                                style={{
+                                    width: 200,
+                                    height: 200,
+                                    margin: 4,
+                                    borderRadius: 10,
+                                    backgroundColor: "#eee",
+                                }}
+                                />
+                        </View>
+                    )
+                })}
+            </View>
+        </View>
+    )
+}
