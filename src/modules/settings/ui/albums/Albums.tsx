@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { View, Text, ScrollView, TouchableOpacity } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, Alert } from "react-native";
 import { ICONS } from "@shared/ui";
 import { AlbumsModal } from "@shared/ui/albumsModal/AlbumsModal";
 import { IAlbumData } from "@shared/ui/albumsModal/types";
@@ -13,6 +13,8 @@ import {
 	useGetAlbumsQuery,
 	useToggleVisibilityMutation,
 	useUpdateAlbumMutation,
+	useDeletePhotoMutation,
+	useDeleteAlbumMutation,
 } from "@modules/settings/api/albumApi";
 import { COLORS } from "@shared/constants/colors";
 import { Image } from "react-native";
@@ -20,6 +22,10 @@ import { AddAlbumPhoto } from "../albumAddPhoto/addPhoto";
 import { Link, Redirect } from "expo-router";
 import { UserContext } from "@modules/auth/context/user-context";
 import { Modal } from "@shared/ui/modal";
+import { DeleteAlbumPhoto } from "../deleteAlbumPhoto/deletePhoto";
+import { DeleteAlbum } from "../deleteAlbum/deleteAlbum";
+
+
 type AlbumForm = {
 	id: number;
 	title: string;
@@ -32,6 +38,8 @@ export const AlbumsPage = () => {
 	});
 	const [createAlbum] = useCreateAlbumMutation();
 	const [updateAlbum] = useUpdateAlbumMutation();
+	const [deletePhoto] = useDeletePhotoMutation();
+	const [deleteAlbum] = useDeleteAlbumMutation();
 	const [toggleVisibility] = useToggleVisibilityMutation();
 	const { user } = useContext(UserContext)!;
 	const [modalVisible, setModalVisible] = useState(false);
@@ -52,6 +60,7 @@ export const AlbumsPage = () => {
 	const handleEditAlbum = () => {
 		setEditAlbumModalVisibile(true)
 	}
+
 	
 	const toForm = (album: Album): AlbumForm => ({
 		id: album.id,
@@ -161,10 +170,11 @@ export const AlbumsPage = () => {
 
 													<View style={styles.devider}></View>
 
-													<View style={styles.albumEditBtn}>
-														<ICONS.DeleteIcon color={COLORS.black}/>
-														<Text style={styles.albumEditText}>Видалити альбом</Text>
-													</View>
+													<DeleteAlbum 
+														albumId={album.id} 
+														albumTitle={album.title} 
+														onSuccess={() => setEditAlbumModalVisibile(false)} 
+													/>
 											</View>
 											// </Modal>
 											}
@@ -204,7 +214,9 @@ export const AlbumsPage = () => {
 														 />
 												</TouchableOpacity>
 												<TouchableOpacity style={styles.photoBtn}>
-													<ICONS.DeleteIcon color={COLORS.plum} />
+													<View style={styles.photoBtn}>
+														<DeleteAlbumPhoto photoId={photo.id} />
+													</View>
 												</TouchableOpacity>
 											</View>
 										</View>

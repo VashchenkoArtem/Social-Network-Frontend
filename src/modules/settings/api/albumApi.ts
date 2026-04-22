@@ -98,6 +98,20 @@ export const albumApi = baseApi.injectEndpoints({
 				};
 			},
 		}),
+		deleteAlbum: builder.mutation<Album, { id: number }>({
+			query: ({ id }) => ({
+				url: `albums/${id}`,
+				method: "DELETE",
+			}),
+			invalidatesTags: ["Album"],
+		}),
+		deletePhoto: builder.mutation<void, { photoId: number }>({
+			query: ({ photoId }) => ({
+				url: `photo/${photoId}`,
+				method: "DELETE",
+			}),
+			invalidatesTags: ["Album"],
+		}),
 	}),
 });
 
@@ -109,4 +123,6 @@ export const {
 	useGetYearsQuery,
 	useGetTopicsQuery,
 	useAddAlbumPhotoMutation,
+	useDeletePhotoMutation,
+	useDeleteAlbumMutation,
 } = albumApi;

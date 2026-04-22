@@ -27,7 +27,7 @@ export function RegistrationStepOne() {
 	});
 
 	const onSubmit = async (data: RegForm) => {
-		try {
+	
 			await sendCode({
 				email: data.email,
 				message: "Код підтвердження",
@@ -36,12 +36,6 @@ export function RegistrationStepOne() {
 				pathname: "/verify",
 				params: { email: data.email, password: data.password },
 			});
-		} catch (err: any) {
-			Alert.alert(
-				"Помилка",
-				err?.data || "Не вдалося надіслати код підтвердження",
-			);
-		}
 	};
 	if (user) {
 		return <Redirect href="/(tabs)/home" />;
