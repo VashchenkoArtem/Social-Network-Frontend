@@ -4,6 +4,7 @@ import { Button } from "@shared/ui/button";
 import { View, Text, Image } from "react-native";
 import { AvatarsProps } from "./albumAvatars.types";
 import { styles } from "./styles";
+import { AvatarAddPhoto } from "../avatarAddPhoto/AvatarAddPhoto";
 
 export function AlbumAvatars(props: AvatarsProps){
     const { avatars } = props
@@ -11,7 +12,7 @@ export function AlbumAvatars(props: AvatarsProps){
         <View style = {styles.albumAvatarsContainer}>
             <View style = {styles.albumTitleContainer}>
                 <Text style = {styles.title}>Мої фото</Text>
-                <Button variant="white" text = "Додати фото" iconLeft={<ICONS.MyPostsPageIcon color = {COLORS.plum}/>}></Button>
+                <AvatarAddPhoto></AvatarAddPhoto>
             </View>
             <View style = {styles.avatars}>
                 { avatars.map((avatar) => {
