@@ -21,7 +21,7 @@ export function AlbumAvatars(props: AvatarsProps){
                         <View key={avatar.id}>
                             <Image
                                 source={{
-                                    uri: `http://192.168.0.104:8000/media/thumb/${avatar.filename}`,
+                                    uri: `http://192.168.1.111:8000/media/thumb/${avatar.filename}`,
                                 }}
                                 style={{
                                     width: 162,
@@ -30,6 +30,7 @@ export function AlbumAvatars(props: AvatarsProps){
                                     borderRadius: 10,
                                     backgroundColor: "#eee",
                                 }}
+                                
                                 />
                             <TouchableOpacity style={styles.btnContainer}>
                                 <View style={styles.photoBtn}>

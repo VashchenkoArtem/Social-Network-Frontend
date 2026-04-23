@@ -64,11 +64,12 @@ export const albumApi = baseApi.injectEndpoints({
 
 		toggleVisibility: builder.mutation<Album, { id: number }>({
 			query: ({ id }) => ({
-				url: `${id}`,
+				url: `albums/${id}/visibility`,
 				method: "PATCH",
 			}),
 			invalidatesTags: ["Album"],
 		}),
+
 		getYears: builder.query<{ id: number; year: string }[], void>({
 			query: () => ({
 				url: "years",

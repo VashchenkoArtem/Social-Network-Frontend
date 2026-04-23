@@ -5,7 +5,7 @@ import { usePathname } from "expo-router";
 import { useFonts } from "expo-font";
 
 export function Button(props: IPressableProps) {
-	const { variant, text, iconLeft, iconRight, href, isSettings, buttonStyle } =
+	const { variant, text, iconLeft, iconRight, href, isSettings, buttonStyle, backgroundColor } =
 		props;
 
 	const [fontsLoaded] = useFonts({
@@ -23,6 +23,7 @@ export function Button(props: IPressableProps) {
 			style={[
 				buttonStyles.button,
 				buttonStyles[variant],
+				backgroundColor ? { backgroundColor } : buttonStyles.defaultBackground,
 				buttonStyle,
 				text && buttonStyles.buttonWithBigPadding,
 				href && pathName === href ? buttonStyles.selectedButton : null,
@@ -41,6 +42,7 @@ export function Button(props: IPressableProps) {
 						style={[
 							buttonStyles.buttonText,
 							buttonStyles[`${variant}ButtonText`],
+							backgroundColor ? { backgroundColor } : buttonStyles.defaultBackground,
 						]}
 					>
 						{text}

@@ -67,6 +67,7 @@ export const AlbumsPage = () => {
 		topicId: album.topic.id,
 		yearId: album.year.id,
 	});
+
 	const handleSave = async (data: AlbumForm) => {
 		const payload: CreateAlbumDto = {
 			title: data.title,
@@ -85,9 +86,19 @@ export const AlbumsPage = () => {
 
 		setModalVisible(false);
 	};
+
 	if (!user) {
 		return <Redirect href={"/login"}></Redirect>;
 	}
+
+	const handleAlbumVisibility = async (album: Album) => {
+		try {
+			await toggleVisibility({ id: album.id }).unwrap()
+		} catch (error) {
+			console.log(error)
+		}
+	}
+
 	return (
 		<KeyboardAwareScrollView
 			scrollEnabled={scrollEnabled}
@@ -183,36 +194,28 @@ export const AlbumsPage = () => {
 									</View>
 								</View>
 								<View
-									style={{
-										flexDirection: "row",
-										flexWrap: "wrap",
-										marginTop: 10,
-									}}
+									style={styles.albumPhotoContainer}
 								>
 									{album.photos.map((photo) => (
-										<View key={photo.id}>
+										<View key={photo.id} >
 											<Image
 												source={{
-													uri: `http://192.168.0.104:8000/media/thumb/${photo.filename}`,
+													uri: `http://192.168.1.111:8000/media/thumb/${photo.filename}`,
 												}}
-												style={{
-													width: 162,
-													height: 162,
-													margin: 4,
-													borderRadius: 10,
-													backgroundColor: "#eee",
-												}}
+												style={styles.albumPhoto}
+												blurRadius={album.isVisible ? 0 : 9}
 											/>
 											<View style={styles.photoBtns}>
 												<TouchableOpacity
 													style={styles.photoBtn}
-													onPress={() =>
-														toggleVisibility({ id: Number(album.id) })
-													}
+													onPress={() => handleAlbumVisibility(album)}
 												>
-													<ICONS.EyeOpen color={COLORS.plum} 	
-														 />
+													{album.isVisible
+														? <ICONS.EyeOpen color={COLORS.plum} />
+														: <ICONS.EyeClose color={COLORS.plum} />
+													}
 												</TouchableOpacity>
+
 												<TouchableOpacity style={styles.photoBtn}>
 													<View style={styles.photoBtn}>
 														<DeletePhoto photoId={photo.id} />

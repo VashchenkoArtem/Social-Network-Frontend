@@ -27,7 +27,8 @@ export const styles = StyleSheet.create({
 		height: 36,
 		borderRadius: 18,
 		borderWidth: 1,
-		borderColor: COLORS.lightestGray,
+		backgroundColor: COLORS.white,
+		borderColor: COLORS.plum,
 		justifyContent: "center",
 		alignItems: "center",
 	},
@@ -108,8 +109,8 @@ export const styles = StyleSheet.create({
 		width: 36,
 		height: 36,
 		backgroundColor: COLORS.white,
-		borderRadius: 11231,
-		borderBlockColor: COLORS.black,
+		borderRadius: 50,
+		borderBlockColor: COLORS.plum,
 		borderWidth: 1,
 	},
 
@@ -157,4 +158,24 @@ export const styles = StyleSheet.create({
 		borderRadius: 1
 	},
 
+	albumPhoto: {
+		width: 162,
+		height: 162,
+		// margin: 4,
+		borderRadius: 10,
+		backgroundColor: "#eee",
+	},
+
+	albumPhotoContainer: {
+		flexDirection: "row",
+		width: '100%',
+		justifyContent: "space-between",
+		gap: 15,
+		flexWrap: "wrap",
+		// marginTop: 10,
+		// backgroundColor: 'red'
+	}
+	
 });
+
+
