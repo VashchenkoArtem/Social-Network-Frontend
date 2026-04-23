@@ -200,7 +200,7 @@ export const AlbumsPage = () => {
 										<View key={photo.id} >
 											<Image
 												source={{
-													uri: `http://192.168.1.111:8000/media/thumb/${photo.filename}`,
+													uri: `http://192.168.0.104:8000/media/thumb/${photo.filename}`,
 												}}
 												style={styles.albumPhoto}
 												blurRadius={album.isVisible ? 0 : 9}

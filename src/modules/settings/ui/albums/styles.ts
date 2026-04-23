@@ -169,7 +169,7 @@ export const styles = StyleSheet.create({
 	albumPhotoContainer: {
 		flexDirection: "row",
 		width: '100%',
-		justifyContent: "space-between",
+		// justifyContent: "",
 		gap: 15,
 		flexWrap: "wrap",
 		// marginTop: 10,
