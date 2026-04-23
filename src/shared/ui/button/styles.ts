@@ -40,9 +40,5 @@ export const buttonStyles = StyleSheet.create({
 
 	selectedButton: {
 		backgroundColor: COLORS.preWhite,
-	},
-	defaultBackground: {
-		backgroundColor: COLORS.white,
-	},
-	
+	}
 });
