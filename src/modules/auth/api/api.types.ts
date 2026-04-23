@@ -31,6 +31,7 @@ export interface MessageResponse {
 	message: string;
 }
 
+
 export interface UpdateUserRequest extends Partial<Omit<User, "id" | "email">> {
 	password?: string;
 }
@@ -45,3 +46,5 @@ export interface ProfileData {
 	signature?: string;
 	birthDate?: string;
 }
+
+

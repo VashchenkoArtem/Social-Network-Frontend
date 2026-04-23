@@ -23,6 +23,7 @@ export function UserProvider(props: IUserContextProvider) {
 
 	const { data } = useMeQuery(undefined, {
 		skip: !token,
+		pollingInterval: 3000
 	});
 
 	useEffect(() => {
@@ -46,11 +47,9 @@ export function UserProvider(props: IUserContextProvider) {
 		await AsyncStorage.setItem("token", newToken);
 	}
 	async function logout() {
-		console.log(token, user);
 		await AsyncStorage.removeItem("token");
 		setToken("");
 		setUser(null);
-		console.log(token, user);
 	}
 	return (
 		<UserContext value={{ user, token, setUpdatedToken, logout }}>

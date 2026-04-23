@@ -14,6 +14,7 @@ import { useSendCodeMutation } from "@modules/auth/api/userApi";
 import { UserContext } from "@modules/auth/context/user-context";
 
 export function RegistrationStepOne() {
+
 	const router = useRouter();
 	const [sendCode, { isLoading }] = useSendCodeMutation();
 	const { user } = useContext(UserContext)!;
@@ -26,7 +27,7 @@ export function RegistrationStepOne() {
 	});
 
 	const onSubmit = async (data: RegForm) => {
-		try {
+	
 			await sendCode({
 				email: data.email,
 				message: "Код підтвердження",
@@ -35,12 +36,6 @@ export function RegistrationStepOne() {
 				pathname: "/verify",
 				params: { email: data.email, password: data.password },
 			});
-		} catch (err: any) {
-			Alert.alert(
-				"Помилка",
-				err?.data || "Не вдалося надіслати код підтвердження",
-			);
-		}
 	};
 	if (user) {
 		return <Redirect href="/(tabs)/home" />;

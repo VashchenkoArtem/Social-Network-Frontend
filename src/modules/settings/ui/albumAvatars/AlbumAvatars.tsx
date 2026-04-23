@@ -1,10 +1,11 @@
 import { COLORS } from "@shared/constants/colors";
 import { ICONS } from "@shared/ui";
 import { Button } from "@shared/ui/button";
-import { View, Text, Image } from "react-native";
+import { View, Text, Image, TouchableOpacity } from "react-native";
 import { AvatarsProps } from "./albumAvatars.types";
 import { styles } from "./styles";
 import { AvatarAddPhoto } from "../avatarAddPhoto/AvatarAddPhoto";
+import { DeletePhoto } from "../deletePhoto/deletePhoto";
 
 export function AlbumAvatars(props: AvatarsProps){
     const { avatars } = props
@@ -15,7 +16,7 @@ export function AlbumAvatars(props: AvatarsProps){
                 <AvatarAddPhoto></AvatarAddPhoto>
             </View>
             <View style = {styles.avatars}>
-                { avatars.map((avatar) => {
+                { avatars?.map((avatar) => {
                     return (
                         <View key={avatar.id}>
                             <Image
@@ -30,6 +31,11 @@ export function AlbumAvatars(props: AvatarsProps){
                                     backgroundColor: "#eee",
                                 }}
                                 />
+                            <TouchableOpacity style={styles.btnContainer}>
+                                <View style={styles.photoBtn}>
+                                    <DeletePhoto photoId={avatar.id} />
+                                </View>
+                            </TouchableOpacity>
                         </View>
                     )
                 })}

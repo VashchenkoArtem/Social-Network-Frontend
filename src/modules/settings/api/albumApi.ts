@@ -84,7 +84,6 @@ export const albumApi = baseApi.injectEndpoints({
 		addAlbumPhoto: builder.mutation<void, { albumId: number; file: any }>({
 			query: ({ albumId, file }) => {
 				const formData = new FormData();
-				console.log(file.uri, albumId);
 				formData.append("image", {
 					uri: file.uri,
 					name: "avatar.jpg",
@@ -98,6 +97,20 @@ export const albumApi = baseApi.injectEndpoints({
 				};
 			},
 		}),
+		deleteAlbum: builder.mutation<Album, { id: number }>({
+			query: ({ id }) => ({
+				url: `albums/${id}`,
+				method: "DELETE",
+			}),
+			invalidatesTags: ["Album"],
+		}),
+		deletePhoto: builder.mutation<void, { photoId: number }>({
+			query: ({ photoId }) => ({
+				url: `photo/${photoId}`,
+				method: "DELETE",
+			}),
+			invalidatesTags: ["Album"],
+		}),
 	}),
 });
 
@@ -109,4 +122,6 @@ export const {
 	useGetYearsQuery,
 	useGetTopicsQuery,
 	useAddAlbumPhotoMutation,
+	useDeletePhotoMutation,
+	useDeleteAlbumMutation,
 } = albumApi;

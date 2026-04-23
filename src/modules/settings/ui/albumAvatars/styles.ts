@@ -26,5 +26,22 @@ export const styles = StyleSheet.create({
         flexDirection: "row",
         gap: 5,
         flexWrap: "wrap"
-    }
+    },
+    photoBtn: {
+		justifyContent: "center",
+		alignItems: "center",
+		width: 36,
+		height: 36,
+		backgroundColor: COLORS.white,
+		borderRadius: 11231,
+		borderBlockColor: COLORS.black,
+		borderWidth: 1,
+	},
+    btnContainer: {
+		flexDirection: "row",
+		gap: 10,
+		position: "absolute",
+		right: 10,
+		bottom: 10,
+	},
 })

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Modal, View, Text, TouchableOpacity, ScrollView } from "react-native";
-import { useForm, Controller } from "react-hook-form";
+import { Modal, View, Text, TouchableOpacity, ScrollView, ActivityIndicator } from "react-native";
 import { Input } from "@shared/ui/input";
 import { Button } from "@shared/ui/button";
 import { IAlbumData } from "./types";
@@ -11,6 +10,7 @@ import {
 	useGetYearsQuery,
 	useUpdateAlbumMutation,
 } from "@modules/settings/api/albumApi";
+import { Controller, useForm } from "react-hook-form";
 
 interface AlbumsModalProps {
 	visible: boolean;

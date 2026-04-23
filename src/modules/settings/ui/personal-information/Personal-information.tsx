@@ -165,7 +165,7 @@ export function PersonalInformation() {
 										<AvatarField
 										value={field.value}
 										onChange={field.onChange}
-										avatar = {user.avatars[user.avatars.length - 1].filename}
+										avatar = {user.avatars[user.avatars.length - 1]?.filename}
 										/>
 									)}
 								/>
@@ -429,7 +429,6 @@ export function PersonalInformation() {
 									onClear={() => console.log("Canvas cleared")}
 									onBegin={() => {
 										setIsDrawing(true);
-										console.log("asdada");
 									}}
 									setIsDriwing={setIsDrawing}
 									onEnd={() => setIsDrawing(false)}

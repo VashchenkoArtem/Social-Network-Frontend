@@ -52,7 +52,6 @@ export const userApi = baseApi.injectEndpoints({
 				if (body.password) formData.append("password", body.password);
 
 				if (body.avatar) {
-					console.log(body.avatar)
 					formData.append("file", {
 						uri: body.avatar,
 						name: "avatar.jpg",
