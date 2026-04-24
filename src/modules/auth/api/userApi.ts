@@ -47,6 +47,7 @@ export const userApi = baseApi.injectEndpoints({
 				if (body.firstname) formData.append("firstname", body.firstname);
 				if (body.lastname) formData.append("lastname", body.lastname);
 				if (body.nickname) formData.append("nickname", body.nickname);
+				if (body.alias) formData.append("alias", body.alias)
 				if (body.email) formData.append("email", body.email);
 				if (body.birthDate) formData.append("birthDate", body.birthDate);
 				if (body.password) formData.append("password", body.password);

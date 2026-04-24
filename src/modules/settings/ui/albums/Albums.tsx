@@ -123,6 +123,12 @@ export const AlbumsPage = () => {
 					{ user.avatars && 
 						<AlbumAvatars avatars={user?.avatars} handlePhotoVisibility={handlePhotoVisibility}/>
 					}
+					<View style={styles.createCard}>
+						<Text style={styles.createCardText}>{ albums.length === 0 ? "Немає ще жодного альбому" : "Створити новий альбом"}</Text>
+						<TouchableOpacity style={styles.plusBtn} onPress={handleCreateNew}>
+							<ICONS.PlusIcon color="#000" />
+						</TouchableOpacity>
+					</View>
 					{albums.map((album) => (
 						<View key={album.id} style={styles.albumCard}>
 								<View style={styles.albumHeader}>
@@ -199,7 +205,7 @@ export const AlbumsPage = () => {
 										<View key={photo.id} >
 											<Image
 												source={{
-													uri: `http://192.168.0.106:8000/media/thumb/${photo.filename}`,
+													uri: `http://192.168.0.104:8000/media/thumb/${photo.filename}`,
 												}}
 												style={styles.albumPhoto}
 												blurRadius={photo.isVisible && album.isVisible ? 0 : 9}
@@ -209,7 +215,7 @@ export const AlbumsPage = () => {
 													style={styles.photoBtn}
 													onPress={() => handlePhotoVisibility(photo.id, !photo.isVisible)}
 												>
-													{photo.isVisible
+													{photo.isVisible && album.isVisible
 														? <ICONS.EyeOpen color={COLORS.plum} />
 														: <ICONS.EyeClose color={COLORS.plum} />
 													}
@@ -228,12 +234,7 @@ export const AlbumsPage = () => {
 						</View>
 						
 					))}
-					<View style={styles.createCard}>
-						<Text style={styles.createCardText}>{ albums.length === 0 ? "Немає ще жодного альбому" : "Створити новий альбом"}</Text>
-						<TouchableOpacity style={styles.plusBtn} onPress={handleCreateNew}>
-							<ICONS.PlusIcon color="#000" />
-						</TouchableOpacity>
-					</View>
+
 				</View>
 			</ScrollView>
 			<AlbumsModal

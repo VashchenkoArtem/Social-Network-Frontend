@@ -407,7 +407,7 @@ export function PersonalInformation() {
 							(user?.signature ? (
 								<View style={styles.signatureImageWrapper}>
 									<Image
-										source={{  uri: `http://192.168.0.106:8000/media/thumb/${user.signature}` }}
+										source={{  uri: `http://192.168.0.104:8000/media/thumb/${user.signature}` }}
 										style={styles.signatureImage}
 									/>
 								</View>
