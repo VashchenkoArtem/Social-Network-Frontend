@@ -83,6 +83,21 @@ export const userApi = baseApi.injectEndpoints({
 			}),
 			providesTags: ["User"],
 		}),
+		updateUserSignature: builder.mutation<User, {signature: string}>({
+			query: (body) => {
+				const formData = new FormData()
+				formData.append("file", {
+					uri: body.signature,
+					name: "signature.jpg",
+					type: "image/jpeg"
+				} as any)
+				return {
+					url: "signature",
+					method: "PATCH",
+					body: formData
+				}
+			}
+		})
 		// updateUser: builder.mutation<User, { firstname?: string; nickname?: string; signature?: string }>({
 		//   query: (body) => ({
 		//     url: '/update-user',
@@ -101,4 +116,5 @@ export const {
 	useUpdatePasswordMutation,
 	useMeQuery,
 	useLoginMutation,
+	useUpdateUserSignatureMutation
 } = userApi;

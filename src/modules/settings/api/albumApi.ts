@@ -10,6 +10,7 @@ export interface Album {
 		id: number;
 		filename: string;
 		albumId: number;
+		isVisible: boolean
 	}[];
 
 	year: {
@@ -112,6 +113,14 @@ export const albumApi = baseApi.injectEndpoints({
 			}),
 			invalidatesTags: ["Album"],
 		}),
+		togglePhotoVisibility: builder.mutation<{ isVisible: boolean },{ photoId: number; isVisible: boolean }>({
+			query: ( { photoId, isVisible }) => {
+				return {
+				url: `photo/${photoId}/visibility`,
+				method: "PATCH",
+				body: { isVisible }
+			}}
+		})
 	}),
 });
 
@@ -125,4 +134,5 @@ export const {
 	useAddAlbumPhotoMutation,
 	useDeletePhotoMutation,
 	useDeleteAlbumMutation,
+	useTogglePhotoVisibilityMutation
 } = albumApi;

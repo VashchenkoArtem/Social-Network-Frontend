@@ -15,6 +15,7 @@ import {
 	useUpdateAlbumMutation,
 	useDeletePhotoMutation,
 	useDeleteAlbumMutation,
+	useTogglePhotoVisibilityMutation,
 } from "@modules/settings/api/albumApi";
 import { COLORS } from "@shared/constants/colors";
 import { Image } from "react-native";
@@ -39,6 +40,7 @@ export const AlbumsPage = () => {
 	const [updateAlbum] = useUpdateAlbumMutation();
 	const [deletePhoto] = useDeletePhotoMutation();
 	const [deleteAlbum] = useDeleteAlbumMutation();
+	const [ togglePhotoVisibility ] = useTogglePhotoVisibilityMutation()
 	const [toggleVisibility] = useToggleVisibilityMutation();
 	const { user } = useContext(UserContext)!;
 	const [modalVisible, setModalVisible] = useState(false);
@@ -98,7 +100,13 @@ export const AlbumsPage = () => {
 			console.log(error)
 		}
 	}
-
+	const handlePhotoVisibility = async (photoId: number, isVisible: boolean) => {
+		try {
+			await togglePhotoVisibility({photoId, isVisible})
+		}catch (error){
+			console.log(error)
+		}
+	}
 	return (
 		<KeyboardAwareScrollView
 			scrollEnabled={scrollEnabled}
@@ -113,17 +121,8 @@ export const AlbumsPage = () => {
 			>
 				<View style={styles.contentContainer}>
 					{ user.avatars && 
-						<AlbumAvatars avatars={user?.avatars}/>
+						<AlbumAvatars avatars={user?.avatars} handlePhotoVisibility={handlePhotoVisibility}/>
 					}
-					{ albums.length === 0 &&
-						<View style={styles.createCard}>
-							<Text style={styles.createCardText}>Немає ще жодного альбому</Text>
-							<TouchableOpacity style={styles.plusBtn} onPress={handleCreateNew}>
-								<ICONS.PlusIcon color="#000" />
-							</TouchableOpacity>
-						</View>
-					}
-					
 					{albums.map((album) => (
 						<View key={album.id} style={styles.albumCard}>
 								<View style={styles.albumHeader}>
@@ -162,7 +161,7 @@ export const AlbumsPage = () => {
 													</TouchableOpacity>
 
 													<View>
-														{ album.isVisible ? 
+														{ !album.isVisible ? 
 															<View style={styles.albumEditBtn}>
 																<ICONS.EyeClose color={COLORS.black}/>
 																<Text style={styles.albumEditText}>Цей альбом бачите тільки ви</Text>
@@ -200,17 +199,17 @@ export const AlbumsPage = () => {
 										<View key={photo.id} >
 											<Image
 												source={{
-													uri: `http://192.168.0.104:8000/media/thumb/${photo.filename}`,
+													uri: `http://192.168.0.106:8000/media/thumb/${photo.filename}`,
 												}}
 												style={styles.albumPhoto}
-												blurRadius={album.isVisible ? 0 : 9}
+												blurRadius={photo.isVisible && album.isVisible ? 0 : 9}
 											/>
 											<View style={styles.photoBtns}>
 												<TouchableOpacity
 													style={styles.photoBtn}
-													onPress={() => handleAlbumVisibility(album)}
+													onPress={() => handlePhotoVisibility(photo.id, !photo.isVisible)}
 												>
-													{album.isVisible
+													{photo.isVisible
 														? <ICONS.EyeOpen color={COLORS.plum} />
 														: <ICONS.EyeClose color={COLORS.plum} />
 													}
@@ -229,6 +228,12 @@ export const AlbumsPage = () => {
 						</View>
 						
 					))}
+					<View style={styles.createCard}>
+						<Text style={styles.createCardText}>{ albums.length === 0 ? "Немає ще жодного альбому" : "Створити новий альбом"}</Text>
+						<TouchableOpacity style={styles.plusBtn} onPress={handleCreateNew}>
+							<ICONS.PlusIcon color="#000" />
+						</TouchableOpacity>
+					</View>
 				</View>
 			</ScrollView>
 			<AlbumsModal

@@ -17,17 +17,20 @@ export function RecoveryPassword(props: {
 	isVisible: boolean;
 	setIsVisible: (type: boolean) => void;
 	password: string;
+	setIsEditingPassword: (type: boolean) => void
 }) {
 	const [fullCode, setFullCode] = useState("");
 	const [isVerifying, setIsVerifying] = useState();
 	const [sendCode] = useSendCodeMutation();
 	const [updatePassword] = useUpdatePasswordMutation();
-	const { user, isVisible, setIsVisible, password } = props;
+	const { user, isVisible, setIsVisible, password, setIsEditingPassword } = props;
 	const [fontsLoaded] = useFonts({
 		"GTWalsheimPro-Regular": require("../../../../assets/fonts/GTWalsheimPro-Regular.ttf"),
 	});
 	const updatePasswordFunc = async () => {
 		await updatePassword({ password: password });
+		setIsVisible(false)
+		setIsEditingPassword(false)
 	};
 	return (
 		<View

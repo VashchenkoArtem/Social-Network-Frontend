@@ -14,6 +14,7 @@ import { TouchableOpacity } from "react-native";
 import {
 	useSendCodeMutation,
 	useUpdateUserInfoMutation,
+	useUpdateUserSignatureMutation,
 } from "./../../../auth/api/userApi";
 import { AvatarField } from "../avatar-field/Avatar-Field";
 import { MyPostsPageIcon } from "@shared/ui/icons/urls/MyPostsPageIcon";
@@ -37,21 +38,17 @@ type FormData = {
 export function PersonalInformation() {
 	const [isEditingSignature, setIsEditingSignature] = useState(false);
 	const [isEditingProfile, setIsEditingProfile] = useState(false);
-	const [isModalPasswordVisible, setIsModalPasswordVisible] = useState(false);
 	const [isEditingPersonalInfo, setIsEditingPersonalInfo] = useState(false);
 	const [isEditingPassword, setIsEditingPassword] = useState(false);
-	const [isModalVisible, setModalVisible] = useState(false);
+	const [ updateUserSignature ] = useUpdateUserSignatureMutation()
 	const [sendCode] = useSendCodeMutation();
 	const [updateUser, { isLoading }] = useUpdateUserInfoMutation();
-	const [fullCode, setFullCode] = useState("");
-	const [open, setOpen] = useState(true);
 	const { user, token } = useContext(UserContext)!;
 	const [isVisible, setIsVisible] = useState(false);
 	const [isDrawing, setIsDrawing] = useState(false);
 	const [selectedType, setSelectedType] = useState<"alias" | "signature">(
 		user?.signature ? "signature" : "alias",
 	);
-	const [userAvatar, setUserAvatar] = useState<string>("");
 	const {
 		control,
 		handleSubmit,
@@ -71,14 +68,10 @@ export function PersonalInformation() {
 	}
 	const passwordValue = watch("password");
 	const handleSaveSignature = async (base64: string) => {
-		try {
-			await updateUser({ signature: base64 }).unwrap();
-			setSelectedType("signature");
-			setIsEditingSignature(false);
-		} catch (err) {
-			console.error("Error saving signature", err);
-		}
-	};
+		await updateUserSignature({ signature: base64 }).unwrap();
+		setSelectedType("signature");
+		setIsEditingSignature(false);
+	}
 	const onSubmit = async (data: FormData) => {
 		try {
 			const payload = {
@@ -414,7 +407,7 @@ export function PersonalInformation() {
 							(user?.signature ? (
 								<View style={styles.signatureImageWrapper}>
 									<Image
-										source={{ uri: user.signature }}
+										source={{  uri: `http://192.168.0.106:8000/media/thumb/${user.signature}` }}
 										style={styles.signatureImage}
 									/>
 								</View>
@@ -443,6 +436,7 @@ export function PersonalInformation() {
 				isVisible={isVisible}
 				setIsVisible={setIsVisible}
 				password={passwordValue}
+				setIsEditingPassword = {setIsEditingPassword}
 			/>
 		</>
 	);

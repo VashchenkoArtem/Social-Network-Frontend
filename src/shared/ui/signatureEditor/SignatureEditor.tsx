@@ -19,7 +19,15 @@ export function SignatureEditor({ onOK, setIsDriwing }: Props) {
 					onBegin={() => setIsDriwing(true)}
 					onEnd={() => setIsDriwing(false)}
 					style={{ height: 65 }}
-					webStyle={`.m-signature-pad--footer { display: none; }`}
+					webStyle={`
+						.m-signature-pad--footer { display: none; }
+						.m-signature-pad--body {
+							background-color: white;
+						}
+						canvas {
+							background-color: white;
+						}
+					`}
 					autoClear={false}
 					imageType="image/png"
 				/>

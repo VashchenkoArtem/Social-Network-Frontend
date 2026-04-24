@@ -3,7 +3,6 @@ import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
     albumAvatarsContainer: {
-        gap: 16,
         backgroundColor: COLORS.white,
         borderRadius: 10,
         paddingVertical: 16,

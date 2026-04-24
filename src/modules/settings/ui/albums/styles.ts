@@ -5,6 +5,7 @@ export const styles = StyleSheet.create({
 	contentContainer: {
 		gap: 8,
 		paddingTop: 24,
+
 	},
 	createCard: {
 		backgroundColor: COLORS.white,
@@ -13,9 +14,9 @@ export const styles = StyleSheet.create({
 		paddingVertical: 16,
 		flexDirection: "row",
 		justifyContent: "space-between",
-		borderColor: COLORS.lightGray,
+        borderColor: COLORS.lightGray,
+        borderWidth: 1,
 		alignItems: "center",
-		marginBottom: 16,
 	},
 	createCardText: {
 		fontSize: 16,
@@ -36,7 +37,8 @@ export const styles = StyleSheet.create({
 		backgroundColor: COLORS.white,
 		borderRadius: 12,
 		padding: 16,
-		marginBottom: 16,
+		borderColor: COLORS.lightGray,
+        borderWidth: 1
 	},
 	albumHeader: {
 		flexDirection: "row",
@@ -124,8 +126,8 @@ export const styles = StyleSheet.create({
 		backgroundColor: COLORS.preWhite,
 		borderRadius: 10,
 		position: "absolute",
-		top: 20,
-		right: 3,
+		top: -10,
+		right: -17,
 		zIndex: 1
 	},
 
