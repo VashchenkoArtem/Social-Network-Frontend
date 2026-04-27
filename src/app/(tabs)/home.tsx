@@ -3,6 +3,6 @@ import { HomePage } from "@modules/posts/ui/home/Home";
 
 export default function HomePageTabs() {
 	return (
-			<HomePage></HomePage>
+		<HomePage></HomePage>
 	);
 }
