@@ -19,14 +19,14 @@ export function PostCard(){
                     <View style={styles.postAvatarInfo}>
                         <Image style={styles.authorAvatar} source={
 							user.avatars[user.avatars.length - 1]
-							? { uri: `http://192.168.0.104:8000/media/thumb/${user.avatars[user.avatars.length - 1]?.filename}`, }
+							? { uri: `http://192.168.1.106:8000/media/thumb/${user.avatars[user.avatars.length - 1]?.filename}`, }
 							: require("../../../../assets/defaultAvatar.png")
 					}/>
                         <Text style={styles.authorName}>{user.nickname}</Text>
                     </View>
                     { user.signature && 
                     <Image style={styles.authorSignature} source={{
-                        uri: `http://192.168.0.104:8000/media/thumb/${user.signature}`
+                        uri: `http://192.168.1.106:8000/media/thumb/${user.signature}`
                     }}/>}
                 </View>
                 <TouchableOpacity style={styles.dotIconContainer} >
