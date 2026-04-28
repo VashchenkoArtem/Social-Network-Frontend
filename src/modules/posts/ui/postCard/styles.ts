@@ -4,7 +4,7 @@ import { StyleSheet } from "react-native";
 export const styles = StyleSheet.create({
     postContainer: {
         flexDirection: 'column',
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
         alignItems: 'center',
         backgroundColor: COLORS.white,
         borderWidth: 1,
@@ -55,16 +55,16 @@ export const styles = StyleSheet.create({
     },
 
     postTitle: {
-        fontSize: 14,
-        fontWeight: 400, 
+        fontSize: 16,
+        fontWeight: 500, 
         textAlign: 'left',
         color: COLORS.black
     },
     
     postContent: {
         flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
+        justifyContent: 'flex-start',
+        // alignItems: 'center',
         width: '100%', 
         paddingHorizontal: 16,
         paddingVertical: 16,
@@ -76,5 +76,11 @@ export const styles = StyleSheet.create({
         height: 20
 		// alignItems: 'flex-end'
 	},
+    postDescription: {
+        fontSize: 14,
+        fontWeight: 400, 
+        textAlign: 'left',
+        color: COLORS.black
+    }
 
 })

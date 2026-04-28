@@ -1,21 +1,35 @@
-import { View } from "react-native";
+import { View, Text } from "react-native";
 import { PostCard } from "../postCard/PostCard";
 import { WelcomeDetailsModal } from "@shared/ui/modalUIU";
-import { useLocalSearchParams } from "expo-router";
-import { useState } from "react";
+import { Redirect, useLocalSearchParams } from "expo-router";
+import { useContext, useState } from "react";
+import { useGetAllPostsQuery } from "@modules/posts/api/postsApi";
+import { UserContext } from "@modules/auth/context/user-context";
 
 export function HomePage(){
     const { isNewUser } = useLocalSearchParams<{ isNewUser?: string }>();
 	const [isWelcomeVisible, setIsWelcomeVisible] = useState(
-		isNewUser === "true",
-	);
+        isNewUser === "true",
+	);    
+    const { data } = useGetAllPostsQuery(undefined, {
+        pollingInterval: 5000
+    });
+    const { user } = useContext(UserContext)! 
+    if (!user) {
+        return <Redirect href={"/login"}></Redirect>;
+    }
+    if (!data) return null
     return (
         <View>
-            <PostCard></PostCard>
             <WelcomeDetailsModal
 				isVisible={isWelcomeVisible}
 				onClose={() => setIsWelcomeVisible(false)}
 			/>
+            { data.map((post) => {
+                return(
+                    <PostCard post = {post} key={post.id}/>
+                )
+            }) }
         </View>
     )
 }
