@@ -5,7 +5,7 @@ export const baseApi = createApi({
 
 	reducerPath: "api",
 	baseQuery: fetchBaseQuery({
-		baseUrl: "http://192.168.0.104:8000",
+		baseUrl: "http://192.168.88.70:8000",
 		prepareHeaders: async (headers, { getState }) => {
 			const token = await AsyncStorage.getItem("token");
 			if (token) {
@@ -15,6 +15,6 @@ export const baseApi = createApi({
 			return headers;
 		},
 	}),
-	tagTypes: ["User", "Album"],
+	tagTypes: ["User", "Album", "Post", "Tag"],
 	endpoints: () => ({}),
 });
