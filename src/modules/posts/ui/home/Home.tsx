@@ -5,6 +5,7 @@ import { Redirect, useLocalSearchParams } from "expo-router";
 import { useContext, useState } from "react";
 import { useGetAllPostsQuery } from "@modules/posts/api/postsApi";
 import { UserContext } from "@modules/auth/context/user-context";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 
 export function HomePage(){
     const { isNewUser } = useLocalSearchParams<{ isNewUser?: string }>();
@@ -20,7 +21,13 @@ export function HomePage(){
     }
     if (!data) return null
     return (
-        <View>
+        <KeyboardAwareScrollView
+            keyboardShouldPersistTaps="handled"
+            contentContainerStyle={{
+                flexGrow: 1,
+                justifyContent: "center",
+            }}
+        >
             <WelcomeDetailsModal
 				isVisible={isWelcomeVisible}
 				onClose={() => setIsWelcomeVisible(false)}
@@ -30,6 +37,8 @@ export function HomePage(){
                     <PostCard post = {post} key={post.id}/>
                 )
             }) }
-        </View>
+
+            
+        </KeyboardAwareScrollView>
     )
 }

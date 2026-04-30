@@ -4,10 +4,10 @@ export interface Post {
     id: number 
     title: string 
     content: string 
-    photos: Photo[] 
-    tags: Tag[] 
+    photos?: Photo
+    tags?: Tag[] 
     author: IUser
-    urls: Url[] 
+    urls?: Url[] 
 }
 
 export interface Photo {
@@ -32,7 +32,10 @@ export interface Url {
     href: string 
 }
 
-export interface CreatePost {
+export interface CreatePostData {
     title: string
+    topic: string;
     content: string
+    authorId: number
+    photos?: Photo
 }

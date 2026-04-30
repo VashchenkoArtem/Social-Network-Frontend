@@ -17,14 +17,14 @@ export function PostCard(props: IProps){
                     <View style={styles.postAvatarInfo}>
                         <Image style={styles.authorAvatar} source={
 							post.author.avatars[post.author.avatars?.length - 1]
-							? { uri: `http://192.168.0.104:8000/media/thumb/${post.author.avatars[post.author.avatars.length - 1]?.filename}`, }
+							? { uri: `http://192.168.88.237:8000/media/thumb/${post.author.avatars[post.author.avatars.length - 1]?.filename}`, }
 							: require("../../../../assets/defaultAvatar.png")
 					}/>
                         <Text style={styles.authorName}>{post.author.nickname}</Text>
                     </View>
                     { post.author.signature && 
                     <Image style={styles.authorSignature} source={{
-                        uri: `http://192.168.0.104:8000/media/thumb/${post.author.signature}`
+                        uri: `http://192.168.88.237:8000/media/thumb/${post.author.signature}`
                     }}/>}
                 </View>
                 <TouchableOpacity style={styles.dotIconContainer} >
@@ -34,6 +34,15 @@ export function PostCard(props: IProps){
             <View style={styles.postContent}>
                 <Text style={styles.postTitle}>{ post.title }</Text>
                 <Text style={styles.postDescription}>{ post.content }</Text>
+
+                {post.photos && (
+                    <Image
+                        source={{
+                            uri: `http://192.168.88.237:8000/upload/${post.photos?.filename}`
+                        }}
+                        style={{ width: "100%", height: 200, borderRadius: 10, marginTop: 10 }}
+                    />
+                )}
             </View>
         </View>
     )

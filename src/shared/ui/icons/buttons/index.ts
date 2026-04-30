@@ -7,3 +7,4 @@ export { ArrowIcon } from "./ArrowIcon";
 export { EditIcon } from "./editIcon";
 export { ExitIcon } from "./ExitIcon";
 export { BinIcon } from "./BinIcon";
+export { stickersIcon } from "./stickersIcon";

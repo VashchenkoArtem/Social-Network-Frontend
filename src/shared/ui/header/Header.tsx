@@ -1,4 +1,5 @@
-import { View, Text, Pressable } from "react-native";
+import { View, Text, Pressable, TouchableOpacity } from "react-native";
+import Modal from "react-native-modal";
 import { LogoIcon, PlusIcon, ManageIcon } from "../icons/buttons";
 import { ExitIcon } from "../icons/buttons/ExitIcon";
 import { styles } from "./styles";
@@ -16,12 +17,14 @@ import { useContext, useState } from "react";
 import { ICONS } from "../icons/icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { UserContext } from "@modules/auth/context/user-context";
+import { CreatePostForm } from "@modules/posts/ui/create-post-form";
 
 export function Header(props: HeaderProps) {
 	const { cantCreatePost, cantEditSelf } = props;
 	const pathname = usePathname();
 	const { user, logout } = useContext(UserContext)!;
 	const [choosedTab, setChoosedTab] = useState("Контакти");
+	const [isCreatePostModalOpen, setIsCreatePostModalOpen] = useState(false);
 
 	const chatsTabs = [
 		{ title: "Контакти", route: "/chats", icon: ICONS.FriendsPageIcon },
@@ -54,10 +57,39 @@ export function Header(props: HeaderProps) {
 
 				<View style={styles.buttons}>
 					{!cantCreatePost && (
-						<Button
-							variant="white"
-							iconLeft={<PlusIcon color={COLORS.plum} style={styles.icon} />}
-						/>
+						<>
+							<Button
+								variant="white"
+								iconLeft={<PlusIcon color={COLORS.plum} style={styles.icon} />}
+								onPress={() => setIsCreatePostModalOpen(true)}
+							/>
+
+							<Modal
+								isVisible={isCreatePostModalOpen}
+								onBackdropPress={() => setIsCreatePostModalOpen(false)}
+								style={styles.modal}
+								useNativeDriver
+
+								animationIn="fadeIn"
+								animationOut="fadeOut"
+								animationInTiming={150}
+								animationOutTiming={150}
+
+								backdropOpacity={0.4}
+								backdropTransitionInTiming={200}
+								backdropTransitionOutTiming={200}
+							>
+								<View style={styles.container}>
+									<View style={styles.closeModalContainer}>
+										<TouchableOpacity onPress={() => setIsCreatePostModalOpen(false)} hitSlop={15}>
+											<Text style={styles.closeIcon}>✕</Text>
+										</TouchableOpacity>
+									</View>
+									<CreatePostForm></CreatePostForm>
+								</View>
+
+							</Modal>
+						</>
 					)}
 
 					{!cantEditSelf && (

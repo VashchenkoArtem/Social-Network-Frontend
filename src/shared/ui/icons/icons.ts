@@ -11,6 +11,7 @@ import {
 	LogoIcon,
 	DotsIcon,
 	DeleteIcon,
+	stickersIcon
 } from "./buttons";
 import { PasswordEyeOpen } from "./inputs/PasswordEyeOpen";
 import { PasswordEyeClose } from "./inputs/PasswordEyeClose";
@@ -30,4 +31,5 @@ export const ICONS = {
 	EyeClose: PasswordEyeClose,
 	DotsIcon,
 	DeleteIcon,
+	stickersIcon
 };
