@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { WelcomeDetailsModal } from "@shared/ui/modalUIU/ModalUIU";
+import { Home } from "@modules/posts/ui/homePage/Home";
 
 export default function HomePage() {
 	const { isNewUser } = useLocalSearchParams<{ isNewUser?: string }>();
@@ -10,24 +11,12 @@ export default function HomePage() {
 	);
 
 	return (
-		<View style={styles.container}>
-			<Text style={styles.text}>Головна сторінка</Text>
+		<View>
 			<WelcomeDetailsModal
 				isVisible={isWelcomeVisible}
 				onClose={() => setIsWelcomeVisible(false)}
 			/>
+			<Home/>
 		</View>
 	);
 }
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		justifyContent: "center",
-		alignItems: "center",
-		backgroundColor: "#fff",
-	},
-	text: {
-		fontSize: 18,
-	},
-});

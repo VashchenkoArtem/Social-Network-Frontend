@@ -1,10 +1,10 @@
-import { View } from "react-native";
-import { PostContent } from "@modules/tabs/ui/postPage/postPage"; 
+import { MyPostsPage } from "@modules/posts/ui/myPosts/myPosts";
+import { View, Text } from "react-native";
 
 export default function PostsPage() {
-    return (
-        <View style={{ flex: 1 }}>
-            <PostContent />
-        </View>
-    );
+	return (
+		<View>
+			<MyPostsPage></MyPostsPage>
+		</View>
+	);
 }
