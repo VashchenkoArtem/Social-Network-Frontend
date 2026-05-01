@@ -15,6 +15,7 @@ import {
 	useUpdateAlbumMutation,
 	useDeletePhotoMutation,
 	useDeleteAlbumMutation,
+	useTogglePhotoVisibilityMutation,
 } from "@modules/settings/api/albumApi";
 import { COLORS } from "@shared/constants/colors";
 import { Image } from "react-native";
@@ -24,6 +25,7 @@ import { UserContext } from "@modules/auth/context/user-context";
 import { AlbumAvatars } from "../albumAvatars/AlbumAvatars";
 import { DeleteAlbum } from "../deleteAlbum/deleteAlbum";
 import { DeletePhoto } from "../deletePhoto/deletePhoto";
+import { SERVER } from "@shared/constants/server";
 
 type AlbumForm = {
 	id: number;
@@ -39,6 +41,7 @@ export const AlbumsPage = () => {
 	const [updateAlbum] = useUpdateAlbumMutation();
 	const [deletePhoto] = useDeletePhotoMutation();
 	const [deleteAlbum] = useDeleteAlbumMutation();
+	const [ togglePhotoVisibility ] = useTogglePhotoVisibilityMutation()
 	const [toggleVisibility] = useToggleVisibilityMutation();
 	const { user } = useContext(UserContext)!;
 	const [modalVisible, setModalVisible] = useState(false);
@@ -67,6 +70,7 @@ export const AlbumsPage = () => {
 		topicId: album.topic.id,
 		yearId: album.year.id,
 	});
+
 	const handleSave = async (data: AlbumForm) => {
 		const payload: CreateAlbumDto = {
 			title: data.title,
@@ -85,8 +89,24 @@ export const AlbumsPage = () => {
 
 		setModalVisible(false);
 	};
+
 	if (!user) {
 		return <Redirect href={"/login"}></Redirect>;
+	}
+
+	const handleAlbumVisibility = async (album: Album) => {
+		try {
+			await toggleVisibility({ id: album.id }).unwrap()
+		} catch (error) {
+			console.log(error)
+		}
+	}
+	const handlePhotoVisibility = async (photoId: number, isVisible: boolean) => {
+		try {
+			await togglePhotoVisibility({photoId, isVisible})
+		}catch (error){
+			console.log(error)
+		}
 	}
 	return (
 		<KeyboardAwareScrollView
@@ -102,17 +122,14 @@ export const AlbumsPage = () => {
 			>
 				<View style={styles.contentContainer}>
 					{ user.avatars && 
-						<AlbumAvatars avatars={user?.avatars}/>
+						<AlbumAvatars avatars={user?.avatars} handlePhotoVisibility={handlePhotoVisibility}/>
 					}
-					{ albums.length === 0 &&
-						<View style={styles.createCard}>
-							<Text style={styles.createCardText}>Немає ще жодного альбому</Text>
-							<TouchableOpacity style={styles.plusBtn} onPress={handleCreateNew}>
-								<ICONS.PlusIcon color="#000" />
-							</TouchableOpacity>
-						</View>
-					}
-					
+					<View style={styles.createCard}>
+						<Text style={styles.createCardText}>{ albums.length === 0 ? "Немає ще жодного альбому" : "Створити новий альбом"}</Text>
+						<TouchableOpacity style={styles.plusBtn} onPress={handleCreateNew}>
+							<ICONS.PlusIcon color="#000" />
+						</TouchableOpacity>
+					</View>
 					{albums.map((album) => (
 						<View key={album.id} style={styles.albumCard}>
 								<View style={styles.albumHeader}>
@@ -151,7 +168,7 @@ export const AlbumsPage = () => {
 													</TouchableOpacity>
 
 													<View>
-														{ album.isVisible ? 
+														{ !album.isVisible ? 
 															<View style={styles.albumEditBtn}>
 																<ICONS.EyeClose color={COLORS.black}/>
 																<Text style={styles.albumEditText}>Цей альбом бачите тільки ви</Text>
@@ -183,36 +200,28 @@ export const AlbumsPage = () => {
 									</View>
 								</View>
 								<View
-									style={{
-										flexDirection: "row",
-										flexWrap: "wrap",
-										marginTop: 10,
-									}}
+									style={styles.albumPhotoContainer}
 								>
 									{album.photos.map((photo) => (
-										<View key={photo.id}>
+										<View key={photo.id} >
 											<Image
 												source={{
-													uri: `http://192.168.0.104:8000/media/thumb/${photo.filename}`,
+													uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${photo.filename}`,
 												}}
-												style={{
-													width: 162,
-													height: 162,
-													margin: 4,
-													borderRadius: 10,
-													backgroundColor: "#eee",
-												}}
+												style={styles.albumPhoto}
+												blurRadius={photo.isVisible && album.isVisible ? 0 : 9}
 											/>
 											<View style={styles.photoBtns}>
 												<TouchableOpacity
 													style={styles.photoBtn}
-													onPress={() =>
-														toggleVisibility({ id: Number(album.id) })
-													}
+													onPress={() => handlePhotoVisibility(photo.id, !photo.isVisible)}
 												>
-													<ICONS.EyeOpen color={COLORS.plum} 	
-														 />
+													{photo.isVisible && album.isVisible
+														? <ICONS.EyeOpen color={COLORS.plum} />
+														: <ICONS.EyeClose color={COLORS.plum} />
+													}
 												</TouchableOpacity>
+
 												<TouchableOpacity style={styles.photoBtn}>
 													<View style={styles.photoBtn}>
 														<DeletePhoto photoId={photo.id} />
@@ -226,6 +235,7 @@ export const AlbumsPage = () => {
 						</View>
 						
 					))}
+
 				</View>
 			</ScrollView>
 			<AlbumsModal

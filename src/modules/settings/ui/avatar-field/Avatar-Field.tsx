@@ -6,6 +6,7 @@ import { useUpdateUserInfoMutation } from "@modules/auth/api/userApi";
 import { Button } from "@shared/ui/button";
 import { PlusIcon } from "@shared/ui/icons/buttons/Plus";
 import { COLORS } from "@shared/constants/colors";
+import { SERVER } from "@shared/constants/server";
 
 interface AvatarFieldProps {
 	value?: string;
@@ -34,7 +35,7 @@ export function AvatarField({ value, onChange, avatar }: AvatarFieldProps) {
 				<Image
 					source={
 							avatar
-							? { uri: `http://192.168.0.104:8000/media/thumb/${avatar}`, }
+							? { uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${avatar}`, }
 							: require("../../../../assets/defaultAvatar.png")
 					}
 					style={value ? styles.SelectedAvatar : styles.DefaultAvatar}

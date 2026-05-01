@@ -1,5 +1,6 @@
 import { COLORS } from "@shared/constants/colors";
-import { StyleSheet } from "react-native";
+import { StyleSheet, ImageStyle } from "react-native";
+
 
 export const styles = StyleSheet.create({
     postContainer: {
@@ -81,6 +82,52 @@ export const styles = StyleSheet.create({
         fontWeight: 400, 
         textAlign: 'left',
         color: COLORS.black
+    },
+    photosContainer: {
+        flexDirection: "row",
+        flexWrap: "wrap",
+        justifyContent: "space-between",
+        gap: 6,
+        marginTop: 10,
+    },
+
+    photo: {
+        width: 167,
+        height: 200,
+        borderRadius: 10,
+    },
+})
+
+export const getPhotoStyle = (
+    total: number
+): ImageStyle => {
+    if (total === 1) {
+        return {
+            width: "100%",
+            height: 200,
+            borderRadius: 10,
+        };
     }
 
-})
+    if (total === 2) {
+        return {
+            width: "49%",
+            height: 200,
+            borderRadius: 10,
+        };
+    }
+
+    if (total === 4) {
+        return {
+            width: "49%",
+            height: 200,
+            borderRadius: 10,
+        };
+    }
+
+    return {
+        width: "32%",
+        height: 200,
+        borderRadius: 10,
+    };
+};

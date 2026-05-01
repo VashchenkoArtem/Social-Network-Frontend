@@ -1,5 +1,6 @@
 import { baseApi } from "@shared/api/baseApi";
-import { CreatePost, Post } from "./api.types";
+import { CreatePostData, Post } from "./api.types";
+import { CreateAlbumDto } from "@modules/settings/api/albumApi";
 
 export const postApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -18,7 +19,7 @@ export const postApi = baseApi.injectEndpoints({
             providesTags: ['Post']
         }),
         
-        createPost: builder.mutation<Post, CreatePost>({
+        createPost: builder.mutation<Post, FormData>({
             query: (body) => ({
                 url: 'posts',
                 method: 'POST',

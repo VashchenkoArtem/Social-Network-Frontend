@@ -1,15 +1,17 @@
 import { View, Image, Text, TouchableOpacity } from "react-native";
-import { styles } from "./styles";
+import { getPhotoStyle, styles } from "./styles";
 import { useContext } from "react";
 import { UserContext } from "@modules/auth/context/user-context";
 import { COLORS } from "@shared/constants/colors";
 import { ICONS } from "@shared/ui";
 import { Redirect } from "expo-router";
 import { IProps } from "./types";
+import { SERVER } from "@shared/constants/server";
 
 
 export function PostCard(props: IProps){
     const { post } = props
+    const photos = post.photos ?? [];
     return (
         <View style={styles.postContainer}>
             <View style={styles.postHeader}>
@@ -17,14 +19,14 @@ export function PostCard(props: IProps){
                     <View style={styles.postAvatarInfo}>
                         <Image style={styles.authorAvatar} source={
 							post.author.avatars[post.author.avatars?.length - 1]
-							? { uri: `http://192.168.0.104:8000/media/thumb/${post.author.avatars[post.author.avatars.length - 1]?.filename}`, }
+							? { uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${post.author.avatars[post.author.avatars.length - 1]?.filename}`, }
 							: require("../../../../assets/defaultAvatar.png")
 					}/>
                         <Text style={styles.authorName}>{post.author.nickname}</Text>
                     </View>
                     { post.author.signature && 
                     <Image style={styles.authorSignature} source={{
-                        uri: `http://192.168.0.104:8000/media/thumb/${post.author.signature}`
+                        uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${post.author.signature}`
                     }}/>}
                 </View>
                 <TouchableOpacity style={styles.dotIconContainer} >
@@ -34,6 +36,27 @@ export function PostCard(props: IProps){
             <View style={styles.postContent}>
                 <Text style={styles.postTitle}>{ post.title }</Text>
                 <Text style={styles.postDescription}>{ post.content }</Text>
+
+            {photos?.length === 1 && (
+                <Image
+                    source={{ uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${photos[0].filename}` }}
+                    style={{ width: "100%", height: 250, borderRadius: 10 }}
+                />
+            )}
+
+            {photos?.length > 1 && (
+                <View style={styles.photosContainer}>
+                    {photos.map((photo) => (
+                        <Image
+                            key={photo.id}
+                            source={{
+                                uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${photo.filename}`,
+                            }}
+                            style={getPhotoStyle(photos.length)}
+                        />
+                    ))}
+                </View>
+            )}
             </View>
         </View>
     )

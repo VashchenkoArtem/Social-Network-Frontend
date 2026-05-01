@@ -1,22 +1,8 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
-import { useLocalSearchParams } from "expo-router";
-import { WelcomeDetailsModal } from "@shared/ui/modalUIU/ModalUIU";
-import { Home } from "@modules/posts/ui/homePage/Home";
+import { HomePage } from "@modules/posts/ui/home/Home";
 
-export default function HomePage() {
-	const { isNewUser } = useLocalSearchParams<{ isNewUser?: string }>();
-	const [isWelcomeVisible, setIsWelcomeVisible] = useState(
-		isNewUser === "true",
-	);
-
+export default function HomePageTabs() {
 	return (
-		<View>
-			<WelcomeDetailsModal
-				isVisible={isWelcomeVisible}
-				onClose={() => setIsWelcomeVisible(false)}
-			/>
-			<Home/>
-		</View>
+		<HomePage></HomePage>
 	);
 }

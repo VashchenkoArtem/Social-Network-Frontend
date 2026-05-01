@@ -6,11 +6,13 @@ import { AvatarsProps } from "./albumAvatars.types";
 import { styles } from "./styles";
 import { AvatarAddPhoto } from "../avatarAddPhoto/AvatarAddPhoto";
 import { DeletePhoto } from "../deletePhoto/deletePhoto";
+import { opacity } from "react-native-reanimated/lib/typescript/Colors";
+import { SERVER } from "@shared/constants/server";
 
 export function AlbumAvatars(props: AvatarsProps){
-    const { avatars } = props
+    const { avatars, handlePhotoVisibility } = props
     return (
-        <View style = {styles.albumAvatarsContainer}>
+        <View style = {[styles.albumAvatarsContainer, avatars.length > 0 && { gap: 16}]}>
             <View style = {styles.albumTitleContainer}>
                 <Text style = {styles.title}>Мої фото</Text>
                 <AvatarAddPhoto></AvatarAddPhoto>
@@ -21,21 +23,36 @@ export function AlbumAvatars(props: AvatarsProps){
                         <View key={avatar.id}>
                             <Image
                                 source={{
-                                    uri: `http://192.168.88.70:8000/media/thumb/${avatar.filename}`,
+                                    uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${avatar.filename}`,
                                 }}
-                                style={{
+                                style={[{
                                     width: 162,
                                     height: 162,
                                     margin: 4,
                                     borderRadius: 10,
                                     backgroundColor: "#eee",
-                                }}
+                                }]}
+                                blurRadius={avatar.isVisible ? 0 : 9}
+                                
                                 />
-                            <TouchableOpacity style={styles.btnContainer}>
-                                <View style={styles.photoBtn}>
-                                    <DeletePhoto photoId={avatar.id} />
+                                <View>
+                                    <TouchableOpacity 
+                                        style={[styles.btnContainer, {right: 50}]}
+                                        onPress={() => handlePhotoVisibility(avatar.id, !avatar.isVisible)}
+                                    >
+                                        <View style = {styles.photoBtn}>
+                                            {avatar.isVisible
+                                                ? <ICONS.EyeOpen color={COLORS.plum} />
+                                                : <ICONS.EyeClose color={COLORS.plum} />
+                                            }
+                                        </View>
+                                    </TouchableOpacity >
+                                    <TouchableOpacity style={styles.btnContainer}>
+                                        <View style={styles.photoBtn}>
+                                            <DeletePhoto photoId={avatar.id} />
+                                        </View>
+                                    </TouchableOpacity>
                                 </View>
-                            </TouchableOpacity>
                         </View>
                     )
                 })}

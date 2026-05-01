@@ -4,7 +4,9 @@ import { PostCard } from "../postCard/PostCard";
 
 
 export function Home(){
-    const { data } = useGetAllPostsQuery()
+    const { data } = useGetAllPostsQuery(undefined, {
+        pollingInterval: 3000
+    })
     if (!data) return null
     return (
         <View>

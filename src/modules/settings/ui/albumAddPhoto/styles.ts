@@ -12,9 +12,12 @@ export const styles = StyleSheet.create({
 		justifyContent: "center",
 		alignItems: "center",
 		borderRadius: 10,
-
+		// position: "relative",
 		borderWidth: 1,
 		borderColor: COLORS.gray,
 		borderStyle: "dashed",
+
+		// backgroundColor: 'green'
 	},
+
 });

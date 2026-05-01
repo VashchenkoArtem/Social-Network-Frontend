@@ -14,7 +14,8 @@ export interface IAvatar{
 	filename: string;
 	albumId?: number;
 	userId?: number;
-	avatarForId: number
+	avatarForId: number;
+	isVisible: boolean
 	}
 export interface UpdateUser {
 	name?: string;
