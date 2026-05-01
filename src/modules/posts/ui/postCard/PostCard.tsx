@@ -4,7 +4,7 @@ import { useContext } from "react";
 import { UserContext } from "@modules/auth/context/user-context";
 import { COLORS } from "@shared/constants/colors";
 import { ICONS } from "@shared/ui";
-import { Redirect } from "expo-router";
+import { Link, Redirect } from "expo-router";
 import { IProps } from "./types";
 import { SERVER } from "@shared/constants/server";
 
@@ -35,8 +35,25 @@ export function PostCard(props: IProps){
             </View>
             <View style={styles.postContent}>
                 <Text style={styles.postTitle}>{ post.title }</Text>
-                <Text style={styles.postDescription}>{ post.content }</Text>
+                
+                <View>
+                    <Text style={styles.postDescription}>{ post.content }</Text>
+                    <View style = {{flexDirection: "row", gap: 5}}>
+                        { post.tags?.map((tag) => {
+                            return (
+                                <Text style = {styles.tag} key = {tag.tag.id}>#{tag.tag.name}</Text>
+                            )
+                        })}
+                    </View>
+                </View>
 
+                <View>
+                    { post.urls?.map((url) => {
+                        return (
+                            <Link href={url.href} key={url.id} style = {[styles.tag, {textDecorationLine: "underline"}]}>{url.href}</Link>
+                        )
+                    })}
+                </View>
             {photos?.length === 1 && (
                 <Image
                     source={{ uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${photos[0].filename}` }}

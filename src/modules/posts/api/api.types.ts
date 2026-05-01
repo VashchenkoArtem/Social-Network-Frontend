@@ -21,7 +21,10 @@ export interface Photo {
 }
 
 export interface Tag {
-    name: string
+    tag: {
+        id: number
+        name: string
+    }
     postId: number 
     tagId: number 
 }

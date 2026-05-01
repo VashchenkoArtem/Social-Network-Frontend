@@ -96,6 +96,11 @@ export const styles = StyleSheet.create({
         height: 200,
         borderRadius: 10,
     },
+    tag: {
+        color: COLORS.plum,
+        fontSize: 14,
+        fontWeight: 400
+    }
 })
 
 export const getPhotoStyle = (

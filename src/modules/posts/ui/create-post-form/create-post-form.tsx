@@ -18,6 +18,8 @@ import { COLORS } from "@shared/constants/colors";
 import * as ImagePicker from "expo-image-picker";
 import { useContext, useState } from "react";
 import { UserContext } from "@modules/auth/context/user-context";
+import { PostTags } from "@modules/tabs/ui/postTags/postTags";
+import { PostLinks } from "@modules/tabs/ui/postLinks/postLinks";
 
 export function CreatePostForm(props: {
 	setIsCreatePostModalOpen: (type: boolean) => void;
@@ -29,6 +31,13 @@ export function CreatePostForm(props: {
 		control,
 		formState: { errors },
 	} = useForm<ICreatePostForm>({
+        defaultValues: {
+            title: "",
+            topic: "",
+            content: "",
+            tags: [],
+            links: [],
+        },
 		resolver: yupResolver(createPostValidator),
 	});
 
@@ -67,15 +76,20 @@ export function CreatePostForm(props: {
 		formData.append("topic", data.topic);
 		formData.append("content", data.content);
 		formData.append("authorId", String(user?.id));
-
 		postImages.forEach((uri, index) => {
 			formData.append("images", {
 				uri,
-				name: `photo-${index}.jpg`,
+				name: `${index}.jpg`,
 				type: "image/jpeg",
 			} as any);
 		});
-
+        data.tags?.forEach((tagId) => {
+            formData.append("tags", String(tagId));
+        });
+        data.links?.forEach((link) => {
+            if (!link?.trim()) return;
+            formData.append("urls", link);
+        });
 		await createPost(formData).unwrap();
 
 		if (!isError) {
@@ -132,7 +146,24 @@ export function CreatePostForm(props: {
 							/>
 						)}
 					/>
+                <Controller
+                    name="tags"
+                    control={control}
+                    render={({ field }) => (
+                        <PostTags
+                            selectedTags={field.value ?? []}
+                            onToggleTag={(tagId) => {
+                                const current = field.value ?? [];
 
+                                if (current.includes(tagId)) {
+                                    field.onChange(current.filter(id => id !== tagId));
+                                } else {
+                                    field.onChange([...current, tagId]);
+                                }
+                            }}
+                        />
+                    )}
+                />
 					<Controller
 						name="content"
 						control={control}
@@ -149,6 +180,16 @@ export function CreatePostForm(props: {
 							/>
 						)}
 					/>
+                    <Controller
+                    name="links"
+                    control={control}
+                    render={({ field }) => (
+                        <PostLinks
+                        links={field.value || []}
+                        setLinks={field.onChange}
+                        />
+                    )}
+                    />
 				</View>
 
 				<View
@@ -160,16 +201,18 @@ export function CreatePostForm(props: {
 					}}
 				>
 					{postImages.map((uri, index) => (
-						<TouchableOpacity
-							key={index}
-							onPress={() => removeImage(index)}
-                            style={{ width: "100%", height: 240 }}
-						>
-							<Image
-								source={{ uri: uri }}
-								style={styles.postImage}
-							/>
-						</TouchableOpacity>
+                        <View key={index} style = {{width: "100%", height: 260}}>
+                            <TouchableOpacity
+                                onPress={() => removeImage(index)}
+                                style = {styles.deleteBtn}
+                            >
+                                <ICONS.DeleteIcon color = {COLORS.black} width={20} height={20}></ICONS.DeleteIcon>
+                            </TouchableOpacity>
+                                <Image
+                                    source={{ uri: uri }}
+                                    style={styles.postImage}
+                                />
+                        </View>
 					))}
 				</View>
 

@@ -18,7 +18,8 @@ export const createPostValidator = yup.object({
         .min(10)
         .max(1000)
         .required("Додайте опис поста"),
-
+    tags: yup.array().default([]),
+    links: yup.array().default([])
     // photo: yup
         // .string()
         // .nullable()

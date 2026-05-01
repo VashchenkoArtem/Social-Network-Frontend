@@ -8,3 +8,4 @@ export { EditIcon } from "./editIcon";
 export { ExitIcon } from "./ExitIcon";
 export { BinIcon } from "./BinIcon";
 export { stickersIcon } from "./stickersIcon";
+export { PlusIconNoBorder } from './PlusIconNoBorder'

@@ -52,5 +52,19 @@ export const styles = StyleSheet.create({
         height: 225, 
         borderRadius: 16,
         marginBottom: 20
+    },
+    deleteBtn: {
+        position: "absolute",
+        width: 40,
+        height: 40,
+        backgroundColor: COLORS.white,
+        zIndex: 20,
+        borderRadius: 123,
+        justifyContent: "center",
+        alignItems: 'center',
+        borderWidth: 1,
+        borderColor: COLORS.plum,
+        top: 10,
+        right: 10
     }
 });

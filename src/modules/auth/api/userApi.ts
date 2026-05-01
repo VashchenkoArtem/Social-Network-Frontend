@@ -53,11 +53,11 @@ export const userApi = baseApi.injectEndpoints({
 				if (body.password) formData.append("password", body.password);
 
 				if (body.avatar) {
-					formData.append("file", {
+					formData.append("file", [{
 						uri: body.avatar,
 						name: "avatar.jpg",
 						type: "image/jpeg",
-					} as any);
+					}] as any);
 				}
 				return {
 					url: "update-user",
