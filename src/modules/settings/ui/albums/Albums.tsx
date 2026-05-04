@@ -8,13 +8,9 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import {
 	Album,
 	CreateAlbumDto,
-	UpdateAlbumDto,
 	useCreateAlbumMutation,
 	useGetAlbumsQuery,
-	useToggleVisibilityMutation,
 	useUpdateAlbumMutation,
-	useDeletePhotoMutation,
-	useDeleteAlbumMutation,
 	useTogglePhotoVisibilityMutation,
 } from "@modules/settings/api/albumApi";
 import { COLORS } from "@shared/constants/colors";
@@ -39,10 +35,7 @@ export const AlbumsPage = () => {
 	});
 	const [createAlbum] = useCreateAlbumMutation();
 	const [updateAlbum] = useUpdateAlbumMutation();
-	const [deletePhoto] = useDeletePhotoMutation();
-	const [deleteAlbum] = useDeleteAlbumMutation();
 	const [ togglePhotoVisibility ] = useTogglePhotoVisibilityMutation()
-	const [toggleVisibility] = useToggleVisibilityMutation();
 	const { user } = useContext(UserContext)!;
 	const [modalVisible, setModalVisible] = useState(false);
 	const [selectedAlbum, setSelectedAlbum] = useState<Album | null>(null);
@@ -92,14 +85,6 @@ export const AlbumsPage = () => {
 
 	if (!user) {
 		return <Redirect href={"/login"}></Redirect>;
-	}
-
-	const handleAlbumVisibility = async (album: Album) => {
-		try {
-			await toggleVisibility({ id: album.id }).unwrap()
-		} catch (error) {
-			console.log(error)
-		}
 	}
 	const handlePhotoVisibility = async (photoId: number, isVisible: boolean) => {
 		try {

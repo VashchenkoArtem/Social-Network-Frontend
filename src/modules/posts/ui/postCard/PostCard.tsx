@@ -33,6 +33,7 @@ export function PostCard(props: IProps){
                     <ICONS.DotsIcon color={COLORS.gray} />
                 </TouchableOpacity>
             </View>
+
             <View style={styles.postContent}>
                 <Text style={styles.postTitle}>{ post.title }</Text>
                 
@@ -74,7 +75,31 @@ export function PostCard(props: IProps){
                     ))}
                 </View>
             )}
+                <View style={styles.postFooter}>
+                    <View style={styles.postFooterContainer}>
+                        <TouchableOpacity style={styles.postFooterBtn}>
+                            <ICONS.PostLikeIcon width = {20} height={20} color = {COLORS.gray}/>
+                            <Text>Вподобань</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                    <View style={styles.postFooterContainer}>
+                        <TouchableOpacity style={styles.postFooterBtn}>
+                            <ICONS.PostThumbUpIcon width = {20} height={20} color = {COLORS.gray}/>
+                            <Text>Вподобань</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                    <View style={styles.postFooterContainer}>
+                        <TouchableOpacity style={styles.postFooterBtn}>
+                            <ICONS.PostViewsIcon width = {20} height={20} color = {COLORS.gray}/>
+                            <Text>Переглядів</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                </View>
             </View>
+
         </View>
     )
 }

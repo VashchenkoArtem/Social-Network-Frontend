@@ -100,7 +100,30 @@ export const styles = StyleSheet.create({
         color: COLORS.plum,
         fontSize: 14,
         fontWeight: 400
+    },
+
+    postFooter: {
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+        gap: 16,
+        maxWidth: 250,
+        flexWrap: "wrap"
+    },
+
+    postFooterContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        gap: 8,
+        
+    },
+    postFooterBtn: {
+        flexDirection: "row",
+        gap: 8
     }
+
+
 })
 
 export const getPhotoStyle = (

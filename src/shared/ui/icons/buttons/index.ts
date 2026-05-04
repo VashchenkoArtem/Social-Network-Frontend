@@ -9,3 +9,6 @@ export { ExitIcon } from "./ExitIcon";
 export { BinIcon } from "./BinIcon";
 export { stickersIcon } from "./stickersIcon";
 export { PlusIconNoBorder } from './PlusIconNoBorder'
+export { PostLikeIcon } from './PostLikeIcon'
+export { PostThumbUpIcon } from './PostThumbUpIcon'
+export { PostViewsIcon } from './PostViewsIcon'

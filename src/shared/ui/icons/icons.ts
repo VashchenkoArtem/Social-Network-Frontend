@@ -12,7 +12,10 @@ import {
 	DotsIcon,
 	DeleteIcon,
 	stickersIcon,
-	PlusIconNoBorder
+	PlusIconNoBorder,
+	PostLikeIcon,
+	PostThumbUpIcon,
+	PostViewsIcon
 } from "./buttons";
 import { PasswordEyeOpen } from "./inputs/PasswordEyeOpen";
 import { PasswordEyeClose } from "./inputs/PasswordEyeClose";
@@ -33,5 +36,8 @@ export const ICONS = {
 	DotsIcon,
 	DeleteIcon,
 	stickersIcon,
-	PlusIconNoBorder
+	PlusIconNoBorder,
+	PostLikeIcon,
+	PostThumbUpIcon,
+	PostViewsIcon
 };
