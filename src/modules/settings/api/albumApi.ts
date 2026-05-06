@@ -2,15 +2,15 @@ import { baseApi } from "@shared/api/baseApi";
 
 export interface Album {
 	id: number;
-	title: string;
-	isVisible: boolean;
+	name: string;
+	is_shown: boolean;
 	authorId: number;
 
 	photos: {
 		id: number;
-		filename: string;
+		image: string;
 		albumId: number;
-		isVisible: boolean
+		is_shown: boolean
 	}[];
 
 	year: {
@@ -18,22 +18,22 @@ export interface Album {
 		year: string;
 	};
 
-	topic: {
+	theme: {
 		id: number;
 		name: string;
 	};
 }
 
 export interface CreateAlbumDto {
-	title: string;
-	topicId: number;
+	name: string;
+	themeId: number;
 	yearId: number;
 }
 export interface UpdateAlbumDto {
-	title?: string;
-	topicId?: number;
+	name?: string;
+	themeId?: number;
 	yearId?: number;
-	isVisible?: boolean
+	is_shown?: boolean
 }
 export const albumApi = baseApi.injectEndpoints({
 	endpoints: (builder) => ({
@@ -122,7 +122,7 @@ export const albumApi = baseApi.injectEndpoints({
 				return {
 				url: `photo/${photoId}/visibility`,
 				method: "PATCH",
-				body: { isVisible }
+				body: { isVisible }	
 			}}
 		})
 	}),

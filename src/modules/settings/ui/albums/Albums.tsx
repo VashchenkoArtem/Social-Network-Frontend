@@ -25,8 +25,8 @@ import { SERVER } from "@shared/constants/server";
 
 type AlbumForm = {
 	id: number;
-	title: string;
-	topicId: number;
+	name: string;
+	themeId: number;
 	yearId: number;
 };
 export const AlbumsPage = () => {
@@ -59,15 +59,15 @@ export const AlbumsPage = () => {
 	
 	const toForm = (album: Album): AlbumForm => ({
 		id: album.id,
-		title: album.title,
-		topicId: album.topic.id,
+		name: album.name,
+		themeId: album.theme.id,
 		yearId: album.year.id,
 	});
 
 	const handleSave = async (data: AlbumForm) => {
 		const payload: CreateAlbumDto = {
-			title: data.title,
-			topicId: data.topicId!,
+			name: data.name,
+			themeId: data.themeId!,
 			yearId: data.yearId!,
 		};
 
@@ -119,10 +119,10 @@ export const AlbumsPage = () => {
 						<View key={album.id} style={styles.albumCard}>
 								<View style={styles.albumHeader}>
 									<View style={styles.albumContainer}>
-										<Text style={styles.albumTitle}>{album.title}</Text>
+										<Text style={styles.albumTitle}>{album.name}</Text>
 										<View style={styles.albumInfoContainer}>
 											<Text style={{ color: COLORS.black, fontSize: 16 }}>
-												{album.topic.name}
+												{album.theme.name}
 											</Text>
 											<Text style={styles.albumInfo}>{album.year.year} рік</Text>
 										</View>
@@ -133,12 +133,12 @@ export const AlbumsPage = () => {
 														updateAlbum({
 															id: album.id,
 															data: {
-																isVisible: !album.isVisible
+																is_shown: !album.is_shown
 															}
 														})
 
 													}}>
-											{ album.isVisible ? <ICONS.EyeOpen color="#000" /> : <ICONS.EyeClose color="#000" /> }
+											{ album.is_shown ? <ICONS.EyeOpen color="#000" /> : <ICONS.EyeClose color="#000" /> }
 											
 										</TouchableOpacity>
 										{/* <TouchableOpacity onPress={() => handleEdit(album)}> */}
@@ -153,7 +153,7 @@ export const AlbumsPage = () => {
 													</TouchableOpacity>
 
 													<View>
-														{ !album.isVisible ? 
+														{ !album.is_shown ? 
 															<View style={styles.albumEditBtn}>
 																<ICONS.EyeClose color={COLORS.black}/>
 																<Text style={styles.albumEditText}>Цей альбом бачите тільки ви</Text>
@@ -174,7 +174,7 @@ export const AlbumsPage = () => {
 
 													<DeleteAlbum 
 														albumId={album.id} 
-														albumTitle={album.title} 
+														albumTitle={album.name} 
 														onSuccess={() => setEditAlbumModalVisibile(false)} 
 													/>
 											</View>
@@ -191,17 +191,17 @@ export const AlbumsPage = () => {
 										<View key={photo.id} >
 											<Image
 												source={{
-													uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${photo.filename}`,
+													uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${photo.image}`,
 												}}
 												style={styles.albumPhoto}
-												blurRadius={photo.isVisible && album.isVisible ? 0 : 9}
+												blurRadius={photo.is_shown && album.is_shown ? 0 : 9}
 											/>
 											<View style={styles.photoBtns}>
 												<TouchableOpacity
 													style={styles.photoBtn}
-													onPress={() => handlePhotoVisibility(photo.id, !photo.isVisible)}
+													onPress={() => handlePhotoVisibility(photo.id, !photo.is_shown)}
 												>
-													{photo.isVisible && album.isVisible
+													{photo.is_shown && album.is_shown
 														? <ICONS.EyeOpen color={COLORS.plum} />
 														: <ICONS.EyeClose color={COLORS.plum} />
 													}

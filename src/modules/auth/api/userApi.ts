@@ -53,11 +53,11 @@ export const userApi = baseApi.injectEndpoints({
 				if (body.password) formData.append("password", body.password);
 
 				if (body.avatar) {
-					formData.append("file", [{
-						uri: body.avatar,
-						name: "avatar.jpg",
-						type: "image/jpeg",
-					}] as any);
+				formData.append("avatars", {
+					uri: body.avatar,
+					name: "avatar.jpg",
+					type: "image/jpeg",
+				} as any);
 				}
 				return {
 					url: "update-user",
@@ -87,7 +87,7 @@ export const userApi = baseApi.injectEndpoints({
 		updateUserSignature: builder.mutation<User, {signature: string}>({
 			query: (body) => {
 				const formData = new FormData()
-				formData.append("file", {
+				formData.append("signature", {
 					uri: body.signature,
 					name: "signature.jpg",
 					type: "image/jpeg"

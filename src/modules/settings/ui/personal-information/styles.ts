@@ -143,6 +143,7 @@ export const styles = StyleSheet.create({
 	signatureImage: {
 		width: "100%",
 		height: 65,
+		zIndex: 100
 	},
 
 	signaturePlaceholder: {

@@ -17,20 +17,20 @@ interface AlbumsModalProps {
 	onClose: () => void;
 	onSubmit: (data: {
 		id: number;
-		title: string;
-		topicId: number;
+		name: string;
+		themeId: number;
 		yearId: number;
 	}) => void;
 	initialData?: {
 		id: number;
-		title: string;
-		topicId: number;
+		name: string;
+		themeId: number;
 		yearId: number;
 	} | null;
 	isEdit?: boolean;
 }
 type Form = {
-	title: string;
+	name: string;
 	themeId: number | null;
 	yearId: number | null;
 };
@@ -59,7 +59,7 @@ export const AlbumsModal = ({
 		formState: { isValid },
 	} = useForm<Form>({
 		defaultValues: {
-			title: "",
+			name: "",
 			themeId: null,
 			yearId: null,
 		},
@@ -76,8 +76,8 @@ export const AlbumsModal = ({
 		if (!visible) return;
 
 		reset({
-			title: initialData?.title ?? "",
-			themeId: initialData?.topicId ?? null,
+			name: initialData?.name ?? "",
+			themeId: initialData?.themeId ?? null,
 			yearId: initialData?.yearId ?? null,
 		});
 
@@ -87,8 +87,8 @@ export const AlbumsModal = ({
 
 	const handleFormSubmit = async (data: Form) => {
 		const payload = {
-			title: data.title,
-			topicId: data.themeId!,
+			name: data.name,
+			themeId: data.themeId!,
 			yearId: data.yearId!,
 		};
 		if (initialData) {
@@ -124,7 +124,7 @@ export const AlbumsModal = ({
 					<ScrollView showsVerticalScrollIndicator={false} bounces={false}>
 						<Controller
 							control={control}
-							name="title"
+							name="name"
 							rules={{ required: true }}
 							render={({ field: { onChange, value } }) => (
 								<Input

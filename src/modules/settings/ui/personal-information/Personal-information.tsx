@@ -22,6 +22,7 @@ import { Modal } from "@shared/ui/modal";
 import { RecoveryPassword } from "../recovery-password/Recovery-password";
 import { UserContext } from "@modules/auth/context/user-context";
 import { Redirect } from "expo-router";
+import { SERVER } from "@shared/constants/server";
 
 type FormData = {
 	firstname: string;
@@ -407,7 +408,7 @@ export function PersonalInformation() {
 							(user?.signature ? (
 								<View style={styles.signatureImageWrapper}>
 									<Image
-										source={{  uri: `http://192.168.88.237:8000/media/thumb/${user.signature}` }}
+										source={{  uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${user?.signature}` }}
 										style={styles.signatureImage}
 									/>
 								</View>

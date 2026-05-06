@@ -4,7 +4,7 @@ export interface Post {
     id: number 
     title: string 
     content: string 
-    photos?: Photo[]
+    photos?: PostPhoto[]
     tags?: Tag[] 
     author: IUser
     urls?: Url[] 
@@ -13,11 +13,17 @@ export interface Post {
 export interface Photo {
     id: number 
     userId: number | null 
-    filename: string 
+    original_image: string 
     albumId: number | null 
     avatarForId: number | null 
     postId: number | null 
     isVisible: boolean 
+}
+
+export interface PostPhoto {
+    id: number;
+    original_image: string ;
+    postId: number | null 
 }
 
 export interface Tag {
