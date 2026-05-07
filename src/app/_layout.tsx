@@ -22,7 +22,10 @@ export default function RootLayout() {
 								options={{ headerShown: false, contentStyle: { flex: 1 } }}
 							/>
 							<Stack.Screen name="(tabs)" />
-							<Stack.Screen name="(friends)" />
+							<Stack.Screen 
+								name="(friends)" 
+								options={{ headerShown: false }}
+							/>
 							<Stack.Screen name="settings" />
 						</Stack>
 					</KeyboardProvider>

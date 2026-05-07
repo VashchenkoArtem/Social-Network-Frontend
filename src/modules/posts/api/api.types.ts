@@ -2,7 +2,8 @@ import { IUser } from "@shared/types/user.types"
 
 export interface Post {
     id: number 
-    title: string 
+    title: string
+    topic: string
     content: string 
     photos?: PostPhoto[]
     tags?: Tag[] 

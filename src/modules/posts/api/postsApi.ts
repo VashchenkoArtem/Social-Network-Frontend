@@ -36,6 +36,15 @@ export const postApi = baseApi.injectEndpoints({
                 method: 'DELETE'
             })
         }),
+
+        updatePost: builder.mutation<Post, { id: number; formData: FormData }>({
+            query: ({ id, formData }) => ({
+                url: `posts/${id}`,
+                method: 'PATCH',
+                body: formData,
+            }),
+            invalidatesTags: ['Post']
+        }),
     })
 })
 
@@ -43,5 +52,6 @@ export const {
     useGetAllPostsQuery,
     useMyPostsQuery, 
     useCreatePostMutation,
-    useDeletePostMutation
+    useDeletePostMutation,
+    useUpdatePostMutation
 } = postApi

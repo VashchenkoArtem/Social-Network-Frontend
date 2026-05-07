@@ -1,3 +1,5 @@
+import { IAlbum } from "@shared/ui/albumsModal/types";
+
 export interface IUser {
 	id: number;
 	email: string;
@@ -8,6 +10,7 @@ export interface IUser {
 	avatars: IAvatar[]
 	signature: string | null;
 	birthDate: string | null;
+	albums?: IAlbum[] 
 }
 export interface IAvatar{
 	id: number;

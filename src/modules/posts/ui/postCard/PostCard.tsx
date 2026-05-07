@@ -8,16 +8,28 @@ import { Link, Redirect } from "expo-router";
 import { IProps } from "./types";
 import { SERVER } from "@shared/constants/server";
 import { colors } from "react-native-keyboard-controller/lib/typescript/components/KeyboardToolbar/colors";
+import Modal from "react-native-modal"
+
+import { CreatePostForm } from "@modules/posts/ui/create-post-form";
 import { useDeletePostMutation } from "@modules/posts/api/postsApi";
 
 
 export function PostCard(props: IProps){
     const { post } = props
+
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [deletePost] = useDeletePostMutation();
+
     const photos = post.photos ?? [];
     const [isPostModalOpen, setisPostModalOpen] = useState(false)
-    const [deletePost] = useDeletePostMutation()
 
-
+    const handleEdit = () => {
+        setIsMenuOpen(false);
+        setTimeout(() => {
+            setIsEditModalOpen(true);
+        }, 500);
+    };
     return (
         <View style={styles.postContainer}>
             <View style={styles.postHeader}>
@@ -52,9 +64,9 @@ export function PostCard(props: IProps){
 
                         {isPostModalOpen && (
                             <View style={styles.postModalMenu}>
-                                <TouchableOpacity style={styles.postModalMenuBtn}>
-                                    <ICONS.EditIcon color={COLORS.black} />
-                                    <Text style={styles.postModalBtnTxt}>Редагувати допис</Text>
+                                <TouchableOpacity style={styles.postModalMenuBtn} onPress={handleEdit}>
+                                    <ICONS.EditIcon color={COLORS.black} width={18} height={18} />
+                                    <Text style={styles.postModalBtnTxt}>Редагувати</Text>
                                 </TouchableOpacity>
 
                                 <View style={styles.devider}></View>
@@ -77,6 +89,52 @@ export function PostCard(props: IProps){
                     </View>
                 </Pressable>
             </View>
+
+
+            {/* <Modal
+                isVisible={isMenuOpen}
+                onBackdropPress={() => setIsMenuOpen(false)}
+                backdropOpacity={0.3}
+                animationIn="fadeInUp"
+                animationOut="fadeOutDown"
+                style={styles.bottomModal}
+            >
+                <View style={styles.menuContent}>
+                    <TouchableOpacity style={styles.menuItem} onPress={handleEdit}>
+                        <ICONS.EditIcon color={COLORS.black} width={20} height={20} />
+                        <Text style={styles.menuText}>Редагувати</Text>
+                    </TouchableOpacity>
+                    
+                    <TouchableOpacity 
+                        style={[styles.menuItem, { borderTopWidth: 1, borderColor: COLORS.gray }]} 
+                        onPress={handleDelete}
+                    >
+                        <ICONS.DeleteIcon color="red" width={20} height={20} />
+                        <Text style={[styles.menuText, { color: 'red' }]}>Видалити</Text>
+                    </TouchableOpacity>
+                </View>
+            </Modal> */}
+
+            <Modal
+                isVisible={isEditModalOpen}
+                onBackdropPress={() => setIsEditModalOpen(false)}
+                onSwipeComplete={() => setIsEditModalOpen(false)}
+                style={styles.fullModal}
+                useNativeDriver
+            >
+                <View style={styles.formModalContainer}>
+                    <View style={styles.closeModalContainer}>
+                        <TouchableOpacity onPress={() => setIsEditModalOpen(false)} hitSlop={15}>
+                            <Text style={styles.closeIcon}>✕</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <CreatePostForm 
+                        setIsCreatePostModalOpen={setIsEditModalOpen} 
+                        editData={post} 
+                    />
+                </View>
+            </Modal>
+
 
             <View style={styles.postContent}>
                 <Text style={styles.postTitle}>{ post.title }</Text>
