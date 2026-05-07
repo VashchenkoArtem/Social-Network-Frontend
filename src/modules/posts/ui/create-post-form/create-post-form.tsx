@@ -22,6 +22,7 @@ import { PostTags } from "@modules/tabs/ui/postTags/postTags";
 import { PostLinks } from "@modules/tabs/ui/postLinks/postLinks";
 import { Post } from "@modules/posts/api/api.types";
 import { SERVER } from "@shared/constants/server";
+import { useGetTagsQuery } from "@modules/tabs/api/tagsApi";
 
 
 interface ReactNativeFile {
@@ -36,23 +37,28 @@ export function CreatePostForm(props: {
     editData?: Post;
 }) {
 	const { setIsCreatePostModalOpen, editData } = props;
-
+	const { data: allTags } = useGetTagsQuery();
 	const {
 		handleSubmit,
 		control,
 		reset,
+		watch,
 		formState: { errors },
 	} = useForm<ICreatePostForm>({
-        defaultValues: {
-            title: "",
-            topic: "",
-            content: "",
-            tags: [],
-            links: [],
-        },
+		defaultValues: {
+			title: "",
+			topic: "",
+			content: "",
+			tags: [],
+			links: [],
+		},
 		resolver: yupResolver(createPostValidator),
 	});
-
+	const watchedTags = watch("tags");
+	const tagsMap = allTags?.reduce((acc, tag) => {
+		acc[tag.id] = tag.name;
+		return acc;
+	}, {} as Record<number, string>);
 	useEffect(() => {
 		if (editData) {
 			reset({
@@ -218,16 +224,42 @@ export function CreatePostForm(props: {
 						name="content"
 						control={control}
 						render={({ field }) => (
-							<Input
-								placeholder="Введіть опис публікації"
-								label="Опис публікації"
-								autoCapitalize="none"
-								autoComplete="off"
-								autoCorrect={false}
-								value={field.value}
-								onChangeText={field.onChange}
-								error={errors.content?.message}
-							/>
+							<View>
+								<Input
+									placeholder="Введіть опис публікації"
+									label="Опис публікації"
+									autoCapitalize="none"
+									autoComplete="off"
+									autoCorrect={false}
+									value={field.value}
+									onChangeText={field.onChange}
+									error={errors.content?.message}
+								/>
+
+								{!!watchedTags?.length && (
+									<View
+										style={{
+											flexDirection: "row",
+											flexWrap: "wrap",
+											gap: 6,
+											marginTop: 8,
+										}}
+									>
+										{watchedTags.map((tagId: number) => (
+											<Text
+												key={tagId}
+												style={{
+													color: COLORS.plum,
+													fontSize: 14,
+													fontWeight: "600",
+												}}
+											>
+												#{tagsMap?.[tagId] ?? tagId}
+											</Text>
+										))}
+									</View>
+								)}
+							</View>
 						)}
 					/>
                     <Controller
