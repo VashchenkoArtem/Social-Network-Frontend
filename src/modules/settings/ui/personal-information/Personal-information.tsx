@@ -415,7 +415,6 @@ export function PersonalInformation() {
 							) : (
 								<Text style={{ marginLeft: 34 }}>Підпис не додано</Text>
 							))}
-
 						{isEditingSignature && (
 							<View style={{ width: "100%" }}>
 								<SignatureEditor

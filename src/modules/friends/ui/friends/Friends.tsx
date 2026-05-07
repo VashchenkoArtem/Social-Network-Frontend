@@ -11,7 +11,7 @@ export function Friends(){
     // })
     if (!user) return null
     return (
-        <ScrollView style = {{marginTop: 24, gap: 8}}>
+        <ScrollView style = {{marginTop: 24, marginBottom: 48}} contentContainerStyle={{gap: 8}}>
             {/* { data.map((user) => {
                 return(
                     <FriendCard user={user}></FriendCard>
