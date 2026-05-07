@@ -21,7 +21,8 @@ export const styles = StyleSheet.create({
         justifyContent: 'space-between',
         borderBottomColor: COLORS.gray,
         borderBottomWidth: 1,
-        padding: 16
+        padding: 16,
+        zIndex: 10
     },
 
     authorAvatar: {
@@ -70,6 +71,7 @@ export const styles = StyleSheet.create({
         paddingHorizontal: 16,
         paddingVertical: 16,
         gap: 16, 
+        overflow: 'visible',
     },
 
     dotIconContainer: {
@@ -121,9 +123,64 @@ export const styles = StyleSheet.create({
     postFooterBtn: {
         flexDirection: "row",
         gap: 8
+    },
+
+    // Modal
+    isModalOpenContainer: {
+        position: 'relative',
+        zIndex: 1
+    },
+
+
+    dotIconContainerSecond: {
+        width: '100%',      
+        justifyContent: 'flex-end',
+        alignItems: 'flex-end'
+    },
+
+    postModalMenu: {
+        flexDirection: 'column',
+        justifyContent: 'flex-start',
+        alignItems: 'flex-start',
+        paddingVertical: 16,
+        paddingHorizontal: 16,
+        gap: 16,
+        position: 'absolute',
+        top: 30,
+        right: 0,
+        width: 250,
+        backgroundColor: COLORS.preWhite,
+        borderRadius: 10,
+        elevation: 1, 
+        zIndex: 1, 
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.15,
+        shadowRadius: 6,
+    },
+
+    postModalMenuBtn: {
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+        gap: 10,
+    },
+
+    postModalBtnTxt: {
+        fontSize: 16,
+        fontWeight: 500, 
+        color: COLORS.black
+    },
+
+    devider: {
+        width: '100%',
+        height: 1,
+        backgroundColor: COLORS.lightGray,
+        borderRadius: 10
     }
-
-
 })
 
 export const getPhotoStyle = (

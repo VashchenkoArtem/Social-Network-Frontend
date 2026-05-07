@@ -1,17 +1,23 @@
-import { View, Image, Text, TouchableOpacity } from "react-native";
+import { View, Image, Text, TouchableOpacity, Pressable } from "react-native";
 import { getPhotoStyle, styles } from "./styles";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { UserContext } from "@modules/auth/context/user-context";
 import { COLORS } from "@shared/constants/colors";
 import { ICONS } from "@shared/ui";
 import { Link, Redirect } from "expo-router";
 import { IProps } from "./types";
 import { SERVER } from "@shared/constants/server";
+import { colors } from "react-native-keyboard-controller/lib/typescript/components/KeyboardToolbar/colors";
+import { useDeletePostMutation } from "@modules/posts/api/postsApi";
 
 
 export function PostCard(props: IProps){
     const { post } = props
     const photos = post.photos ?? [];
+    const [isPostModalOpen, setisPostModalOpen] = useState(false)
+    const [deletePost] = useDeletePostMutation()
+
+
     return (
         <View style={styles.postContainer}>
             <View style={styles.postHeader}>
@@ -29,9 +35,47 @@ export function PostCard(props: IProps){
                         uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${post.author.signature}`
                     }}/>}
                 </View>
-                <TouchableOpacity style={styles.dotIconContainer} >
-                    <ICONS.DotsIcon color={COLORS.gray} />
-                </TouchableOpacity>
+
+                <Pressable
+                    onPress={() => setisPostModalOpen(false)}
+                >
+                    <View style={styles.isModalOpenContainer}>
+                        <TouchableOpacity
+                            style={styles.dotIconContainer}
+                            onPress={(event) => {
+                                event.stopPropagation()
+                                setisPostModalOpen(!isPostModalOpen)
+                            }}
+                        >
+                            <ICONS.DotsIcon color={COLORS.gray} />
+                        </TouchableOpacity>
+
+                        {isPostModalOpen && (
+                            <View style={styles.postModalMenu}>
+                                <TouchableOpacity style={styles.postModalMenuBtn}>
+                                    <ICONS.EditIcon color={COLORS.black} />
+                                    <Text style={styles.postModalBtnTxt}>Редагувати допис</Text>
+                                </TouchableOpacity>
+
+                                <View style={styles.devider}></View>
+
+                                <TouchableOpacity 
+                                    style={styles.postModalMenuBtn}
+                                    onPress={async () => {
+                                        try {
+                                            await deletePost(post.id).unwrap()
+                                        } catch (error) {
+                                            console.error("Delete error:", error)
+                                        }
+                                    }}
+                                >
+                                    <ICONS.DeleteIcon color={COLORS.black} />
+                                    <Text style={[styles.postModalBtnTxt]}>Видалити публікацію</Text>
+                                </TouchableOpacity>
+                            </View>
+                        )}
+                    </View>
+                </Pressable>
             </View>
 
             <View style={styles.postContent}>
