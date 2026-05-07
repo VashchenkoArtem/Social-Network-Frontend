@@ -26,12 +26,31 @@ export const postApi = baseApi.injectEndpoints({
                 body
             }),
             invalidatesTags: ['Post']
-        })
+        }),
+
+        deletePost: builder.mutation<{ message: string }, number>({
+            query: (id) => ({
+                url: `posts/${id}`,
+                method: 'DELETE',
+            }),
+            invalidatesTags: ['Post']
+        }),
+
+        updatePost: builder.mutation<Post, { id: number; formData: FormData }>({
+            query: ({ id, formData }) => ({
+                url: `posts/${id}`,
+                method: 'PATCH',
+                body: formData,
+            }),
+            invalidatesTags: ['Post']
+        }),
     })
 })
 
 export const {
     useGetAllPostsQuery,
     useMyPostsQuery, 
-    useCreatePostMutation
+    useCreatePostMutation,
+    useDeletePostMutation,
+    useUpdatePostMutation
 } = postApi

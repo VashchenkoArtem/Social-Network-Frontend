@@ -1,4 +1,4 @@
 export const SERVER = {
-    host: "192.168.0.104",
+    host: typeof window !== "undefined" ? window.location.hostname : "127.0.0.1",
     port: "8000"
 }

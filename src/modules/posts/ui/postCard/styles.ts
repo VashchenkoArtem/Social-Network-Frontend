@@ -121,9 +121,79 @@ export const styles = StyleSheet.create({
     postFooterBtn: {
         flexDirection: "row",
         gap: 8
-    }
+    },
 
 
+
+    bottomModal: {
+        justifyContent: 'flex-end',
+        margin: 0,
+    },
+    menuContent: {
+        backgroundColor: 'white',
+        padding: 20,
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+    },
+    menuItem: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        paddingVertical: 12,
+        paddingHorizontal: 16,
+        gap: 12,
+    },
+    menuText: {
+        fontSize: 16,
+        color: COLORS.black,
+        includeFontPadding: false,
+        textAlignVertical: 'center',
+    },
+    fullModal: {
+        margin: 0,
+        justifyContent: 'center',
+    },
+    formModalContainer: {
+        flex: 1,
+        backgroundColor: 'white',
+        marginTop: 50,
+        borderTopLeftRadius: 30,
+        borderTopRightRadius: 30,
+        padding: 20,
+    },
+
+
+
+    closeModalContainer: {
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        width: '100%'
+    },
+    
+    closeIcon: {
+        fontSize: 17, 
+        fontWeight: 700,
+        color: COLORS.black,
+    },
+
+    popoverMenu: {
+        position: 'absolute',
+        top: 60, 
+        right: 20,
+        
+        backgroundColor: COLORS.white,
+        borderRadius: 12,
+        width: 180,
+        
+        elevation: 10,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 5 },
+        shadowOpacity: 0.2,
+        shadowRadius: 5,
+        
+        borderWidth: 1,
+        borderColor: COLORS.lightGray,
+    },
 })
 
 export const getPhotoStyle = (
