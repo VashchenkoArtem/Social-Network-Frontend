@@ -26,8 +26,8 @@ import { SERVER } from "@shared/constants/server";
 type AlbumForm = {
 	id: number;
 	name: string;
-	themeId: number;
-	yearId: number;
+	theme: string;
+	year: string;
 };
 export const AlbumsPage = () => {
 	const { data: albums = [] } = useGetAlbumsQuery(undefined, {
@@ -60,15 +60,14 @@ export const AlbumsPage = () => {
 	const toForm = (album: Album): AlbumForm => ({
 		id: album.id,
 		name: album.name,
-		themeId: album.theme.id,
-		yearId: album.year.id,
+		theme: album.theme,
+		year: album.year,
 	});
-
 	const handleSave = async (data: AlbumForm) => {
 		const payload: CreateAlbumDto = {
 			name: data.name,
-			themeId: data.themeId!,
-			yearId: data.yearId!,
+			theme: data.theme!,
+			year: data.year!,
 		};
 
 		if (selectedAlbum) {
@@ -122,9 +121,9 @@ export const AlbumsPage = () => {
 										<Text style={styles.albumTitle}>{album.name}</Text>
 										<View style={styles.albumInfoContainer}>
 											<Text style={{ color: COLORS.black, fontSize: 16 }}>
-												{album.theme.name}
+												{album.theme}
 											</Text>
-											<Text style={styles.albumInfo}>{album.year.year} рік</Text>
+											<Text style={styles.albumInfo}>{album.year} рік</Text>
 										</View>
 									</View>
 									<View style={styles.actions}>

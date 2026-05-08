@@ -5,6 +5,7 @@ import { KeyboardProvider } from "react-native-keyboard-controller";
 import { baseApi } from "@shared/api/baseApi";
 import { ApiProvider } from "@reduxjs/toolkit/query/react";
 import { UserProvider } from "@modules/auth/context/user-context";
+import { Header } from "@shared/ui/header";
 
 export default function RootLayout() {
 	return (
@@ -24,7 +25,7 @@ export default function RootLayout() {
 							<Stack.Screen name="(tabs)" />
 							<Stack.Screen 
 								name="(friends)" 
-								options={{ headerShown: false }}
+								options={{ headerShown: false, contentStyle: { flex: 1 } }}
 							/>
 							<Stack.Screen name="settings" />
 						</Stack>

@@ -8,8 +8,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 export default function FriendProfileScreen(){
     const { user } = useContext(UserContext)!
     return (
-        <SafeAreaView style={{ flex: 1 }} edges={["left", "right"]}>
+        <View style = {{marginTop: 8}}>
             <FriendProfile user = {user}></FriendProfile>
-        </SafeAreaView>
+        </View>
     )
 }

@@ -63,7 +63,7 @@ export function Header(props: HeaderProps) {
 								iconLeft={<PlusIcon color={COLORS.plum} style={styles.icon} />}
 								onPress={() => setIsCreatePostModalOpen(true)}
 							/>
-
+							
 							<Modal
 								isVisible={isCreatePostModalOpen}
 								onBackdropPress={() => setIsCreatePostModalOpen(false)}

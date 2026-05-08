@@ -64,5 +64,20 @@ export const styles = StyleSheet.create({
         flexDirection: 'column',
         alignItems: 'center',
         gap: 7
+    },
+    infoBorder: {
+          borderLeftWidth: 1,
+          borderRightWidth: 1,
+          borderLeftColor: COLORS.gray,
+          borderRightColor: COLORS.gray
+    },
+    infoCount: {
+        fontSize: 20,
+        fontWeight: 700
+    },
+    infoLabel: {
+        fontSize: 16,
+        color: COLORS.gray,
+        fontWeight: 500
     }
 })

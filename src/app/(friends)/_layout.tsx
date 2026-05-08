@@ -1,14 +1,16 @@
+import { COLORS } from "@shared/constants/colors";
 import { Header } from "@shared/ui/header";
 import { Stack } from "expo-router";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function FriendsLayout() {
 	return (
 		<Stack>
-			<Stack.Screen name="main" />
-			<Stack.Screen name="requests" />
-			<Stack.Screen name="reccomended" />
-			<Stack.Screen name="all" />
-			<Stack.Screen name="[friendId]" options={{header: () => <Header />}} />
+			<Stack.Screen name="[friendId]" options={{header: () => (
+						<SafeAreaView edges={["top"]} style={{backgroundColor: COLORS.white}}>
+							<Header />
+						</SafeAreaView>
+					),}} />
 		</Stack>
 	);
 }

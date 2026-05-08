@@ -5,10 +5,13 @@ import { styles } from './styles'
 import { useRouter } from "expo-router";
 import { IProps } from "../friendCard/types";
 import { SERVER } from '@shared/constants/server';
+import { useGetAlbumsQuery } from '@modules/settings/api/albumApi';
+import { FriendAlbum } from '../friendAlbum/FriendAlbum';
 
 export function FriendProfile(props: IProps) {
     const router = useRouter();
     const { user } = props;    
+    const { data } = useGetAlbumsQuery()
     if (!user) return null
 
     return (
@@ -16,6 +19,7 @@ export function FriendProfile(props: IProps) {
             keyboardShouldPersistTaps="handled"
             contentContainerStyle={{
                 flexGrow: 1,
+                gap: 8
             }}
         >
             <View style={styles.card}>
@@ -33,21 +37,18 @@ export function FriendProfile(props: IProps) {
 
                 <View style={styles.friendFollowersInfo}>
                     <View style={styles.infoRow}>
-                        <Text>3</Text>
-                        <Text>Дописи</Text>
+                        <Text style = {styles.infoCount}>3</Text>
+                        <Text style = {styles.infoLabel}>Дописи</Text>
                     </View>
-
-                    <View style={styles.infoRow}>
-                        <Text>3</Text>
-                        <Text>Читачі</Text>
+                    <View style={[styles.infoRow, styles.infoBorder]}>
+                        <Text style = {styles.infoCount}>3</Text>
+                        <Text style = {styles.infoLabel}>Читачі</Text>
                     </View>
-
                     <View style={styles.infoRow}>
-                        <Text>3</Text>
-                        <Text>Друзі</Text>
+                        <Text style = {styles.infoCount}>3</Text>
+                        <Text style = {styles.infoLabel}>Друзі</Text>
                     </View>
                 </View>
-
 
                 <View style={styles.cardButtons}>
                     <Button variant="purple" text = "Підтвердити"  onPress={() => {
@@ -58,6 +59,11 @@ export function FriendProfile(props: IProps) {
                     <Button variant="white" text = "Видалити" />
                 </View>
             </View>
+            { data?.map((album) => {
+                return (
+                    <FriendAlbum album={album} key = {album.id}></FriendAlbum>
+                )
+            })}
         </KeyboardAwareScrollView>
     )
 }
