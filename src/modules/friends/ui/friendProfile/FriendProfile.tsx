@@ -7,6 +7,8 @@ import { IProps } from "../friendCard/types";
 import { SERVER } from '@shared/constants/server';
 import { useGetAlbumsQuery } from '@modules/settings/api/albumApi';
 import { FriendAlbum } from '../friendAlbum/FriendAlbum';
+import { ICONS } from '@shared/ui';
+import { COLORS } from '@shared/constants/colors';
 
 export function FriendProfile(props: IProps) {
     const router = useRouter();
@@ -59,11 +61,18 @@ export function FriendProfile(props: IProps) {
                     <Button variant="white" text = "Видалити" />
                 </View>
             </View>
-            { data?.map((album) => {
-                return (
-                    <FriendAlbum album={album} key = {album.id}></FriendAlbum>
-                )
-            })}
+            { data && 
+                <View style = {styles.card}>
+                    <View style = {styles.headerCard}>
+                        <View style = {{gap: 8, flexDirection: "row", alignItems: "center"}}>
+                            <ICONS.MyPostsPageIcon color = {COLORS.gray}/>
+                            <Text style = {[styles.textGray, styles.title]}>Альбоми</Text>
+                        </View>
+                        <Text style = {[styles.cardLink]}>Дивитись всі</Text>
+                    </View>
+                    <FriendAlbum album={data[0]} key = {data[0].id}></FriendAlbum>
+                </View>
+            }
         </KeyboardAwareScrollView>
     )
 }

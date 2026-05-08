@@ -79,5 +79,23 @@ export const styles = StyleSheet.create({
         fontSize: 16,
         color: COLORS.gray,
         fontWeight: 500
-    }
+    },
+    headerCard: {
+        width: "100%",
+        paddingHorizontal: 32,
+        flexDirection: "row",
+        justifyContent: "space-between",
+    },
+    cardLink: {
+        color: COLORS.plum,
+        fontSize: 16,
+        fontWeight: 500,
+    },
+    textGray: {
+        color: COLORS.gray
+    },
+    title: {
+        fontWeight: 500,
+        fontSize: 20
+    },
 })

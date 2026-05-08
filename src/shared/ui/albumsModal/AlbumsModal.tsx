@@ -64,7 +64,6 @@ export const AlbumsModal = ({
 			year: initialData?.year ?? "",
 		});
 	}, [visible]);
-	console.log(initialData)
 	const handleFormSubmit = async (data: Form) => {
 		const payload = {
 			name: data.name,

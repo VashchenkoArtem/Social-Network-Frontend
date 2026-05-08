@@ -18,20 +18,14 @@ export const styles = StyleSheet.create({
         justifyContent: "space-between",
     },
     contentCard: {
-        gap: 10
+        gap: 10,
+        width: "100%",
+        paddingHorizontal: 32
     },    
-    cardLink: {
-        color: COLORS.plum,
-        fontSize: 16,
-        fontWeight: 500,
-    },
     textGray: {
         color: COLORS.gray
     },
-    title: {
-        fontWeight: 500,
-        fontSize: 20
-    },
+
     year: {
         fontWeight: 400,
         fontSize: 16
