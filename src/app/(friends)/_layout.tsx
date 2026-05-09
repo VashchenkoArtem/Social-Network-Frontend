@@ -7,10 +7,10 @@ export default function FriendsLayout() {
 	return (
 		<Stack>
 			<Stack.Screen name="[friendId]" options={{header: () => (
-						<SafeAreaView edges={["top"]} style={{backgroundColor: COLORS.white}}>
-							<Header />
-						</SafeAreaView>
-					),}} />
+				<SafeAreaView edges={["top"]} style={{backgroundColor: COLORS.white}}>
+					<Header />
+				</SafeAreaView>
+			),}} />
 		</Stack>
 	);
 }

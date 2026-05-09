@@ -1,10 +1,10 @@
 import { SafeAreaView } from "react-native-safe-area-context";
 import { FriendFrame } from "../friendFrame";
 
-export function Requests(){
+export function AllFriends(){
     return (
         <SafeAreaView>
-            <FriendFrame frameName="Запити" />
+            <FriendFrame frameName="Всі друзі"/>
         </SafeAreaView>
     )
 }
