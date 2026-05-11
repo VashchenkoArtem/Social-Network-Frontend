@@ -5,11 +5,17 @@ export interface IUser {
 	email: string;
 	firstname: string | null;
 	lastname: string | null;
-	nickname: string | null;
-	alias: string | null;
-	avatars: IAvatar[]
+	username: string | null;
+	profile: IProfile
+
+}
+export interface IProfile {
+	pseudonym: string | null;
+	avatar: string | null
 	signature: string | null;
-	birthDate: string | null;
+	birth_date: string | null;
+	is_text_signature: boolean;
+	is_image_signature: boolean | null;
 	albums?: IAlbum[] 
 }
 export interface IAvatar{

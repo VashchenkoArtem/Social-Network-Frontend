@@ -10,13 +10,6 @@ import { COLORS } from "@shared/constants/colors";
 import { CreatePostForm } from "../create-post-form";
 
 export function MyPostsPage(){
-    const { isNewUser } = useLocalSearchParams<{ isNewUser?: string }>();
-    const [isWelcomeVisible, setIsWelcomeVisible] = useState(
-        isNewUser === "true",
-    );
-
-    const [isModalVisible, setModalVisible] = useState(false);
-
     const { data } = useMyPostsQuery(undefined, {
         pollingInterval: 5000
     });

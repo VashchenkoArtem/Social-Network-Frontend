@@ -7,10 +7,24 @@ export interface Post {
     content: string 
     photos?: PostPhoto[]
     tags?: Tag[] 
-    author: IUser
+    author: IProfile
     urls?: Url[] 
 }
-
+export interface IProfile{
+    avatar?: string,
+    birth_date?: string,
+    is_image_signature?: boolean,
+    is_text_signature: string,
+    pseudonym?: string,
+    signature?: string,
+    user: {
+        id: number;
+        email: string;
+        firstname: string | null;
+        lastname: string | null;
+        username: string | null;
+    }
+}
 export interface Photo {
     id: number 
     userId: number | null 

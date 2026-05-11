@@ -16,7 +16,6 @@ import { useDeletePostMutation } from "@modules/posts/api/postsApi";
 
 export function PostCard(props: IProps){
     const { post } = props
-
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [deletePost] = useDeletePostMutation();
@@ -36,11 +35,11 @@ export function PostCard(props: IProps){
                 <View style={styles.postAvatarSignatureInfo}>
                     <View style={styles.postAvatarInfo}>
                         <Image style={styles.authorAvatar} source={
-							post.author.avatars[post.author.avatars?.length - 1]
-							? { uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${post.author.avatars[post.author.avatars.length - 1]?.filename}`, }
+							post.author.avatar
+							? { uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${post.author.avatar}`, }
 							: require("../../../../assets/defaultAvatar.png")
 					}/>
-                        <Text style={styles.authorName}>{post.author.nickname}</Text>
+                        <Text style={styles.authorName}>{post.author.user.username}</Text>
                     </View>
                     { post.author.signature && 
                     <Image style={styles.authorSignature} source={{

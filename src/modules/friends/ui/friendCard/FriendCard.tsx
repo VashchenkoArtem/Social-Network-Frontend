@@ -13,13 +13,13 @@ export function FriendCard(props: IProps) {
         <View style={styles.card}>
             <View style={styles.cardContent}>
                 <Image style={styles.authorAvatar} source={
-                    user.avatars[user.avatars?.length - 1]
-                    ? { uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${user.avatars[user.avatars.length - 1]?.filename}`, }
+                    user.profile.avatar
+                    ? { uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${user.profile.avatar}`, }
                     : require("../../../../assets/defaultAvatar.png")
                 }/>
                 <View style={styles.friendInfo}>
                     <Text style={styles.friendsFullName}>{ user.firstname } { user.lastname }</Text>
-                    <Text style={styles.friendsNickName}>@{ user.nickname }</Text>
+                    <Text style={styles.friendsNickName}>@{ user.username }</Text>
                 </View>
             </View>
             <View style={styles.cardButtons}>
