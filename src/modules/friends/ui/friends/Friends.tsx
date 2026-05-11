@@ -18,9 +18,9 @@ export function Friends(){
                 )
             }) } */}
             
-            <FriendFrame frameName="Запити" />
+            {/* <FriendFrame frameName="Запити" />
             <FriendFrame frameName="Рекомандції" />
-            <FriendFrame frameName="Всі друзі" />
+            <FriendFrame frameName="Всі друзі" /> */}
         </ScrollView>
     )
 }

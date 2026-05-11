@@ -15,7 +15,7 @@ export function FriendProfile(props: IProps) {
     const { user } = props;    
     const { data } = useGetAlbumsQuery()
     if (!user) return null
-
+    
     return (
         <KeyboardAwareScrollView
             keyboardShouldPersistTaps="handled"

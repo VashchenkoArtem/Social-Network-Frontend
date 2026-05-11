@@ -3,11 +3,12 @@ import { FriendCard } from "../friendCard";
 import { styles } from "./friendFrame.styles";
 import { useContext } from "react";
 import { UserContext } from "@modules/auth/context/user-context";
+import { FriendRequest } from "@modules/friends/api/api.types";
 
 
-export function FriendFrame(props: {frameName: string}){
+export function FriendFrame(props: {frameName: string, data: FriendRequest[]}){
     const { user } = useContext(UserContext)!
-    const { frameName } = props
+    const { frameName, data } = props
     if (!user) return null
     return (
         <View style={styles.friendCards}>
@@ -16,7 +17,9 @@ export function FriendFrame(props: {frameName: string}){
                 <Text style = {styles.cardLink}>Дивитись всі</Text>
             </View>
             <View>
-                <FriendCard user={user}/>
+                { data?.map((friendRequest) => {
+                    return <FriendCard user={friendRequest.from_profile} key={friendRequest.id} />
+                }) }
             </View>
         </View>
     )
