@@ -27,11 +27,19 @@ export const friendApi = baseApi.injectEndpoints({
             }
         }),
 
-
+        deleteFriendRequest: builder.mutation<void, number>({
+            query: (id) => {
+                return {
+                    url: `requests/${id}`,
+                    method: 'DELETE'
+                }
+            }
+        })
 })}
 )
 
 export const {
     useGetAllFriendsQuery,
-    useGetAllRequestsQuery
+    useGetAllRequestsQuery,
+    useDeleteFriendRequestMutation
 } = friendApi
