@@ -1,5 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useCreatePostMutation } from "@modules/posts/api/postsApi";
+import { useCreatePostMutation, useUpdatePostMutation } from "@modules/posts/api/postsApi";
 import { createPostValidator } from "@modules/posts/models/lib/create-post.validation";
 import { ICreatePostForm } from "@modules/posts/models/types/create-post.types";
 import { Controller, useForm } from "react-hook-form";
@@ -16,34 +16,73 @@ import { Button } from "@shared/ui/button";
 import { ICONS } from "@shared/ui";
 import { COLORS } from "@shared/constants/colors";
 import * as ImagePicker from "expo-image-picker";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { UserContext } from "@modules/auth/context/user-context";
 import { PostTags } from "@modules/tabs/ui/postTags/postTags";
 import { PostLinks } from "@modules/tabs/ui/postLinks/postLinks";
+import { Post } from "@modules/posts/api/api.types";
+import { SERVER } from "@shared/constants/server";
+import { useGetTagsQuery } from "@modules/tabs/api/tagsApi";
+
+
+interface ReactNativeFile {
+    uri: string;
+    name: string;
+    type: string;
+}
+
 
 export function CreatePostForm(props: {
 	setIsCreatePostModalOpen: (type: boolean) => void;
+    editData?: Post;
 }) {
-	const { setIsCreatePostModalOpen } = props;
-
+	const { setIsCreatePostModalOpen, editData } = props;
+	const { data: allTags } = useGetTagsQuery();
 	const {
 		handleSubmit,
 		control,
+		reset,
+		watch,
 		formState: { errors },
 	} = useForm<ICreatePostForm>({
-        defaultValues: {
-            title: "",
-            topic: "",
-            content: "",
-            tags: [],
-            links: [],
-        },
+		defaultValues: {
+			title: "",
+			topic: "",
+			content: "",
+			tags: [],
+			links: [],
+		},
 		resolver: yupResolver(createPostValidator),
 	});
+	const watchedTags = watch("tags");
+	const tagsMap = allTags?.reduce((acc, tag) => {
+		acc[tag.id] = tag.name;
+		return acc;
+	}, {} as Record<number, string>);
+	useEffect(() => {
+		if (editData) {
+			reset({
+				title: editData.title,
+				topic: editData.topic || "",
+				content: editData.content,
+				tags: editData.tags?.map(t => t.tag.id) || [],
+				links: editData.urls?.map(u => u.href) || [],
+			});
+			
+			if (editData.photos) {
+				const existingUris = editData.photos.map(p => 
+					`http://${SERVER.host}:${SERVER.port}/media/thumb/${p.original_image}`
+				);
+				setPostImages(existingUris); 
+			}
+		}
+	}, [editData, reset]);
 
 	const [createPost, { isError }] = useCreatePostMutation();
 
 	const [postImages, setPostImages] = useState<string[]>([]);
+
+	const [updatePost] = useUpdatePostMutation();
 
 	const { user } = useContext(UserContext)!;
 
@@ -67,35 +106,52 @@ export function CreatePostForm(props: {
 		);
 	};
 
-	const handleCreatePost = async (
-		data: ICreatePostForm
-	) => {
+	const handleSave = async (data: ICreatePostForm) => {
 		const formData = new FormData();
 
 		formData.append("title", data.title);
-		formData.append("topic", data.topic);
 		formData.append("content", data.content);
+		formData.append("topic", data.topic || "");
 		formData.append("authorId", String(user?.id));
-		postImages.forEach((uri, index) => {
-			formData.append("images", {
-				uri,
-				name: `${index}.jpg`,
-				type: "image/jpeg",
-			} as any);
-		});
-        data.tags?.forEach((tagId) => {
-            formData.append("tags", String(tagId));
-        });
-        data.links?.forEach((link) => {
-            if (!link?.trim()) return;
-            formData.append("urls", link);
-        });
-		await createPost(formData).unwrap();
 
-		if (!isError) {
+		postImages.forEach((uri: string, index: number) => {
+			if (uri.startsWith('file://') || uri.startsWith('content://')) {
+				const fileToUpload = {
+					uri,
+					name: `photo_${Date.now()}_${index}.jpg`,
+					type: "image/jpeg",
+				};
+				formData.append("images", fileToUpload as unknown as Blob);
+			} else {
+				formData.append("existingPhotos", uri);
+			}
+		});
+
+		data.tags?.forEach((tagId: number) => {
+			formData.append("tags", String(tagId));
+		});
+
+		data.links?.forEach((link: string) => {
+			if (link.trim()) {
+				formData.append("urls", link);
+			}
+		});
+
+		try {
+			if (editData) {
+				await updatePost({ id: editData.id, formData }).unwrap();
+			} else {
+				await createPost(formData).unwrap();
+			}
+			
+			reset();
+			setPostImages([]);
 			setIsCreatePostModalOpen(false);
+		} catch (error) {
+			console.error("Помилка збереження:", error);
 		}
 	};
+
 
 	return (
 		<KeyboardAwareScrollView
@@ -108,7 +164,7 @@ export function CreatePostForm(props: {
 			<View style={styles.formContainer}>
 				<View style={styles.formHeader}>
 					<Text style={styles.formTitle}>
-						Створення публікації
+						{editData ? "Редагування публікації" : "Створення публікації"}
 					</Text>
 				</View>
 
@@ -168,16 +224,42 @@ export function CreatePostForm(props: {
 						name="content"
 						control={control}
 						render={({ field }) => (
-							<Input
-								placeholder="Введіть опис публікації"
-								label="Опис публікації"
-								autoCapitalize="none"
-								autoComplete="off"
-								autoCorrect={false}
-								value={field.value}
-								onChangeText={field.onChange}
-								error={errors.content?.message}
-							/>
+							<View>
+								<Input
+									placeholder="Введіть опис публікації"
+									label="Опис публікації"
+									autoCapitalize="none"
+									autoComplete="off"
+									autoCorrect={false}
+									value={field.value}
+									onChangeText={field.onChange}
+									error={errors.content?.message}
+								/>
+
+								{!!watchedTags?.length && (
+									<View
+										style={{
+											flexDirection: "row",
+											flexWrap: "wrap",
+											gap: 6,
+											marginTop: 8,
+										}}
+									>
+										{watchedTags.map((tagId: number) => (
+											<Text
+												key={tagId}
+												style={{
+													color: COLORS.plum,
+													fontSize: 14,
+													fontWeight: "600",
+												}}
+											>
+												#{tagsMap?.[tagId] ?? tagId}
+											</Text>
+										))}
+									</View>
+								)}
+							</View>
 						)}
 					/>
                     <Controller
@@ -237,9 +319,9 @@ export function CreatePostForm(props: {
 					/>
 
 					<Button
-						onPress={handleSubmit(handleCreatePost)}
+						onPress={handleSubmit(handleSave)}
 						variant="purple"
-						text="Публікація"
+						text={editData ? "Зберегти" : "Публікація"}
 						iconRight={
 							<ICONS.ArrowIcon
 								color={COLORS.white}

@@ -13,21 +13,15 @@ export interface Album {
 		is_shown: boolean
 	}[];
 
-	year: {
-		id: number;
-		year: string;
-	};
+	year: string
 
-	theme: {
-		id: number;
-		name: string;
-	};
+	theme: string
 }
 
 export interface CreateAlbumDto {
 	name: string;
-	themeId: number;
-	yearId: number;
+	theme: string;
+	year: string;
 }
 export interface UpdateAlbumDto {
 	name?: string;

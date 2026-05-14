@@ -18,13 +18,26 @@ import { ICONS } from "../icons/icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { UserContext } from "@modules/auth/context/user-context";
 import { CreatePostForm } from "@modules/posts/ui/create-post-form";
+import { CreateAlbumDto, useCreateAlbumMutation } from "@modules/settings/api/albumApi";
+import { AlbumsModal } from "../albumsModal/AlbumsModal";
 
 export function Header(props: HeaderProps) {
 	const { cantCreatePost, cantEditSelf } = props;
 	const pathname = usePathname();
 	const { user, logout } = useContext(UserContext)!;
 	const [choosedTab, setChoosedTab] = useState("Контакти");
-	const [isCreatePostModalOpen, setIsCreatePostModalOpen] = useState(false);
+	const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+	const [ createAlbum ] = useCreateAlbumMutation()
+	
+	async function handleSave(data: CreateAlbumDto) {
+		await createAlbum({
+			name: data.name,
+			theme: data.theme,
+			year: data.year
+		})
+		
+		setIsCreateModalOpen(false);
+	}
 
 	const chatsTabs = [
 		{ title: "Контакти", route: "/chats", icon: ICONS.FriendsPageIcon },
@@ -48,6 +61,7 @@ export function Header(props: HeaderProps) {
 			</View>
 		);
 	}
+	
 	return (
 		<View style={{ backgroundColor: COLORS.white }}>
 			<View style={styles.header}>
@@ -61,13 +75,18 @@ export function Header(props: HeaderProps) {
 							<Button
 								variant="white"
 								iconLeft={<PlusIcon color={COLORS.plum} style={styles.icon} />}
-								onPress={() => setIsCreatePostModalOpen(true)}
+								onPress={() => setIsCreateModalOpen(true)}
 							/>
-
+							{pathname.includes("settings") ? 
+							<AlbumsModal
+								visible={isCreateModalOpen}
+								onClose={() => setIsCreateModalOpen(false)}
+								onSubmit={handleSave}
+							/> :
 							<Modal
-								isVisible={isCreatePostModalOpen}
-								onBackdropPress={() => setIsCreatePostModalOpen(false)}
-								onSwipeComplete={() => setIsCreatePostModalOpen(false)}
+								isVisible={isCreateModalOpen}
+								onBackdropPress={() => setIsCreateModalOpen(false)}
+								onSwipeComplete={() => setIsCreateModalOpen(false)}
 								style={styles.modal}
 								useNativeDriver
 
@@ -82,14 +101,17 @@ export function Header(props: HeaderProps) {
 							>
 								<View style={styles.container}>
 									<View style={styles.closeModalContainer}>
-										<TouchableOpacity onPress={() => setIsCreatePostModalOpen(false)} hitSlop={15}>
+										<TouchableOpacity onPress={() => setIsCreateModalOpen(false)} hitSlop={15}>
 											<Text style={styles.closeIcon}>✕</Text>
 										</TouchableOpacity>
 									</View>
-									<CreatePostForm setIsCreatePostModalOpen={setIsCreatePostModalOpen}></CreatePostForm>
+									<CreatePostForm setIsCreatePostModalOpen={setIsCreateModalOpen}></CreatePostForm>
 								</View>
 
 							</Modal>
+
+						}
+							
 						</>
 					)}
 
