@@ -23,6 +23,9 @@ import { RecoveryPassword } from "../recovery-password/Recovery-password";
 import { UserContext } from "@modules/auth/context/user-context";
 import { Redirect } from "expo-router";
 import { SERVER } from "@shared/constants/server";
+import * as ImagePicker from "expo-image-picker";
+import { ProfileData, ReactNativeFile } from "@modules/auth/api/api.types"; 
+
 
 type FormData = {
 	firstname: string;
@@ -36,6 +39,12 @@ type FormData = {
 	avatar?: string;
 };
 
+interface PhotoFile {
+    uri: string;
+    name: string;
+    type: string;
+}
+
 export function PersonalInformation() {
 	const [isEditingSignature, setIsEditingSignature] = useState(false);
 	const [isEditingProfile, setIsEditingProfile] = useState(false);
@@ -47,6 +56,7 @@ export function PersonalInformation() {
 	const { user, token } = useContext(UserContext)!;
 	const [isVisible, setIsVisible] = useState(false);
 	const [isDrawing, setIsDrawing] = useState(false);
+	const [updateUserInfo] = useUpdateUserInfoMutation();
 	const [selectedType, setSelectedType] = useState<"alias" | "signature">(
 		user?.profile.signature ? "signature" : "alias",
 	);
@@ -76,21 +86,34 @@ export function PersonalInformation() {
 	}
 	const onSubmit = async (data: FormData) => {
 		try {
-			const payload = {
+			const payload: ProfileData = {
 				firstname: data.firstname,
 				lastname: data.lastname,
 				nickname: data.nickname,
-				email: data.email,
-				password: data.password,
-				...(data.newPassword && { newPassword: data.newPassword }),
-				avatar: data.avatar,
 				birthDate: data.birthDate,
 			};
-			await updateUser(payload).unwrap();
-			reset(data);
+
+			if (data.avatar) {
+				const isLocalUri = data.avatar.startsWith('file') || data.avatar.startsWith('ph');
+				
+				if (isLocalUri) {
+					payload.avatar = {
+						uri: data.avatar,
+						name: 'avatar.jpg',
+						type: 'image/jpeg',
+					} as any;
+				}
+			}
+
+			await updateUserInfo(payload).unwrap();
+			
+			reset(data); 
 			setIsEditingProfile(false);
+			setIsEditingPersonalInfo(false);
+			
+			console.log("Дані успішно збережено");
 		} catch (error) {
-			console.log("error:", error);
+			console.error("Помилка оновлення:", error);
 		}
 	};
 
@@ -125,6 +148,21 @@ export function PersonalInformation() {
 		}
 	};
 
+	const pickImage = async (onChange: (uri: string) => void) => {
+		const result = await ImagePicker.launchImageLibraryAsync({
+			mediaTypes: ImagePicker.MediaTypeOptions.Images, 
+			allowsEditing: true,
+			aspect: [1, 1],
+			quality: 0.8,
+		});
+
+		if (result.canceled) return;
+
+		const selectedUri = result.assets[0].uri;
+		
+		onChange(selectedUri);
+	};
+
 	return (
 		<>
 			<KeyboardAwareScrollView
@@ -156,37 +194,41 @@ export function PersonalInformation() {
 								<Controller
 									name="avatar"
 									control={control}
-									render={({ field }) => (
-										<AvatarField
-										value={field.value}
-										onChange={field.onChange}
-										avatar = {user.profile.avatar}
-										/>
+									render={({ field: { onChange, value } }) => (
+										<>
+											<View style={styles.userAvatarContainer}>
+												<AvatarField
+													value={value}
+													onChange={() => pickImage(onChange)}
+													avatar={user.profile.avatar}
+												/>
+											</View>
+
+											{isEditingProfile && (
+												<View style={styles.userAddAvatarButtons}>
+													<Button
+														variant={"white"}
+														iconLeft={<PlusIcon color={COLORS.plum} />}
+														text={"Додайте фото"}
+														onPress={() => pickImage(onChange)}
+														isSettings={true}
+														style={{ borderWidth: 0 }}
+													/>
+													<Button
+														variant={"white"}
+														iconLeft={<MyPostsPageIcon color={COLORS.plum} />}
+														text={"Оберіть фото"}
+														onPress={() => pickImage(onChange)}
+														isSettings={true}
+														style={{ borderWidth: 0 }}
+													/>
+												</View>
+											)}
+										</>
 									)}
 								/>
 							</View>
 
-							{isEditingProfile && (
-								<View style={styles.userAddAvatarButtons}>
-									<Button
-										variant={"white"}
-										iconLeft={<PlusIcon color={COLORS.plum} />}
-										text={"Додайте фото"}
-										// onPress={addUserAvatar}
-										isSettings={true}
-										style={{ borderWidth: 0 }}
-									/>
-
-									<Button
-										variant={"white"}
-										iconLeft={<MyPostsPageIcon color={COLORS.plum} />}
-										text={"Оберіть фото"}
-										// onPress={chooseUserAvatar}
-										isSettings={true}
-										style={{ borderWidth: 0 }}
-									/>
-								</View>
-							)}
 
 							<Text style={styles.name}>{user.profile.pseudonym}</Text>
 
@@ -211,7 +253,6 @@ export function PersonalInformation() {
 						</View>
 					</View>
 
-					{/* PERSONAL INFF */}
 					<View style={styles.personalInformationBlock}>
 						<View style={styles.headerBlock}>
 							<Text style={styles.headerBlockText}>Особиста інформація</Text>
@@ -352,7 +393,6 @@ export function PersonalInformation() {
 								text={isEditingSignature ? "Зберегти" : ""}
 								onPress={() => {
 									if (isEditingSignature) {
-										// save happens inside canvas
 										setIsEditingSignature(false);
 									} else {
 										setIsEditingSignature(true);
@@ -361,7 +401,6 @@ export function PersonalInformation() {
 							/>
 						</View>
 
-						{/* ALIAS */}
 						<View style={styles.signatureNameContainer}>
 							<TouchableOpacity
 								style={styles.checkboxRow}

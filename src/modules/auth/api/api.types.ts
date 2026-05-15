@@ -32,19 +32,27 @@ export interface MessageResponse {
 }
 
 
+
+export interface ReactNativeFile {
+    uri: string;
+    name: string;
+    type: string;
+}
+
+
 export interface UpdateUserRequest extends Partial<Omit<User, "id" | "email">> {
 	password?: string;
 }
 export interface ProfileData {
-	firstname?: string;
-	lastname?: string;
-	nickname?: string;
-	alias?: string;
-	email?: string;
-	password?: string;
-	avatar?: string;
-	signature?: string;
-	birthDate?: string;
+    firstname?: string;
+    lastname?: string;
+    nickname?: string;
+    alias?: string;
+    email?: string;
+    password?: string;
+    avatar?: string | ReactNativeFile;
+    signature?: string | ReactNativeFile;
+    birthDate?: string;
 }
 
 

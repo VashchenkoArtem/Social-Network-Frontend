@@ -28,19 +28,21 @@ export function AvatarField({ value, onChange, avatar }: AvatarFieldProps) {
 		const asset = result.assets[0];
 		onChange(asset.uri);
 	}
+	
+	const getImageSource = () => {
+        if (value) return { uri: value };
+        if (avatar) return { uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${avatar}` }; 
+        return require("../../../../assets/defaultAvatar.png");
+    };
 
 	return (
-		<TouchableOpacity onPress={pickImage} style={styles.ContainerAvatar}>
-			<View style={styles.AvatarView}>
-				<Image
-					source={
-							avatar
-							? { uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${avatar}`, }
-							: require("../../../../assets/defaultAvatar.png")
-					}
-					style={value ? styles.SelectedAvatar : styles.DefaultAvatar}
-				/>
-			</View>
-		</TouchableOpacity>
-	);
+        <TouchableOpacity onPress={pickImage} style={styles.ContainerAvatar}>
+            <View style={styles.AvatarView}>
+                <Image
+                    source={getImageSource()}
+                    style={styles.SelectedAvatar}
+                />
+            </View>
+        </TouchableOpacity>
+    );
 }

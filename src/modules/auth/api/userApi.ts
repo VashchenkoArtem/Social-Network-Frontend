@@ -40,32 +40,32 @@ export const userApi = baseApi.injectEndpoints({
 				AsyncStorage.setItem("token", data.token);
 			},
 		}),
-		updateUserInfo: builder.mutation<User, ProfileData>({
-			query: (body) => {
+		updateUserInfo: builder.mutation<void, ProfileData>({
+			query: (userData) => {
 				const formData = new FormData();
+				
+				(Object.keys(userData) as Array<keyof ProfileData>).forEach(key => {
+					const value = userData[key];
+					if (key !== 'avatar' && key !== 'signature' && value !== undefined) {
+						formData.append(key, String(value));
+					}
+				});
 
-				if (body.firstname) formData.append("firstname", body.firstname);
-				if (body.lastname) formData.append("lastname", body.lastname);
-				if (body.nickname) formData.append("nickname", body.nickname);
-				if (body.alias) formData.append("alias", body.alias)
-				if (body.email) formData.append("email", body.email);
-				if (body.birthDate) formData.append("birthDate", body.birthDate);
-				if (body.password) formData.append("password", body.password);
+				if (userData.avatar) {
+					const avatarFile = typeof userData.avatar === 'string' 
+						? { uri: userData.avatar, name: 'avatar.jpg', type: 'image/jpeg' }
+						: userData.avatar;
 
-				if (body.avatar) {
-				formData.append("avatars", {
-					uri: body.avatar,
-					name: "avatar.jpg",
-					type: "image/jpeg",
-				} as any);
+					formData.append('avatars', avatarFile as any);
 				}
+
 				return {
-					url: "update-user",
-					method: "PATCH",
+					url: 'update-user',
+					method: 'PATCH',
 					body: formData,
 				};
 			},
-			invalidatesTags: ["User"],
+			invalidatesTags: ["User", "Album"],
 		}),
 		updatePassword: builder.mutation<User, ProfileData>({
 			query: (body) => {
@@ -84,21 +84,23 @@ export const userApi = baseApi.injectEndpoints({
 			}),
 			providesTags: ["User"],
 		}),
-		updateUserSignature: builder.mutation<User, {signature: string}>({
-			query: (body) => {
-				const formData = new FormData()
-				formData.append("signature", {
-					uri: body.signature,
-					name: "signature.jpg",
-					type: "image/jpeg"
-				} as any)
-				return {
-					url: "signature",
-					method: "PATCH",
-					body: formData
-				}
-			}
-		})
+		updateUserSignature: builder.mutation<User, { signature: string }>({
+            query: ({ signature }) => {
+                const formData = new FormData();
+                formData.append("signature", {
+                    uri: signature,
+                    name: "signature.jpg",
+                    type: "image/jpeg"
+                } as any);
+
+                return {
+                    url: "signature",
+                    method: "PATCH",
+                    body: formData
+                };
+            },
+            invalidatesTags: ["User"],
+        })
 		// updateUser: builder.mutation<User, { firstname?: string; nickname?: string; signature?: string }>({
 		//   query: (body) => ({
 		//     url: '/update-user',

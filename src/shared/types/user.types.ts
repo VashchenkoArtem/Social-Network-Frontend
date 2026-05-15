@@ -7,7 +7,7 @@ export interface IUser {
 	lastname: string | null;
 	username: string | null;
 	profile: IProfile
-
+	avatar?: IAvatar[];
 }
 export interface IProfile {
 	pseudonym: string | null;
