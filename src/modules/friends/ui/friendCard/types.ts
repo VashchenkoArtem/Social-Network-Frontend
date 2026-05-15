@@ -3,4 +3,6 @@ import { IUser } from "@shared/types/user.types";
 
 export interface IProps {
     user: Profile | null;
+    requestId?: number
+    buttonText: string
 }

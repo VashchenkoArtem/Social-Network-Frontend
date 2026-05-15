@@ -4,18 +4,20 @@ import { SERVER } from "@shared/constants/server";
 import { Button } from "@shared/ui/button";
 import { styles } from './styles'
 import { useRouter } from "expo-router";
-import { useDeleteFriendRequestMutation } from "@modules/friends/api/friendsApi";
+import { useCreateFriendRequestMutation, useDeleteFriendRequestMutation, useUpdateFriendRequestMutation } from "@modules/friends/api/friendsApi";
 import { useState } from "react";
 import Modal from "react-native-modal";
 
 export function FriendCard(props: IProps) {
     const router = useRouter();
-    const { user } = props;
+    const { user, requestId, buttonText } = props;
     if (!user) return null
 
     const [deleteFriendRequest] = useDeleteFriendRequestMutation()
     const [deleteFriendRequestModal, setDeleteFriendRequestModal] = useState(false)
-
+    const [createFriendShip] = useCreateFriendRequestMutation()
+    const [ updateFriendRequest ] = useUpdateFriendRequestMutation()
+    const [isVisible, setIsVisible] = useState<boolean>(true)
     return (
         <View style={styles.card}>
             <View style={styles.cardContent}>
@@ -30,17 +32,30 @@ export function FriendCard(props: IProps) {
                 </View>
             </View>
             <View style={styles.cardButtons}>
-                <Button variant="purple" text = "Підтвердити"  onPress={() => {
-                    router.push({
-                        pathname: `/${user.id}`, 
-                  })
+                <Button variant="purple" text = {buttonText} onPress={async () => {
+                    if (requestId){
+                        // await updateFriendRequest({
+                        //     requestId: requestId,
+                        //     status: "Accepted"
+                        // })
+                        router.push({
+                            pathname: `/${user.id}`, 
+                      })
+                    }else {
+                        await createFriendShip({
+                            receiverId: user.id
+                        })
+                    }
                 }}/>
                 <Button 
                     variant="white" 
                     text = "Видалити" 
                     onPress={(event) => {
                         event.stopPropagation()
-                        setDeleteFriendRequestModal(!deleteFriendRequestModal)
+                        setIsVisible(false)
+                        if (requestId){
+                            setDeleteFriendRequestModal(!deleteFriendRequestModal)
+                        }
                 }}/>
 
                 {deleteFriendRequestModal && (
@@ -65,7 +80,10 @@ export function FriendCard(props: IProps) {
                             <View style={styles.modalButtons}>
                                 <Button variant="white" text="Скасувати" onPress={() => setDeleteFriendRequestModal(false)} />
                                 <Button variant="purple" text="Підтвердити" onPress={() => {
-                                        deleteFriendRequest(user.id)
+                                        if (requestId){
+                                            deleteFriendRequest(requestId)
+                                        }
+                                        setIsVisible(false)
                                         setDeleteFriendRequestModal(false)
                                     }} 
                                 />

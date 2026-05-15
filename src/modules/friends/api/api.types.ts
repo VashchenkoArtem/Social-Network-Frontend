@@ -26,5 +26,12 @@ export interface Profile{
 
 }
 export interface CreateFriendRequest {
-    
+    status?: "Pending";
+    senderId?: number;
+    receiverId: number;
+}
+
+export interface UpdateFriendRequest {
+    requestId: number
+    status: "Pending" | "Accepted"
 }

@@ -6,7 +6,8 @@ import { View, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function FriendProfileScreen(){
-    const { user } = useContext(UserContext)!
+    const { userId } = useLocalSearchParams()
+
     return (
         <View style = {{marginTop: 8}}>
             <FriendProfile user = {user}></FriendProfile>
