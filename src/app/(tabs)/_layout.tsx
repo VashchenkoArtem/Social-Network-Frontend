@@ -83,6 +83,18 @@ export default function TabLayout() {
 						tabBarItemStyle: { display: "none" },
 					}}
 				/>
+				<Tabs.Screen
+					name="(friends)"
+					options={{
+						href: null,
+					}}
+				/>
+				<Tabs.Screen
+					name="[friendId]"
+					options={{
+						href: null,
+					}}
+				/>
 			</Tabs>
 		</SafeAreaView>
 	);

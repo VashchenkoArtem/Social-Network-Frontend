@@ -1,5 +1,6 @@
 import { baseApi } from "@shared/api/baseApi";
-import { FriendRequest, CreateFriendRequest, UpdateFriendRequest, Profile } from './api.types'
+import { FriendRequest, CreateFriendRequest, UpdateFriendRequest, Profile, UserWithoutPassword } from './api.types'
+import { Post } from "@modules/posts/api/api.types";
 
 export const friendApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -45,8 +46,20 @@ export const friendApi = baseApi.injectEndpoints({
                 url: 'recommended',
                 method: 'GET'
             })
+        }),
+        getUserById: builder.query<Profile, number>({
+                    query: (id) => ({
+                        url: `users/${id}`,
+                        method: 'GET'
+                    })
+                }),
+        getPostsByUserId: builder.query<Post[], number>({
+            query: (userId) => ({
+                url: `users/${userId}/posts`,
+                method: "GET"
+            })
         })
-    })
+            }),
 })
 
 export const {
@@ -55,5 +68,7 @@ export const {
     useDeleteFriendRequestMutation,
     useCreateFriendRequestMutation,
     useUpdateFriendRequestMutation,
-    useGetRecommendedPeopleQuery
+    useGetRecommendedPeopleQuery,
+    useGetUserByIdQuery,
+    useGetPostsByUserIdQuery
 } = friendApi

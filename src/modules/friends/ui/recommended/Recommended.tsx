@@ -6,7 +6,6 @@ export function Recommended(){
     const { data } = useGetRecommendedPeopleQuery(undefined, {
         pollingInterval: 5000   
     })
-    console.log(data)
     if (!data) return null
     return (
         <FriendFrame buttonText="Додати" frameName="Рекомендації" data = {data}/>

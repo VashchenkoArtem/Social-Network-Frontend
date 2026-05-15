@@ -101,7 +101,7 @@ export const styles = StyleSheet.create({
     modalButtons: {
         width: '100%',
         flexDirection: 'row',
-        justifyContent: 'flex-end',
+        justifyContent: 'center',
         gap: 16
     }
         

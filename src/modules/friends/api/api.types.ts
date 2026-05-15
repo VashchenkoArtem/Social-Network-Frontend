@@ -34,4 +34,17 @@ export interface CreateFriendRequest {
 export interface UpdateFriendRequest {
     requestId: number
     status: "Pending" | "Accepted"
+    
+}
+
+export interface UserWithoutPassword {
+    id: number;
+    firstname: string | null;
+    lastname: string | null;
+    nickname: string | null;
+    alias: string | null;
+    email: string;
+    signature: string | null;
+    birthDate: Date | null;
+    avatars: { id: number; filename: string }[];
 }

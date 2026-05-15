@@ -30,9 +30,6 @@ type AlbumForm = {
 	year: string;
 };
 export const AlbumsPage = () => {
-	const { data: albums = [] } = useGetAlbumsQuery(undefined, {
-		pollingInterval: 3000,
-	});
 	const [createAlbum] = useCreateAlbumMutation();
 	const [updateAlbum] = useUpdateAlbumMutation();
 	const [ togglePhotoVisibility ] = useTogglePhotoVisibilityMutation()
@@ -41,12 +38,12 @@ export const AlbumsPage = () => {
 	const [selectedAlbum, setSelectedAlbum] = useState<Album | null>(null);
 	const [scrollEnabled, setScrollEnabled] = useState(true);
 	const [editAlbumModalVisibile, setEditAlbumModalVisibile] = useState<boolean>(false)
-
+	
 	const handleCreateNew = () => {
 		setSelectedAlbum(null);
 		setModalVisible(true);
 	};
-
+	
 	const handleEdit = (album: Album) => {
 		setSelectedAlbum(album);
 		setModalVisible(true);
@@ -55,7 +52,7 @@ export const AlbumsPage = () => {
 	const handleEditAlbum = () => {
 		setEditAlbumModalVisibile(true)
 	}
-
+	
 	
 	const toForm = (album: Album): AlbumForm => ({
 		id: album.id,
@@ -69,7 +66,7 @@ export const AlbumsPage = () => {
 			theme: data.theme!,
 			year: data.year!,
 		};
-
+		
 		if (selectedAlbum) {
 			await updateAlbum({
 				id: selectedAlbum.id,
@@ -78,13 +75,16 @@ export const AlbumsPage = () => {
 		} else {
 			await createAlbum(payload).unwrap();
 		}
-
+		
 		setModalVisible(false);
 	};
-
+	
 	if (!user) {
 		return <Redirect href={"/login"}></Redirect>;
 	}
+	const { data: albums = [] } = useGetAlbumsQuery(user.id, {
+		pollingInterval: 3000,
+	});
 	const handlePhotoVisibility = async (photoId: number, isVisible: boolean) => {
 		try {
 			await togglePhotoVisibility({photoId, isVisible})
