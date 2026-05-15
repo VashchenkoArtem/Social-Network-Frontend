@@ -1,5 +1,5 @@
 import { baseApi } from "@shared/api/baseApi";
-import { FriendRequest, CreateFriendRequest } from './api.types'
+import { FriendRequest, CreateFriendRequest, UserWithoutPassword } from './api.types'
 
 export const friendApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -27,11 +27,17 @@ export const friendApi = baseApi.injectEndpoints({
             }
         }),
 
-
-})}
+        getUserById: builder.query<UserWithoutPassword, number>({
+                    query: (id) => ({
+                        url: `user/${id}`,
+                        method: 'GET'
+                    })
+                }),
+        })}
 )
 
 export const {
     useGetAllFriendsQuery,
-    useGetAllRequestsQuery
+    useGetAllRequestsQuery,
+    useGetUserByIdQuery
 } = friendApi

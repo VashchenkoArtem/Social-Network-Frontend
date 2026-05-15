@@ -3,19 +3,24 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-controller'
 import { Button } from "@shared/ui/button";
 import { styles } from './styles'
 import { useRouter } from "expo-router";
-import { IProps } from "../friendCard/types";
 import { SERVER } from '@shared/constants/server';
 import { useGetAlbumsQuery } from '@modules/settings/api/albumApi';
 import { FriendAlbum } from '../friendAlbum/FriendAlbum';
 import { ICONS } from '@shared/ui';
 import { COLORS } from '@shared/constants/colors';
+import { useGetUserByIdQuery } from '../../api/friendsApi';
 
-export function FriendProfile(props: IProps) {
+interface IProps {
+    userId: number;
+}
+
+export function FriendProfile({ userId }: IProps) {
     const router = useRouter();
-    const { user } = props;    
+    const { data: user } = useGetUserByIdQuery(userId);
     const { data } = useGetAlbumsQuery()
     if (!user) return null
-    
+
+
     return (
         <KeyboardAwareScrollView
             keyboardShouldPersistTaps="handled"
@@ -25,16 +30,14 @@ export function FriendProfile(props: IProps) {
             }}
         >
             <View style={styles.card}>
-                <View style={styles.cardContent}>
-                    <Image style={styles.authorAvatar} source={
-                        user.profile.avatar
-                        ? { uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${user.profile.avatar}`, }
-                        : require("../../../../assets/defaultAvatar.png")
-                    }/>
-                    <View style={styles.friendInfo}>
-                        <Text style={styles.friendsFullName}>{ user.firstname } { user.lastname }</Text>
-                        <Text style={styles.friendsNickName}>@{ user.username }</Text>
-                    </View>
+                <Image style={styles.authorAvatar} source={
+                    user.avatars?.[0]?.filename
+                    ? { uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${user.avatars[0].filename}` }
+                    : require("../../../../assets/defaultAvatar.png")
+                }/>
+                <View style={styles.friendInfo}>
+                    <Text style={styles.friendsFullName}>{ user.firstname } { user.lastname }</Text>
+                    <Text style={styles.friendsNickName}>@{ user.nickname }</Text>
                 </View>
 
                 <View style={styles.friendFollowersInfo}>

@@ -28,3 +28,15 @@ export interface Profile{
 export interface CreateFriendRequest {
     
 }
+
+export interface UserWithoutPassword {
+    id: number;
+    firstname: string | null;
+    lastname: string | null;
+    nickname: string | null;
+    alias: string | null;
+    email: string;
+    signature: string | null;
+    birthDate: Date | null;
+    avatars: { id: number; filename: string }[];
+}
