@@ -8,13 +8,10 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import {
 	Album,
 	CreateAlbumDto,
-	UpdateAlbumDto,
 	useCreateAlbumMutation,
 	useGetAlbumsQuery,
-	useToggleVisibilityMutation,
 	useUpdateAlbumMutation,
-	useDeletePhotoMutation,
-	useDeleteAlbumMutation,
+	useTogglePhotoVisibilityMutation,
 } from "@modules/settings/api/albumApi";
 import { COLORS } from "@shared/constants/colors";
 import { Image } from "react-native";
@@ -24,12 +21,13 @@ import { UserContext } from "@modules/auth/context/user-context";
 import { AlbumAvatars } from "../albumAvatars/AlbumAvatars";
 import { DeleteAlbum } from "../deleteAlbum/deleteAlbum";
 import { DeletePhoto } from "../deletePhoto/deletePhoto";
+import { SERVER } from "@shared/constants/server";
 
 type AlbumForm = {
 	id: number;
-	title: string;
-	topicId: number;
-	yearId: number;
+	name: string;
+	theme: string;
+	year: string;
 };
 export const AlbumsPage = () => {
 	const { data: albums = [] } = useGetAlbumsQuery(undefined, {
@@ -37,9 +35,7 @@ export const AlbumsPage = () => {
 	});
 	const [createAlbum] = useCreateAlbumMutation();
 	const [updateAlbum] = useUpdateAlbumMutation();
-	const [deletePhoto] = useDeletePhotoMutation();
-	const [deleteAlbum] = useDeleteAlbumMutation();
-	const [toggleVisibility] = useToggleVisibilityMutation();
+	const [ togglePhotoVisibility ] = useTogglePhotoVisibilityMutation()
 	const { user } = useContext(UserContext)!;
 	const [modalVisible, setModalVisible] = useState(false);
 	const [selectedAlbum, setSelectedAlbum] = useState<Album | null>(null);
@@ -63,15 +59,15 @@ export const AlbumsPage = () => {
 	
 	const toForm = (album: Album): AlbumForm => ({
 		id: album.id,
-		title: album.title,
-		topicId: album.topic.id,
-		yearId: album.year.id,
+		name: album.name,
+		theme: album.theme,
+		year: album.year,
 	});
 	const handleSave = async (data: AlbumForm) => {
 		const payload: CreateAlbumDto = {
-			title: data.title,
-			topicId: data.topicId!,
-			yearId: data.yearId!,
+			name: data.name,
+			theme: data.theme!,
+			year: data.year!,
 		};
 
 		if (selectedAlbum) {
@@ -85,8 +81,16 @@ export const AlbumsPage = () => {
 
 		setModalVisible(false);
 	};
+
 	if (!user) {
 		return <Redirect href={"/login"}></Redirect>;
+	}
+	const handlePhotoVisibility = async (photoId: number, isVisible: boolean) => {
+		try {
+			await togglePhotoVisibility({photoId, isVisible})
+		}catch (error){
+			console.log(error)
+		}
 	}
 	return (
 		<KeyboardAwareScrollView
@@ -102,27 +106,24 @@ export const AlbumsPage = () => {
 			>
 				<View style={styles.contentContainer}>
 					{ user.avatars && 
-						<AlbumAvatars avatars={user?.avatars}/>
+						<AlbumAvatars avatars={user?.avatars} handlePhotoVisibility={handlePhotoVisibility}/>
 					}
-					{ albums.length === 0 &&
-						<View style={styles.createCard}>
-							<Text style={styles.createCardText}>Немає ще жодного альбому</Text>
-							<TouchableOpacity style={styles.plusBtn} onPress={handleCreateNew}>
-								<ICONS.PlusIcon color="#000" />
-							</TouchableOpacity>
-						</View>
-					}
-					
+					<View style={styles.createCard}>
+						<Text style={styles.createCardText}>{ albums.length === 0 ? "Немає ще жодного альбому" : "Створити новий альбом"}</Text>
+						<TouchableOpacity style={styles.plusBtn} onPress={handleCreateNew}>
+							<ICONS.PlusIcon color="#000" />
+						</TouchableOpacity>
+					</View>
 					{albums.map((album) => (
 						<View key={album.id} style={styles.albumCard}>
 								<View style={styles.albumHeader}>
 									<View style={styles.albumContainer}>
-										<Text style={styles.albumTitle}>{album.title}</Text>
+										<Text style={styles.albumTitle}>{album.name}</Text>
 										<View style={styles.albumInfoContainer}>
 											<Text style={{ color: COLORS.black, fontSize: 16 }}>
-												{album.topic.name}
+												{album.theme}
 											</Text>
-											<Text style={styles.albumInfo}>{album.year.year} рік</Text>
+											<Text style={styles.albumInfo}>{album.year} рік</Text>
 										</View>
 									</View>
 									<View style={styles.actions}>
@@ -131,12 +132,12 @@ export const AlbumsPage = () => {
 														updateAlbum({
 															id: album.id,
 															data: {
-																isVisible: !album.isVisible
+																is_shown: !album.is_shown
 															}
 														})
 
 													}}>
-											{ album.isVisible ? <ICONS.EyeOpen color="#000" /> : <ICONS.EyeClose color="#000" /> }
+											{ album.is_shown ? <ICONS.EyeOpen color="#000" /> : <ICONS.EyeClose color="#000" /> }
 											
 										</TouchableOpacity>
 										{/* <TouchableOpacity onPress={() => handleEdit(album)}> */}
@@ -151,7 +152,7 @@ export const AlbumsPage = () => {
 													</TouchableOpacity>
 
 													<View>
-														{ album.isVisible ? 
+														{ !album.is_shown ? 
 															<View style={styles.albumEditBtn}>
 																<ICONS.EyeClose color={COLORS.black}/>
 																<Text style={styles.albumEditText}>Цей альбом бачите тільки ви</Text>
@@ -172,7 +173,7 @@ export const AlbumsPage = () => {
 
 													<DeleteAlbum 
 														albumId={album.id} 
-														albumTitle={album.title} 
+														albumTitle={album.name} 
 														onSuccess={() => setEditAlbumModalVisibile(false)} 
 													/>
 											</View>
@@ -183,36 +184,28 @@ export const AlbumsPage = () => {
 									</View>
 								</View>
 								<View
-									style={{
-										flexDirection: "row",
-										flexWrap: "wrap",
-										marginTop: 10,
-									}}
+									style={styles.albumPhotoContainer}
 								>
 									{album.photos.map((photo) => (
-										<View key={photo.id}>
+										<View key={photo.id} >
 											<Image
 												source={{
-													uri: `http://192.168.0.104:8000/media/thumb/${photo.filename}`,
+													uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${photo.image}`,
 												}}
-												style={{
-													width: 162,
-													height: 162,
-													margin: 4,
-													borderRadius: 10,
-													backgroundColor: "#eee",
-												}}
+												style={styles.albumPhoto}
+												blurRadius={photo.is_shown && album.is_shown ? 0 : 9}
 											/>
 											<View style={styles.photoBtns}>
 												<TouchableOpacity
 													style={styles.photoBtn}
-													onPress={() =>
-														toggleVisibility({ id: Number(album.id) })
-													}
+													onPress={() => handlePhotoVisibility(photo.id, !photo.is_shown)}
 												>
-													<ICONS.EyeOpen color={COLORS.plum} 	
-														 />
+													{photo.is_shown && album.is_shown
+														? <ICONS.EyeOpen color={COLORS.plum} />
+														: <ICONS.EyeClose color={COLORS.plum} />
+													}
 												</TouchableOpacity>
+
 												<TouchableOpacity style={styles.photoBtn}>
 													<View style={styles.photoBtn}>
 														<DeletePhoto photoId={photo.id} />
@@ -226,6 +219,7 @@ export const AlbumsPage = () => {
 						</View>
 						
 					))}
+
 				</View>
 			</ScrollView>
 			<AlbumsModal

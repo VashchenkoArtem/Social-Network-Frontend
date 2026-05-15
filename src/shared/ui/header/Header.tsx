@@ -1,4 +1,5 @@
-import { View, Text, Pressable } from "react-native";
+import { View, Text, Pressable, TouchableOpacity } from "react-native";
+import Modal from "react-native-modal";
 import { LogoIcon, PlusIcon, ManageIcon } from "../icons/buttons";
 import { ExitIcon } from "../icons/buttons/ExitIcon";
 import { styles } from "./styles";
@@ -16,12 +17,27 @@ import { useContext, useState } from "react";
 import { ICONS } from "../icons/icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { UserContext } from "@modules/auth/context/user-context";
+import { CreatePostForm } from "@modules/posts/ui/create-post-form";
+import { CreateAlbumDto, useCreateAlbumMutation } from "@modules/settings/api/albumApi";
+import { AlbumsModal } from "../albumsModal/AlbumsModal";
 
 export function Header(props: HeaderProps) {
 	const { cantCreatePost, cantEditSelf } = props;
 	const pathname = usePathname();
 	const { user, logout } = useContext(UserContext)!;
 	const [choosedTab, setChoosedTab] = useState("Контакти");
+	const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+	const [ createAlbum ] = useCreateAlbumMutation()
+	
+	async function handleSave(data: CreateAlbumDto) {
+		await createAlbum({
+			name: data.name,
+			theme: data.theme,
+			year: data.year
+		})
+		
+		setIsCreateModalOpen(false);
+	}
 
 	const chatsTabs = [
 		{ title: "Контакти", route: "/chats", icon: ICONS.FriendsPageIcon },
@@ -45,6 +61,7 @@ export function Header(props: HeaderProps) {
 			</View>
 		);
 	}
+	
 	return (
 		<View style={{ backgroundColor: COLORS.white }}>
 			<View style={styles.header}>
@@ -54,10 +71,48 @@ export function Header(props: HeaderProps) {
 
 				<View style={styles.buttons}>
 					{!cantCreatePost && (
-						<Button
-							variant="white"
-							iconLeft={<PlusIcon color={COLORS.plum} style={styles.icon} />}
-						/>
+						<>
+							<Button
+								variant="white"
+								iconLeft={<PlusIcon color={COLORS.plum} style={styles.icon} />}
+								onPress={() => setIsCreateModalOpen(true)}
+							/>
+							{pathname.includes("settings") ? 
+							<AlbumsModal
+								visible={isCreateModalOpen}
+								onClose={() => setIsCreateModalOpen(false)}
+								onSubmit={handleSave}
+							/> :
+							<Modal
+								isVisible={isCreateModalOpen}
+								onBackdropPress={() => setIsCreateModalOpen(false)}
+								onSwipeComplete={() => setIsCreateModalOpen(false)}
+								style={styles.modal}
+								useNativeDriver
+
+								animationIn="fadeIn"
+								animationOut="fadeOut"
+								animationInTiming={150}
+								animationOutTiming={150}
+
+								backdropOpacity={0.4}
+								backdropTransitionInTiming={200}
+								backdropTransitionOutTiming={200}
+							>
+								<View style={styles.container}>
+									<View style={styles.closeModalContainer}>
+										<TouchableOpacity onPress={() => setIsCreateModalOpen(false)} hitSlop={15}>
+											<Text style={styles.closeIcon}>✕</Text>
+										</TouchableOpacity>
+									</View>
+									<CreatePostForm setIsCreatePostModalOpen={setIsCreateModalOpen}></CreatePostForm>
+								</View>
+
+							</Modal>
+
+						}
+							
+						</>
 					)}
 
 					{!cantEditSelf && (

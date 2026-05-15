@@ -1,3 +1,4 @@
+import { Post } from "@modules/posts/api/api.types";
 import { IUser } from "@shared/types/user.types";
 
 export interface IPost {
@@ -7,5 +8,5 @@ export interface IPost {
 }
 
 export interface IProps {
-    post: IPost
+    post: Post
 }

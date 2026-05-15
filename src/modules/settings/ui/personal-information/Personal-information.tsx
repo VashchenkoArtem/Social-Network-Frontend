@@ -14,6 +14,7 @@ import { TouchableOpacity } from "react-native";
 import {
 	useSendCodeMutation,
 	useUpdateUserInfoMutation,
+	useUpdateUserSignatureMutation,
 } from "./../../../auth/api/userApi";
 import { AvatarField } from "../avatar-field/Avatar-Field";
 import { MyPostsPageIcon } from "@shared/ui/icons/urls/MyPostsPageIcon";
@@ -21,6 +22,7 @@ import { Modal } from "@shared/ui/modal";
 import { RecoveryPassword } from "../recovery-password/Recovery-password";
 import { UserContext } from "@modules/auth/context/user-context";
 import { Redirect } from "expo-router";
+import { SERVER } from "@shared/constants/server";
 
 type FormData = {
 	firstname: string;
@@ -37,21 +39,17 @@ type FormData = {
 export function PersonalInformation() {
 	const [isEditingSignature, setIsEditingSignature] = useState(false);
 	const [isEditingProfile, setIsEditingProfile] = useState(false);
-	const [isModalPasswordVisible, setIsModalPasswordVisible] = useState(false);
 	const [isEditingPersonalInfo, setIsEditingPersonalInfo] = useState(false);
 	const [isEditingPassword, setIsEditingPassword] = useState(false);
-	const [isModalVisible, setModalVisible] = useState(false);
+	const [ updateUserSignature ] = useUpdateUserSignatureMutation()
 	const [sendCode] = useSendCodeMutation();
 	const [updateUser, { isLoading }] = useUpdateUserInfoMutation();
-	const [fullCode, setFullCode] = useState("");
-	const [open, setOpen] = useState(true);
 	const { user, token } = useContext(UserContext)!;
 	const [isVisible, setIsVisible] = useState(false);
 	const [isDrawing, setIsDrawing] = useState(false);
 	const [selectedType, setSelectedType] = useState<"alias" | "signature">(
-		user?.signature ? "signature" : "alias",
+		user?.profile.signature ? "signature" : "alias",
 	);
-	const [userAvatar, setUserAvatar] = useState<string>("");
 	const {
 		control,
 		handleSubmit,
@@ -69,16 +67,13 @@ export function PersonalInformation() {
 	if (!user) {
 		return <Redirect href={"/login"}></Redirect>;
 	}
+	console.log(user)
 	const passwordValue = watch("password");
 	const handleSaveSignature = async (base64: string) => {
-		try {
-			await updateUser({ signature: base64 }).unwrap();
-			setSelectedType("signature");
-			setIsEditingSignature(false);
-		} catch (err) {
-			console.error("Error saving signature", err);
-		}
-	};
+		await updateUserSignature({ signature: base64 }).unwrap();
+		setSelectedType("signature");
+		setIsEditingSignature(false);
+	}
 	const onSubmit = async (data: FormData) => {
 		try {
 			const payload = {
@@ -138,7 +133,7 @@ export function PersonalInformation() {
 				scrollEnabled={!isDrawing}
 			>
 				<View style={styles.personalInformationContainer}>
-					{/* PROFILE CARD */}
+
 					<View style={styles.profileCardBlock}>
 						<View style={styles.headerBlock}>
 							<Text style={styles.headerBlockText}>Картка профілю</Text>
@@ -165,7 +160,7 @@ export function PersonalInformation() {
 										<AvatarField
 										value={field.value}
 										onChange={field.onChange}
-										avatar = {user.avatars[user.avatars.length - 1]?.filename}
+										avatar = {user.profile.avatar}
 										/>
 									)}
 								/>
@@ -193,10 +188,10 @@ export function PersonalInformation() {
 								</View>
 							)}
 
-							<Text style={styles.name}>{user.alias}</Text>
+							<Text style={styles.name}>{user.profile.pseudonym}</Text>
 
 							{!isEditingProfile && (
-								<Text style={styles.username}>@{user.nickname}</Text>
+								<Text style={styles.username}>@{user.username}</Text>
 							)}
 
 							{isEditingProfile && (
@@ -207,7 +202,7 @@ export function PersonalInformation() {
 										<Input
 											label="Ім'я користувача"
 											placeholder=""
-											defaultValue={user.nickname ? user.nickname : ""}
+											defaultValue={user.username ? user.username : ""}
 											onChangeText={field.onChange}
 										/>
 									)}
@@ -271,8 +266,8 @@ export function PersonalInformation() {
 											label="Дата народження"
 											placeholder=""
 											defaultValue={
-												user.birthDate
-													? new Date(user.birthDate).toLocaleDateString("ua-UA")
+												user.profile.birth_date
+													? new Date(user.profile.birth_date).toLocaleDateString("ua-UA")
 													: ""
 											}
 											value={field.value || ""}
@@ -387,7 +382,7 @@ export function PersonalInformation() {
 								<Text style={styles.checkboxLabel}>Псевдонім автора</Text>
 							</TouchableOpacity>
 							<Text style={styles.signatureTextPreview}>
-								{user?.firstname} {user?.lastname}
+								{user?.profile.pseudonym}
 							</Text>
 						</View>
 
@@ -411,17 +406,16 @@ export function PersonalInformation() {
 						</TouchableOpacity>
 
 						{!isEditingSignature &&
-							(user?.signature ? (
+							(user?.profile.signature ? (
 								<View style={styles.signatureImageWrapper}>
 									<Image
-										source={{ uri: user.signature }}
+										source={{  uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${user?.profile.signature}` }}
 										style={styles.signatureImage}
 									/>
 								</View>
 							) : (
 								<Text style={{ marginLeft: 34 }}>Підпис не додано</Text>
 							))}
-
 						{isEditingSignature && (
 							<View style={{ width: "100%" }}>
 								<SignatureEditor
@@ -443,6 +437,7 @@ export function PersonalInformation() {
 				isVisible={isVisible}
 				setIsVisible={setIsVisible}
 				password={passwordValue}
+				setIsEditingPassword = {setIsEditingPassword}
 			/>
 		</>
 	);

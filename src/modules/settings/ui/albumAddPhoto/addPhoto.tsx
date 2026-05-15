@@ -15,21 +15,23 @@ export const AddAlbumPhoto = ({ albumId }: Props) => {
 
 	const pickImage = async () => {
 		const result = await ImagePicker.launchImageLibraryAsync({
-			mediaTypes: ["images"],
+			mediaTypes: ImagePicker.MediaTypeOptions.Images,
 			quality: 0.8,
+			allowsMultipleSelection: true,
 		});
 
 		if (result.canceled) return;
 
-		const asset = result.assets[0];
+		const files = result.assets.map((asset) => ({
+			uri: asset.uri,
+			name: asset.fileName ?? "photo.jpg",
+			type: asset.mimeType ?? "image/jpeg",
+		}));
+		console.log(files)
 
 		await addPhoto({
 			albumId,
-			file: {
-				uri: asset.uri,
-				name: asset.fileName ?? "photo.jpg",
-				type: asset.type ?? "image/jpeg",
-			},
+			files,
 		});
 	};
 

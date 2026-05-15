@@ -62,4 +62,32 @@ export const styles = StyleSheet.create({
 	headerLogin: {
 		justifyContent: "center",
 	},
-});
+
+	// Modal styles
+	modal: {
+		margin: 0,
+		justifyContent: 'center',
+		alignItems: 'center'
+	},
+
+	closeModalContainer: {
+		flexDirection: 'row',
+		justifyContent: 'flex-end',
+		width: '100%'
+	},
+
+	closeIcon: {
+		fontSize: 17, 
+		fontWeight: 700,
+		color: COLORS.black,
+	},
+
+	container: {
+		width: '100%',
+		backgroundColor: COLORS.white,
+		borderRadius: 20,
+		paddingVertical: 24,
+		paddingHorizontal: 16,
+		alignSelf: 'center',
+	}
+})

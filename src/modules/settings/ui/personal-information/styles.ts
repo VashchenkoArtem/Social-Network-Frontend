@@ -100,7 +100,7 @@ export const styles = StyleSheet.create({
 		borderRadius: 28,
 		padding: 24,
 		marginTop: 16,
-		borderBlockColor: COLORS.lightGray,
+		borderColor: COLORS.lightGray,
 		borderWidth: 1,
 	},
 
@@ -143,7 +143,7 @@ export const styles = StyleSheet.create({
 	signatureImage: {
 		width: "100%",
 		height: 65,
-		resizeMode: "contain",
+		zIndex: 100
 	},
 
 	signaturePlaceholder: {
