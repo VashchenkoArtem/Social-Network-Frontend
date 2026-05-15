@@ -2,37 +2,32 @@ import { baseApi } from "@shared/api/baseApi";
 
 export interface Album {
 	id: number;
-	title: string;
-	isVisible: boolean;
+	name: string;
+	is_shown: boolean;
 	authorId: number;
 
 	photos: {
 		id: number;
-		filename: string;
+		image: string;
 		albumId: number;
+		is_shown: boolean
 	}[];
 
-	year: {
-		id: number;
-		year: string;
-	};
+	year: string
 
-	topic: {
-		id: number;
-		name: string;
-	};
+	theme: string
 }
 
 export interface CreateAlbumDto {
-	title: string;
-	topicId: number;
-	yearId: number;
+	name: string;
+	theme: string;
+	year: string;
 }
 export interface UpdateAlbumDto {
-	title?: string;
-	topicId?: number;
+	name?: string;
+	themeId?: number;
 	yearId?: number;
-	isVisible?: boolean
+	is_shown?: boolean
 }
 export const albumApi = baseApi.injectEndpoints({
 	endpoints: (builder) => ({
@@ -64,11 +59,12 @@ export const albumApi = baseApi.injectEndpoints({
 
 		toggleVisibility: builder.mutation<Album, { id: number }>({
 			query: ({ id }) => ({
-				url: `${id}`,
+				url: `albums/${id}/visibility`,
 				method: "PATCH",
 			}),
 			invalidatesTags: ["Album"],
 		}),
+
 		getYears: builder.query<{ id: number; year: string }[], void>({
 			query: () => ({
 				url: "years",
@@ -81,14 +77,17 @@ export const albumApi = baseApi.injectEndpoints({
 				method: "GET",
 			}),
 		}),
-		addAlbumPhoto: builder.mutation<void, { albumId: number; file: any }>({
-			query: ({ albumId, file }) => {
+		addAlbumPhoto: builder.mutation<void, { albumId: number; files: any[] }>({
+			query: ({ albumId, files }) => {
 				const formData = new FormData();
-				formData.append("image", {
-					uri: file.uri,
-					name: "avatar.jpg",
-					type: "image/jpeg",
-				} as any);
+
+				files.forEach((file) => {
+					formData.append("images", {
+						uri: file.uri,
+						name: file.name ?? "photo.jpg",
+						type: file.type ?? "image/jpeg",
+					} as any);
+				});
 
 				return {
 					url: `upload/${albumId}`,
@@ -96,6 +95,7 @@ export const albumApi = baseApi.injectEndpoints({
 					body: formData,
 				};
 			},
+			invalidatesTags: ["AlbumPhoto"],
 		}),
 		deleteAlbum: builder.mutation<Album, { id: number }>({
 			query: ({ id }) => ({
@@ -111,6 +111,14 @@ export const albumApi = baseApi.injectEndpoints({
 			}),
 			invalidatesTags: ["Album"],
 		}),
+		togglePhotoVisibility: builder.mutation<{ isVisible: boolean },{ photoId: number; isVisible: boolean }>({
+			query: ( { photoId, isVisible }) => {
+				return {
+				url: `photo/${photoId}/visibility`,
+				method: "PATCH",
+				body: { isVisible }	
+			}}
+		})
 	}),
 });
 
@@ -124,4 +132,5 @@ export const {
 	useAddAlbumPhotoMutation,
 	useDeletePhotoMutation,
 	useDeleteAlbumMutation,
+	useTogglePhotoVisibilityMutation
 } = albumApi;

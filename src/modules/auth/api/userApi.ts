@@ -47,16 +47,17 @@ export const userApi = baseApi.injectEndpoints({
 				if (body.firstname) formData.append("firstname", body.firstname);
 				if (body.lastname) formData.append("lastname", body.lastname);
 				if (body.nickname) formData.append("nickname", body.nickname);
+				if (body.alias) formData.append("alias", body.alias)
 				if (body.email) formData.append("email", body.email);
 				if (body.birthDate) formData.append("birthDate", body.birthDate);
 				if (body.password) formData.append("password", body.password);
 
 				if (body.avatar) {
-					formData.append("file", {
-						uri: body.avatar,
-						name: "avatar.jpg",
-						type: "image/jpeg",
-					} as any);
+				formData.append("avatars", {
+					uri: body.avatar,
+					name: "avatar.jpg",
+					type: "image/jpeg",
+				} as any);
 				}
 				return {
 					url: "update-user",
@@ -83,6 +84,21 @@ export const userApi = baseApi.injectEndpoints({
 			}),
 			providesTags: ["User"],
 		}),
+		updateUserSignature: builder.mutation<User, {signature: string}>({
+			query: (body) => {
+				const formData = new FormData()
+				formData.append("signature", {
+					uri: body.signature,
+					name: "signature.jpg",
+					type: "image/jpeg"
+				} as any)
+				return {
+					url: "signature",
+					method: "PATCH",
+					body: formData
+				}
+			}
+		})
 		// updateUser: builder.mutation<User, { firstname?: string; nickname?: string; signature?: string }>({
 		//   query: (body) => ({
 		//     url: '/update-user',
@@ -101,4 +117,5 @@ export const {
 	useUpdatePasswordMutation,
 	useMeQuery,
 	useLoginMutation,
+	useUpdateUserSignatureMutation
 } = userApi;
