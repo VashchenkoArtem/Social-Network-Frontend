@@ -28,6 +28,7 @@ export const userApi = baseApi.injectEndpoints({
 				const { data } = await api.cacheDataLoaded;
 				AsyncStorage.setItem("token", data.token);
 			},
+			invalidatesTags: ["User", "Album"]
 		}),
 		login: builder.mutation<AuthToken, LoginData>({
 			query: (body) => ({
@@ -110,6 +111,7 @@ export const userApi = baseApi.injectEndpoints({
 		//   invalidatesTags: ['User'],
 		// }),
 	}),
+	overrideExisting: true,
 });
 
 export const {
