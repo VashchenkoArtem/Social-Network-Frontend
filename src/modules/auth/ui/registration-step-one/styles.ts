@@ -1,10 +1,11 @@
 import { COLORS } from "@shared/constants/colors";
+import { FONTS } from "@shared/constants/fonts";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
 	modalTitle: {
 		fontSize: 24,
-		fontFamily: "GTWalsheimPro-Medium",
+		fontFamily: FONTS.medium,
 		color: COLORS.black,
 	},
 	button: {

@@ -1,5 +1,6 @@
 import { StyleSheet } from "react-native";
 import { COLORS } from "../../constants/colors";
+import { FONTS } from "@shared/constants/fonts";
 
 export const buttonStyles = StyleSheet.create({
 	white: {
@@ -11,7 +12,7 @@ export const buttonStyles = StyleSheet.create({
 	},
 	buttonText: {
 		fontSize: 16,
-		fontFamily: "GTWalsheimPro-Medium",
+		fontFamily: FONTS.medium,
 	},
 	button: {
 		alignItems: "center",

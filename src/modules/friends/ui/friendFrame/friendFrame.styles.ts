@@ -1,4 +1,5 @@
 import { COLORS } from "@shared/constants/colors";
+import { FONTS } from "@shared/constants/fonts";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
@@ -31,6 +32,6 @@ export const styles = StyleSheet.create({
         textAlign: "center",
         fontSize: 16,
         color: COLORS.gray,
-		fontFamily: "GTWalsheimPro-Regular",
+		fontFamily: FONTS.regular,
     }
 })

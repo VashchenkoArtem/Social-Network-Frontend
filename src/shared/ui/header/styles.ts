@@ -1,4 +1,5 @@
 import { COLORS } from "@shared/constants/colors";
+import { FONTS } from "@shared/constants/fonts";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
@@ -44,7 +45,7 @@ export const styles = StyleSheet.create({
 		fontWeight: 500,
 		letterSpacing: -0.66,
 		fontSize: 18,
-		fontFamily: "GTWalsheimPro-Medium",
+		fontFamily: FONTS.medium,
 		color: COLORS.black,
 		alignItems: "center",
 		paddingVertical: 4,

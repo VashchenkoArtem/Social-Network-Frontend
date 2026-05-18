@@ -1,4 +1,5 @@
 import { COLORS } from "@shared/constants/colors";
+import { FONTS } from "@shared/constants/fonts";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
@@ -15,7 +16,7 @@ export const styles = StyleSheet.create({
 	},
 	modalTitle: {
 		fontSize: 24,
-		fontFamily: "GTWalsheimPro-Medium",
+		fontFamily: FONTS.medium,
 		color: COLORS.black,
 		textAlign: "center",
 		marginVertical: 25,
@@ -59,7 +60,7 @@ export const styles = StyleSheet.create({
 	text: {
 		marginHorizontal: 10,
 		fontSize: 16,
-		fontFamily: "GTWalsheimPro-Medium",
+		fontFamily: FONTS.medium,
 		color: COLORS.black,
 		textAlign: "center",
 	},

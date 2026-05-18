@@ -1,4 +1,5 @@
 import { COLORS } from "@shared/constants/colors";
+import { FONTS } from "@shared/constants/fonts";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
@@ -42,21 +43,21 @@ export const styles = StyleSheet.create({
 
 	modalTitle: {
 		fontSize: 34,
-		fontFamily: "GTWalsheimPro-Medium",
+		fontFamily: FONTS.medium,
 		color: COLORS.black,
 		textAlign: "center",
 		marginVertical: 25,
 	},
 	subtitle: {
 		textAlign: "center",
-		fontFamily: "GTWalsheimPro-Medium",
+		fontFamily: FONTS.medium,
 		fontWeight: 500,
 		color: COLORS.black,
 		fontSize: 14,
 	},
 	codeTitle: {
 		fontSize: 16,
-		fontFamily: "GTWalsheimPro-Regular",
+		fontFamily: FONTS.regular,
 		color: COLORS.black,
 	},
 });
