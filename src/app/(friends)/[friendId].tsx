@@ -1,6 +1,6 @@
 import { UserContext } from "@modules/auth/context/user-context";
 import { FriendProfile } from "@modules/friends/ui/friendProfile/FriendProfile";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { Redirect, useLocalSearchParams, useRouter } from "expo-router";
 import { useContext } from "react";
 import { View, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -18,9 +18,7 @@ export default function FriendProfileScreen(){
             ? Number(params.requestId)
             : undefined
 
-    if (userId == null || requestId == null) {
-        return <Text>Invalid params</Text>
-    }
+    if (userId == null || requestId == null) return <Redirect href={"(tabs)/friends"}/>
 
     return <FriendProfile userId={userId} requestId = {requestId}/>
 }

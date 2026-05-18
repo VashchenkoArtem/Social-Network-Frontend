@@ -28,7 +28,7 @@ export function MyPostsPage(){
         >
             { data.map((post) => {
                 return(
-                    <PostCard post = {post} key={post.id}/>
+                    <PostCard post = {post} key={post.id} isEditingPost={true}/>
                 )
             }) }
         </KeyboardAwareScrollView>

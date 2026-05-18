@@ -4,29 +4,31 @@ import { Recommended } from "@modules/friends/ui/recommended/Recommended";
 import { Requests } from "@modules/friends/ui/requests/Requests";
 import { AdditionalUrls } from "@shared/ui/additionalUrl";
 import { IRadioTab } from "@shared/ui/additionalUrl/types";
+import { useState } from "react";
 import { ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
  
 
 export default function FriendsPage() {	
+	const [chosenTab, setChosenTab] = useState<string>("Головна");
 	const radioTabsArray: IRadioTab[] = [
-		{ title: "Головна", content: <Friends/> },
+		{ title: "Головна", content: <Friends setChosenTab={setChosenTab}/> },
 		{ title: "Запити", content: 
 			<ScrollView style = {{marginTop: 24, marginBottom: 48}} contentContainerStyle={{gap: 8}}>
-				<Requests/>
+				<Requests setChosenTab={setChosenTab}/>
 			</ScrollView> },
 		{ title: "Рекомендації", content: 
 			<ScrollView style = {{marginTop: 24, marginBottom: 48}} contentContainerStyle={{gap: 8}}>
-				<Recommended/>
+				<Recommended setChosenTab={setChosenTab}/>
 			</ScrollView>  },
 		{ title: "Всі друзі", content: 
 			<ScrollView style = {{marginTop: 24, marginBottom: 48}} contentContainerStyle={{gap: 8}}>
-				<AllFriends/>
+				<AllFriends setChosenTab={setChosenTab}/>
 			</ScrollView> },
 	];
 	return (
 		<SafeAreaView style={{ flex: 1 }} edges={["left", "right"]}>
-			<AdditionalUrls radioTabsArray={radioTabsArray}/>
+			<AdditionalUrls chosenTab={chosenTab} setChosenTab={setChosenTab} radioTabsArray={radioTabsArray}/>
 		</SafeAreaView>
 	);
 }

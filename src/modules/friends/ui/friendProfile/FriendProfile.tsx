@@ -33,7 +33,8 @@ export function FriendProfile({ userId, requestId }: IProps) {
             keyboardShouldPersistTaps="handled"
             contentContainerStyle={{
                 flexGrow: 1,
-                gap: 8
+                gap: 8,
+                marginTop: 8
             }}
         >
             <View style={styles.card}>
@@ -64,7 +65,7 @@ export function FriendProfile({ userId, requestId }: IProps) {
                 { !isAccepted && 
                     <View style={styles.cardButtons}>
                         <Button variant="purple" text = "Підтвердити"  onPress={async () => {
-                            setIsAccepted(true)
+                            router.push("/(tabs)/friends")
                             await updateFriendRequest({
                                 requestId: requestId,
                                 status: "Accepted"
@@ -90,7 +91,7 @@ export function FriendProfile({ userId, requestId }: IProps) {
             }
             { posts?.map((post) => {
                 return(
-                    <PostCard post = {post} key={post.id}/>
+                    <PostCard post = {post} key={post.id} isEditingPost={false}/>
                 )
             }) }
         </KeyboardAwareScrollView>

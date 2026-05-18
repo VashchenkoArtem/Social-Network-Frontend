@@ -7,8 +7,7 @@ import { IProps } from "./types";
 import { styles } from "./styles";
 
 export function AdditionalUrls(props: IProps) {
-	const { radioTabsArray } = props;
-	const [choosedTab, setChoosedTab] = useState<string>(radioTabsArray[0].title);
+	const { radioTabsArray, chosenTab, setChosenTab } = props;
 	return (
 		<View style={styles.additionalUrls}>
 			<View style={styles.tabs}>
@@ -16,11 +15,11 @@ export function AdditionalUrls(props: IProps) {
 					return (
 						<Pressable
 							key={element.title}
-							onPress={() => setChoosedTab(element.title)}
+							onPress={() => setChosenTab(element.title)}
 						>
 							<Text
 								style={[
-									choosedTab === element.title
+									chosenTab === element.title
 										? styles.selectedAdditionalUrl
 										: styles.notSelectedAdditionalUrl,
 									styles.tab,
@@ -38,7 +37,7 @@ export function AdditionalUrls(props: IProps) {
 					<View
 						key={element.title}
 						style={
-							choosedTab === element.title ? styles.visible : styles.hidden
+							chosenTab === element.title ? styles.visible : styles.hidden
 						}
 					>
 						{element.content}

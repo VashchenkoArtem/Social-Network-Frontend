@@ -25,5 +25,12 @@ export const styles = StyleSheet.create({
         color: COLORS.plum,
         fontSize: 16,
         fontWeight: 500,
+    },
+    nullMessage: {
+        width: "100%",
+        textAlign: "center",
+        fontSize: 16,
+        color: COLORS.gray,
+		fontFamily: "GTWalsheimPro-Regular",
     }
 })

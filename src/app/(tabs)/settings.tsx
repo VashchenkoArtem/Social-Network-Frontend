@@ -3,12 +3,12 @@ import { AlbumsPage } from "@modules/settings/ui/albums/Albums";
 import { PersonalInformation } from "@modules/settings/ui/personal-information/Personal-information";
 import { AdditionalUrls } from "@shared/ui/additionalUrl";
 import { IRadioTab } from "@shared/ui/additionalUrl/types";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { View, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Settings() {
-	const { user } = useContext(UserContext)!;
+	const [chosenTab, setChosenTab] = useState<string>("Особиста інформація");
 	const radioTabsArray: IRadioTab[] = [
 		{
 			title: "Особиста інформація",
@@ -21,7 +21,7 @@ export default function Settings() {
 	];
 	return (
 		<SafeAreaView style={{ flex: 1, padding: 0 }} edges={["left", "right"]}>
-			<AdditionalUrls radioTabsArray={radioTabsArray} />
+			<AdditionalUrls chosenTab={chosenTab} setChosenTab={setChosenTab} radioTabsArray={radioTabsArray}/>
 		</SafeAreaView>
 	);
 }

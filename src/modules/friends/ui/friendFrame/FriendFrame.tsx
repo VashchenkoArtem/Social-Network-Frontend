@@ -4,18 +4,11 @@ import { styles } from "./friendFrame.styles";
 import { useContext } from "react";
 import { UserContext } from "@modules/auth/context/user-context";
 import { FriendRequest, Profile } from "@modules/friends/api/api.types";
+import { IProps } from "./types";
 
-type Props = {
-    frameName: string
-    data?: FriendRequest[] | Profile[]
-    buttonText: string
-}
 
-export function FriendFrame({ frameName, data, buttonText }: Props) {
-    const { user } = useContext(UserContext)!
 
-    if (!user) return null
-
+export function FriendFrame({ frameName, data, buttonText, setChosenTab, messageIfNull }: IProps) {
     const isFriendRequests = (
         items: FriendRequest[] | Profile[]
     ): items is FriendRequest[] => {
@@ -26,11 +19,11 @@ export function FriendFrame({ frameName, data, buttonText }: Props) {
         <View style={styles.friendCards}>
             <View style={styles.cardHeader}>
                 <Text style={styles.cardTitle}>{frameName}</Text>
-                <Text style={styles.cardLink}>Дивитись всі</Text>
+                <Text style={styles.cardLink} onPress={() => setChosenTab(frameName)}>Дивитись всі</Text>
             </View>
 
             <View>
-                {!data?.length ? null : isFriendRequests(data)
+                {!data?.length ? <Text style={styles.nullMessage}>{messageIfNull}</Text> : isFriendRequests(data)
                     ? data.map((friendRequest) => (
                         <FriendCard
                             buttonText={buttonText}

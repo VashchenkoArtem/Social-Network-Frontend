@@ -89,12 +89,6 @@ export default function TabLayout() {
 						href: null,
 					}}
 				/>
-				<Tabs.Screen
-					name="[friendId]"
-					options={{
-						href: null,
-					}}
-				/>
 			</Tabs>
 		</SafeAreaView>
 	);

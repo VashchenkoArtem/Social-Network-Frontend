@@ -6,4 +6,6 @@ export interface IRadioTab {
 }
 export interface IProps {
 	radioTabsArray: IRadioTab[];
+	chosenTab: string;
+	setChosenTab: (title: string) => void
 }
