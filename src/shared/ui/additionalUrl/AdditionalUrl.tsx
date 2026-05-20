@@ -1,14 +1,10 @@
-import { View, Image, Text, Pressable } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { useRouter } from "expo-router";
-import { usePathname } from "expo-router";
-import { useState } from "react";
+import { View, Text, Pressable } from "react-native";
 import { IProps } from "./types";
 import { styles } from "./styles";
+import { COLORS } from "@shared/constants/colors";
 
 export function AdditionalUrls(props: IProps) {
-	const { radioTabsArray } = props;
-	const [choosedTab, setChoosedTab] = useState<string>(radioTabsArray[0].title);
+	const { radioTabsArray, chosenTab, setChosenTab } = props;
 	return (
 		<View style={styles.additionalUrls}>
 			<View style={styles.tabs}>
@@ -16,13 +12,25 @@ export function AdditionalUrls(props: IProps) {
 					return (
 						<Pressable
 							key={element.title}
-							onPress={() => setChoosedTab(element.title)}
+							onPress={() => setChosenTab(element.title)}
+							style = {[
+								styles.tabWithIcon,
+								element.icon 
+								? chosenTab === element.title 
+									? styles.selectedTabWithIcon
+									: styles.notSelectedTabWithIcon
+								: styles.notSelectedTabWithIcon
+							]}
 						>
+							{element.icon}
 							<Text
 								style={[
-									choosedTab === element.title
-										? styles.selectedAdditionalUrl
-										: styles.notSelectedAdditionalUrl,
+									element.icon
+										? styles.selectedWithoutIcon
+										: chosenTab === element.title
+											? [styles.selectedWithoutIcon, {borderBottomColor: COLORS.plum, borderBottomWidth: 2,}]
+											: styles.notSelectedWithoutIcon,
+
 									styles.tab,
 								]}
 							>
@@ -37,9 +45,10 @@ export function AdditionalUrls(props: IProps) {
 				return (
 					<View
 						key={element.title}
-						style={
-							choosedTab === element.title ? styles.visible : styles.hidden
-						}
+						style={[
+							chosenTab === element.title ? styles.visible : styles.hidden,
+							{ flex: 1}
+						]}
 					>
 						{element.content}
 					</View>

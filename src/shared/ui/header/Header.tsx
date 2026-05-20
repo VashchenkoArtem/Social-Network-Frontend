@@ -20,12 +20,12 @@ import { UserContext } from "@modules/auth/context/user-context";
 import { CreatePostForm } from "@modules/posts/ui/create-post-form";
 import { CreateAlbumDto, useCreateAlbumMutation } from "@modules/settings/api/albumApi";
 import { AlbumsModal } from "../albumsModal/AlbumsModal";
+import { GroupChats } from "@modules/chats/ui/groupChats/GroupChats";
 
 export function Header(props: HeaderProps) {
 	const { cantCreatePost, cantEditSelf } = props;
 	const pathname = usePathname();
 	const { user, logout } = useContext(UserContext)!;
-	const [choosedTab, setChoosedTab] = useState("Контакти");
 	const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 	const [ createAlbum ] = useCreateAlbumMutation()
 	
@@ -38,16 +38,6 @@ export function Header(props: HeaderProps) {
 		
 		setIsCreateModalOpen(false);
 	}
-
-	const chatsTabs = [
-		{ title: "Контакти", route: "/chats", icon: ICONS.FriendsPageIcon },
-		{
-			title: "Повідомлення",
-			route: "/notifications",
-			icon: ICONS.ChatsPageIcon,
-		},
-		{ title: "Групові чати", route: "/groupChats", icon: ICONS.ChatsPageIcon },
-	];
 	if (
 		pathname === "/login" ||
 		pathname === "/registration" ||
@@ -130,7 +120,6 @@ export function Header(props: HeaderProps) {
 						iconLeft={<ExitIcon color={COLORS.plum} style={styles.icon} />}
 						onPress={() => {
 							if (user) {
-								console.log("logaut");
 								logout();
 							}
 						}}
@@ -138,26 +127,6 @@ export function Header(props: HeaderProps) {
 					/>
 				</View>
 			</View>
-
-			{pathname.includes("chats") && (
-				<View style={styles.tabs}>
-					{chatsTabs.map((tab) => (
-						<Pressable
-							key={tab.title}
-							onPress={() => {
-								setChoosedTab(tab.title);
-							}}
-							style={[
-								styles.tab,
-								choosedTab === tab.title ? styles.selectedAdditionalUrl : null,
-							]}
-						>
-							<tab.icon color={COLORS.black}></tab.icon>
-							<Text style={[styles.tab]}>{tab.title}</Text>
-						</Pressable>
-					))}
-				</View>
-			)}
 		</View>
 	);
 }

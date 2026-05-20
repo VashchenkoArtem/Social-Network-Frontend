@@ -1,4 +1,5 @@
 import { COLORS } from "@shared/constants/colors";
+import { FONTS } from "@shared/constants/fonts";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
@@ -25,5 +26,12 @@ export const styles = StyleSheet.create({
         color: COLORS.plum,
         fontSize: 16,
         fontWeight: 500,
+    },
+    nullMessage: {
+        width: "100%",
+        textAlign: "center",
+        fontSize: 16,
+        color: COLORS.gray,
+		fontFamily: FONTS.regular,
     }
 })

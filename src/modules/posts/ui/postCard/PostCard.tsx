@@ -15,7 +15,7 @@ import { useDeletePostMutation } from "@modules/posts/api/postsApi";
 
 
 export function PostCard(props: IProps){
-    const { post } = props
+    const { post, isEditingPost } = props
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [deletePost] = useDeletePostMutation();
@@ -46,74 +46,49 @@ export function PostCard(props: IProps){
                         uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${post.author.signature}`
                     }}/>}
                 </View>
-
-                <Pressable
-                    onPress={() => setisPostModalOpen(false)}
-                >
-                    <View style={styles.isModalOpenContainer}>
-                        <TouchableOpacity
-                            style={styles.dotIconContainer}
-                            onPress={(event) => {
-                                event.stopPropagation()
-                                setisPostModalOpen(!isPostModalOpen)
-                            }}
-                        >
-                            <ICONS.DotsIcon color={COLORS.gray} />
-                        </TouchableOpacity>
-
-                        {isPostModalOpen && (
-                            <View style={styles.postModalMenu}>
-                                <TouchableOpacity style={styles.postModalMenuBtn} onPress={handleEdit}>
-                                    <ICONS.EditIcon color={COLORS.black} width={18} height={18} />
-                                    <Text style={styles.postModalBtnTxt}>Редагувати</Text>
-                                </TouchableOpacity>
-
-                                <View style={styles.devider}></View>
-
-                                <TouchableOpacity 
-                                    style={styles.postModalMenuBtn}
-                                    onPress={async () => {
-                                        try {
-                                            await deletePost(post.id).unwrap()
-                                        } catch (error) {
-                                            console.error("Delete error:", error)
-                                        }
-                                    }}
-                                >
-                                    <ICONS.DeleteIcon color={COLORS.black} />
-                                    <Text style={[styles.postModalBtnTxt]}>Видалити публікацію</Text>
-                                </TouchableOpacity>
-                            </View>
-                        )}
-                    </View>
-                </Pressable>
-            </View>
-
-
-            {/* <Modal
-                isVisible={isMenuOpen}
-                onBackdropPress={() => setIsMenuOpen(false)}
-                backdropOpacity={0.3}
-                animationIn="fadeInUp"
-                animationOut="fadeOutDown"
-                style={styles.bottomModal}
-            >
-                <View style={styles.menuContent}>
-                    <TouchableOpacity style={styles.menuItem} onPress={handleEdit}>
-                        <ICONS.EditIcon color={COLORS.black} width={20} height={20} />
-                        <Text style={styles.menuText}>Редагувати</Text>
-                    </TouchableOpacity>
-                    
-                    <TouchableOpacity 
-                        style={[styles.menuItem, { borderTopWidth: 1, borderColor: COLORS.gray }]} 
-                        onPress={handleDelete}
+                { isEditingPost && (
+                    <Pressable
+                        onPress={() => setisPostModalOpen(false)}
                     >
-                        <ICONS.DeleteIcon color="red" width={20} height={20} />
-                        <Text style={[styles.menuText, { color: 'red' }]}>Видалити</Text>
-                    </TouchableOpacity>
-                </View>
-            </Modal> */}
+                        <View style={styles.isModalOpenContainer}>
+                            <TouchableOpacity
+                                style={styles.dotIconContainer}
+                                onPress={(event) => {
+                                    event.stopPropagation()
+                                    setisPostModalOpen(!isPostModalOpen)
+                                }}
+                            >
+                                <ICONS.DotsIcon color={COLORS.gray} />
+                            </TouchableOpacity>
 
+                            {isPostModalOpen && (
+                                <View style={styles.postModalMenu}>
+                                    <TouchableOpacity style={styles.postModalMenuBtn} onPress={handleEdit}>
+                                        <ICONS.EditIcon color={COLORS.black} width={18} height={18} />
+                                        <Text style={styles.postModalBtnTxt}>Редагувати</Text>
+                                    </TouchableOpacity>
+
+                                    <View style={styles.devider}></View>
+
+                                    <TouchableOpacity 
+                                        style={styles.postModalMenuBtn}
+                                        onPress={async () => {
+                                            try {
+                                                await deletePost(post.id).unwrap()
+                                            } catch (error) {
+                                                console.error("Delete error:", error)
+                                            }
+                                        }}
+                                    >
+                                        <ICONS.DeleteIcon color={COLORS.black} />
+                                        <Text style={[styles.postModalBtnTxt]}>Видалити публікацію</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            )}
+                        </View>
+                    </Pressable>
+                )}
+            </View>
             <Modal
                 isVisible={isEditModalOpen}
                 onBackdropPress={() => setIsEditModalOpen(false)}

@@ -1,5 +1,6 @@
 import { StyleSheet } from "react-native";
 import { COLORS } from "@shared/constants/colors";
+import { FONTS } from "@shared/constants/fonts";
 
 export const styles = StyleSheet.create({
 	modalContainer: {
@@ -28,14 +29,14 @@ export const styles = StyleSheet.create({
 	url: {
 		fontSize: 24,
 		color: COLORS.gray,
-		fontFamily: "GTWalsheimPro-Medium",
+		fontFamily: FONTS.medium,
 		fontWeight: 500,
 	},
 
 	activeUrl: {
 		fontSize: 25.5,
 		color: COLORS.black,
-		fontFamily: "GTWalsheimPro-Medium",
+		fontFamily: FONTS.medium,
 		fontWeight: 700,
 		borderBottomWidth: 1,
 		borderBottomColor: COLORS.black,

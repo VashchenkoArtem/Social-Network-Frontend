@@ -1,4 +1,5 @@
 import { COLORS } from "@shared/constants/colors";
+import { FONTS } from "@shared/constants/fonts";
 import { StyleSheet } from "react-native";
 
 export const inputStyles = StyleSheet.create({
@@ -10,7 +11,7 @@ export const inputStyles = StyleSheet.create({
 		fontSize: 16,
 		marginBottom: 6,
 		color: COLORS.black,
-		fontFamily: "GTWalsheimPro-Medium",
+		fontFamily: FONTS.medium,
 	},
 	container: {
 		flexDirection: "row",
@@ -23,7 +24,7 @@ export const inputStyles = StyleSheet.create({
 	},
 	input: {
 		flex: 1,
-		fontFamily: "GTWalsheimPro-Medium",
+		fontFamily: FONTS.medium,
 	},
 	primary: {
 		borderColor: COLORS.gray,

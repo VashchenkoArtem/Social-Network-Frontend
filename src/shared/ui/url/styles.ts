@@ -1,4 +1,5 @@
 import { COLORS } from "@shared/constants/colors";
+import { FONTS } from "@shared/constants/fonts";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
@@ -15,7 +16,7 @@ export const styles = StyleSheet.create({
 	urlText: {
 		fontSize: 14,
 		fontWeight: 600,
-		fontFamily: "GTWalsheimPro-Medium",
+		fontFamily: FONTS.medium,
 	},
 	urlSelected: {
 		borderTopColor: COLORS.plum,

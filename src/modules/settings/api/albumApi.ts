@@ -31,9 +31,9 @@ export interface UpdateAlbumDto {
 }
 export const albumApi = baseApi.injectEndpoints({
 	endpoints: (builder) => ({
-		getAlbums: builder.query<Album[], void>({
-			query: () => ({
-				url: "albums",
+		getAlbums: builder.query<Album[], number>({
+			query: (userId) => ({
+				url: `albums/${userId}`,
 				method: "GET",
 			}),
 			providesTags: ["Album"],

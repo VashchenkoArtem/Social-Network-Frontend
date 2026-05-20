@@ -77,7 +77,6 @@ export function PersonalInformation() {
 	if (!user) {
 		return <Redirect href={"/login"}></Redirect>;
 	}
-	console.log(user)
 	const passwordValue = watch("password");
 	const handleSaveSignature = async (base64: string) => {
 		await updateUserSignature({ signature: base64 }).unwrap();

@@ -89,12 +89,12 @@ export const styles = StyleSheet.create({
         flexDirection: "row",
         flexWrap: "wrap",
         justifyContent: "space-between",
-        gap: 6,
-        marginTop: 10,
+        gap: 5,
+        marginTop: 5,
     },
-
+    
     photo: {
-        width: 167,
+        width: 170,
         height: 200,
         borderRadius: 10,
     },

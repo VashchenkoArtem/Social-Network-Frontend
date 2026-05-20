@@ -8,5 +8,6 @@ export interface IPost {
 }
 
 export interface IProps {
-    post: Post
+    post: Post;
+    isEditingPost: boolean
 }

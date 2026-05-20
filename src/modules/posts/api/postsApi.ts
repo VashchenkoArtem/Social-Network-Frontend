@@ -21,7 +21,6 @@ export const postApi = baseApi.injectEndpoints({
         
         createPost: builder.mutation<Post, FormData>({
             query: (body) => {
-                console.log(body)
                 return {
                 url: 'posts',
                 method: 'POST',

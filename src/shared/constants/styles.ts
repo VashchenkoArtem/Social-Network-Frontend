@@ -1,5 +1,6 @@
 import { StyleSheet } from "react-native";
 import { COLORS } from "./colors";
+import { FONTS } from "./fonts";
 
 export const constStyles = StyleSheet.create({
 	urlIcon: {
@@ -18,7 +19,7 @@ export const constStyles = StyleSheet.create({
 	tabText: {
 		fontSize: 14,
 		fontWeight: 500,
-		fontFamily: "GTWalsheimPro-Medium",
+		fontFamily: FONTS.medium,
 		color: COLORS.black,
 	},
 });
