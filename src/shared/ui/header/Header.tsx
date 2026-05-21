@@ -21,112 +21,120 @@ import { CreatePostForm } from "@modules/posts/ui/create-post-form";
 import { CreateAlbumDto, useCreateAlbumMutation } from "@modules/settings/api/albumApi";
 import { AlbumsModal } from "../albumsModal/AlbumsModal";
 import { GroupChats } from "@modules/chats/ui/groupChats/GroupChats";
+import { CreateGroupModals } from "@modules/chats/ui/CreateGroupModals/CreateGroupModals"; 
 
 export function Header(props: HeaderProps) {
-	const { cantCreatePost, cantEditSelf } = props;
-	const pathname = usePathname();
-	const { user, logout } = useContext(UserContext)!;
-	const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-	const [ createAlbum ] = useCreateAlbumMutation()
-	
-	async function handleSave(data: CreateAlbumDto) {
-		await createAlbum({
-			name: data.name,
-			theme: data.theme,
-			year: data.year
-		})
-		
-		setIsCreateModalOpen(false);
-	}
-	if (
-		pathname === "/login" ||
-		pathname === "/registration" ||
-		pathname === "/verify"
-	) {
-		return (
-			<View style={[styles.header, styles.headerLogin]}>
-				<Link href="/home">
-					<LogoIcon color={COLORS.plum} width={145} height={18} />
-				</Link>
-			</View>
-		);
-	}
-	
-	return (
-		<View style={{ backgroundColor: COLORS.white }}>
-			<View style={styles.header}>
-				<Link href="/home">
-					<LogoIcon color={COLORS.plum} width={145} height={18} />
-				</Link>
+    const { cantCreatePost, cantEditSelf } = props;
+    const pathname = usePathname();
+    const { user, logout } = useContext(UserContext)!;
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+    const [createAlbum] = useCreateAlbumMutation();
+    
+    async function handleSave(data: CreateAlbumDto) {
+        await createAlbum({
+            name: data.name,
+            theme: data.theme,
+            year: data.year
+        });
+        
+        setIsCreateModalOpen(false);
+    }
 
-				<View style={styles.buttons}>
-					{!cantCreatePost && (
-						<>
-							<Button
-								variant="white"
-								iconLeft={<PlusIcon color={COLORS.plum} style={styles.icon} />}
-								onPress={() => setIsCreateModalOpen(true)}
-							/>
-							{pathname.includes("settings") ? 
-							<AlbumsModal
-								visible={isCreateModalOpen}
-								onClose={() => setIsCreateModalOpen(false)}
-								onSubmit={handleSave}
-							/> :
-							<Modal
-								isVisible={isCreateModalOpen}
-								onBackdropPress={() => setIsCreateModalOpen(false)}
-								onSwipeComplete={() => setIsCreateModalOpen(false)}
-								style={styles.modal}
-								useNativeDriver
+    if (
+        pathname === "/login" ||
+        pathname === "/registration" ||
+        pathname === "/verify"
+    ) {
+        return (
+            <View style={[styles.header, styles.headerLogin]}>
+                <Link href="/home">
+                    <LogoIcon color={COLORS.plum} width={145} height={18} />
+                </Link>
+            </View>
+        );
+    }
+    
+    const isSettingsPage = pathname.includes("settings");
+    const isGroupChatsPage = pathname.includes("chats") || pathname.includes("group");
 
-								animationIn="fadeIn"
-								animationOut="fadeOut"
-								animationInTiming={150}
-								animationOutTiming={150}
+    return (
+        <View style={{ backgroundColor: COLORS.white }}>
+            <View style={styles.header}>
+                <Link href="/home">
+                    <LogoIcon color={COLORS.plum} width={145} height={18} />
+                </Link>
 
-								backdropOpacity={0.4}
-								backdropTransitionInTiming={200}
-								backdropTransitionOutTiming={200}
-							>
-								<View style={styles.container}>
-									<View style={styles.closeModalContainer}>
-										<TouchableOpacity onPress={() => setIsCreateModalOpen(false)} hitSlop={15}>
-											<Text style={styles.closeIcon}>✕</Text>
-										</TouchableOpacity>
-									</View>
-									<CreatePostForm setIsCreatePostModalOpen={setIsCreateModalOpen}></CreatePostForm>
-								</View>
+                <View style={styles.buttons}>
+                    {!cantCreatePost && (
+                        <>
+                            <Button
+                                variant="white"
+                                iconLeft={<PlusIcon color={COLORS.plum} style={styles.icon} />}
+                                onPress={() => setIsCreateModalOpen(true)}
+                            />
+                            {isSettingsPage ? (
+                                <AlbumsModal
+                                    visible={isCreateModalOpen}
+                                    onClose={() => setIsCreateModalOpen(false)}
+                                    onSubmit={handleSave}
+                                />
+                            ) : isGroupChatsPage ? (
+                                <CreateGroupModals
+                                    visible={isCreateModalOpen}
+                                    onClose={() => setIsCreateModalOpen(false)}
+                                />
+                            ) : (
+                                <Modal
+                                    isVisible={isCreateModalOpen}
+                                    onBackdropPress={() => setIsCreateModalOpen(false)}
+                                    onSwipeComplete={() => setIsCreateModalOpen(false)}
+                                    style={styles.modal}
+                                    useNativeDriver
 
-							</Modal>
+                                    animationIn="fadeIn"
+                                    animationOut="fadeOut"
+                                    animationInTiming={150}
+                                    animationOutTiming={150}
 
-						}
-							
-						</>
-					)}
+                                    backdropOpacity={0.4}
+                                    backdropTransitionInTiming={200}
+                                    backdropTransitionOutTiming={200}
+                                >
+                                    <View style={styles.container}>
+                                        <View style={styles.closeModalContainer}>
+                                            <TouchableOpacity onPress={() => setIsCreateModalOpen(false)} hitSlop={15}>
+                                                <Text style={styles.closeIcon}>✕</Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                        <CreatePostForm setIsCreatePostModalOpen={setIsCreateModalOpen}></CreatePostForm>
+                                    </View>
+                                </Modal>
+                            )}
+                        </>
+                    )}
 
-					{!cantEditSelf && (
-						<Button
-							variant="white"
-							iconLeft={<ManageIcon color={COLORS.plum} style={styles.icon} />}
-							onPress={() => push("/settings")}
-							href="/settings"
-							isSettings={true}
-						/>
-					)}
+                    {!cantEditSelf && (
+                        <Button
+                            variant="white"
+                            iconLeft={<ManageIcon color={COLORS.plum} style={styles.icon} />}
+                            onPress={() => push("/settings")}
+                            href="/settings"
+                            isSettings={true}
+                        />
+                    )}
 
-					<Button
-						variant="white"
-						iconLeft={<ExitIcon color={COLORS.plum} style={styles.icon} />}
-						onPress={() => {
-							if (user) {
-								logout();
-							}
-						}}
-						href="/login"
-					/>
-				</View>
-			</View>
-		</View>
-	);
+                    <Button
+                        variant="white"
+                        iconLeft={<ExitIcon color={COLORS.plum} style={styles.icon} />}
+                        onPress={() => {
+                            if (user) {
+                                logout();
+                            }
+                        }}
+                        href="/login"
+                    />
+                </View>
+            </View>
+        </View>
+    );
 }

@@ -38,7 +38,7 @@ export function FriendCard(props: IProps) {
                         <Button variant="purple" text = {buttonText} onPress={async () => {
                             if (requestId){
                                 router.push({
-                                    pathname: `/(tabs)/${user.id}`, 
+                                    pathname: `/(friends)/${user.id}`, 
                                     params: {
                                         userId: user.id,
                                         requestId: requestId

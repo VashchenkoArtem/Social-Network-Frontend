@@ -1,0 +1,162 @@
+import React, { useState, useMemo } from "react";
+import { View, Text, TouchableOpacity, SectionList, Image, ActivityIndicator } from "react-native";
+import Modal from "react-native-modal";
+import { useGetAllFriendsQuery } from "@modules/friends/api/friendsApi"; 
+import { Input } from "@shared/ui/input"; 
+import { COLORS } from "@shared/constants/colors";
+import { SERVER } from "@shared/constants/server";
+import { styles } from "./styles"; 
+import { FriendRequest } from "@modules/friends/api/api.types";
+
+interface ISelectParticipantsModalProps {
+    visible: boolean;
+    onClose: () => void;
+    selectedUserIds: number[];
+    onToggleSelectFriend: (userId: number) => void;
+    onNextStep: () => void;
+}
+
+type FriendProfileType = FriendRequest["from_profile"];
+
+interface IFriendSection {
+    title: string;
+    data: FriendProfileType[];
+}
+
+export function SelectParticipantsModal({ 
+    visible, 
+    onClose, 
+    selectedUserIds, 
+    onToggleSelectFriend, 
+    onNextStep 
+}: ISelectParticipantsModalProps) {
+    const { data: friendsRequests = [], isLoading: isFriendsLoading } = useGetAllFriendsQuery();
+    const [searchQuery, setSearchQuery] = useState<string>("");
+
+    const friends = useMemo(() => {
+        return friendsRequests.map((request) => request.from_profile);
+    }, [friendsRequests]);
+
+    const sections = useMemo<IFriendSection[]>(() => {
+        const filteredFriends = friends.filter((friend) => {
+            const firstname = friend.firstname || "";
+            const lastname = friend.lastname || "";
+            const username = friend.username || "";
+            const fullName = `${firstname} ${lastname}`.toLowerCase();
+            const searchNormalized = searchQuery.toLowerCase();
+
+            return fullName.includes(searchNormalized) || username.toLowerCase().includes(searchNormalized);
+        });
+
+        const groups: Record<string, FriendProfileType[]> = {};
+
+        filteredFriends.forEach((friend) => {
+            const nameKey = friend.firstname || friend.username || "U";
+            const firstLetter = nameKey[0].toUpperCase();
+            if (!groups[firstLetter]) groups[firstLetter] = [];
+            groups[firstLetter].push(friend);
+        });
+
+        return Object.keys(groups)
+            .sort((elementA, elementB) => elementA.localeCompare(elementB, "uk"))
+            .map((letter) => ({
+                title: letter,
+                data: groups[letter].sort((friendA, friendB) => {
+                    const nameA = friendA.firstname || friendA.username || "";
+                    const nameB = friendB.firstname || friendB.username || "";
+                    return nameA.localeCompare(nameB, "uk");
+                }),
+            }));
+    }, [friends, searchQuery]);
+
+    const renderItem = ({ item }: { item: FriendProfileType }) => {
+        const isSelected = selectedUserIds.includes(item.id);
+        const avatarUri = item.profile?.avatar 
+            ? `http://${SERVER.host}:${SERVER.port}/media/thumb/${item.profile.avatar}`
+            : null;
+
+        return (
+            <TouchableOpacity 
+                style={styles.friendRow} 
+                onPress={() => onToggleSelectFriend(item.id)}
+                activeOpacity={0.7}
+            >
+                <View style={styles.friendInfo}>
+                    {avatarUri ? (
+                        <Image source={{ uri: avatarUri }} style={styles.avatar} />
+                    ) : (
+                        <View style={[styles.avatar, styles.placeholderAvatar]}>
+                            <Text style={styles.placeholderText}>
+                                {item.firstname ? item.firstname[0].toUpperCase() : "U"}
+                            </Text>
+                        </View>
+                    )}
+                    <Text style={styles.friendName}>
+                        {item.firstname} {item.lastname}
+                    </Text>
+                </View>
+
+                <View style={[styles.checkbox, isSelected && styles.checkboxSelected]}>
+                    {isSelected && <Text style={styles.checkboxCheckmark}>✓</Text>}
+                </View>
+            </TouchableOpacity>
+        );
+    };
+
+    return (
+        <Modal
+            isVisible={visible}
+            onBackdropPress={onClose}
+            style={styles.modal}
+            useNativeDriver
+            animationIn="slideInUp"
+            animationOut="slideOutDown"
+        >
+            <View style={styles.container}>
+                <TouchableOpacity style={styles.closeBtn} onPress={onClose}>
+                    <Text style={styles.closeBtnText}>✕</Text>
+                </TouchableOpacity>
+
+                <Text style={styles.title}>Нова група</Text>
+
+                <Input
+                    placeholder="Пошук"
+                    value={searchQuery}
+                    onChangeText={setSearchQuery}
+                    variant="primary"
+                />
+
+                <Text style={styles.selectedCount}>Вибрано: {selectedUserIds.length}</Text>
+
+                {isFriendsLoading ? (
+                    <ActivityIndicator size="large" color={COLORS.plum} style={{ flex: 1 }} />
+                ) : (
+                    <SectionList
+                        sections={sections}
+                        keyExtractor={(item) => item.id.toString()}
+                        renderItem={renderItem}
+                        renderSectionHeader={({ section: { title } }) => (
+                            <Text style={styles.sectionHeader}>{title}</Text>
+                        )}
+                        showsVerticalScrollIndicator={false}
+                        contentContainerStyle={{ paddingBottom: 20 }}
+                    />
+                )}
+
+                <View style={styles.footerRow}>
+                    <TouchableOpacity style={[styles.btn, styles.btnCancel]} onPress={onClose}>
+                        <Text style={styles.btnCancelText}>Скасувати</Text>
+                    </TouchableOpacity>
+                    
+                    <TouchableOpacity 
+                        style={[styles.btn, styles.btnNext, selectedUserIds.length === 0 && styles.btnDisabled]} 
+                        onPress={onNextStep}
+                        disabled={selectedUserIds.length === 0}
+                    >
+                        <Text style={styles.btnNextText}>Далі</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        </Modal>
+    );
+}

@@ -8,7 +8,7 @@ export interface IChatWithUsers {
                 avatar: string | null
             } | null
         }
-    }
+    }[]
 
     id: number
     name: string
