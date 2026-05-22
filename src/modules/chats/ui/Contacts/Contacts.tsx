@@ -19,14 +19,13 @@ export function Contacts(){
         item.from_profile.id === user?.id ||
         item.to_profile.id === user?.id
     )
-    console.log(filteredData)
     return (
         <View style = {styles.mainContainer}>
             <View style = {styles.mainContainerHeader}>
                 <ICONS.FriendsPageIcon height={20} color = {COLORS.gray} />
                 <Text style = {styles.frameTitle}>Контакти</Text>
             </View>
-            <Input iconLeft={<SearchIcon color={COLORS.gray} width={20} height={20} />} placeholder="Пошук" />
+            <Input iconLeft={<SearchIcon color={COLORS.gray} width={20} height={20} />} placeholder="Пошук" notMarginBottom={true}/>
             <FlatList
             data={filteredData}
             renderItem={({ item }) => {

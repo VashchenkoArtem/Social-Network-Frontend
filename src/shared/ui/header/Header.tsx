@@ -24,8 +24,7 @@ import { GroupChats } from "@modules/chats/ui/groupChats/GroupChats";
 import { CreateGroupModals } from "@modules/chats/ui/CreateGroupModals/CreateGroupModals"; 
 
 export function Header(props: HeaderProps) {
-    const { cantCreatePost, cantEditSelf } = props;
-    const pathname = usePathname();
+    const { cantCreatePost, cantEditSelf, isLogin, canCreateAlbum, canCreateChat } = props;
     const { user, logout } = useContext(UserContext)!;
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [createAlbum] = useCreateAlbumMutation();
@@ -40,11 +39,7 @@ export function Header(props: HeaderProps) {
         setIsCreateModalOpen(false);
     }
 
-    if (
-        pathname === "/login" ||
-        pathname === "/registration" ||
-        pathname === "/verify"
-    ) {
+    if ( isLogin ) {
         return (
             <View style={[styles.header, styles.headerLogin]}>
                 <Link href="/home">
@@ -54,11 +49,10 @@ export function Header(props: HeaderProps) {
         );
     }
     
-    const isSettingsPage = pathname.includes("settings");
-    const isGroupChatsPage = pathname.includes("chats") || pathname.includes("group");
+    // const isGroupChatsPage = pathname.includes("chats") || pathname.includes("group");
 
     return (
-        <View style={{ backgroundColor: COLORS.white }}>
+        <SafeAreaView style={{ backgroundColor: COLORS.white }} edges={['top']}>
             <View style={styles.header}>
                 <Link href="/home">
                     <LogoIcon color={COLORS.plum} width={145} height={18} />
@@ -72,13 +66,13 @@ export function Header(props: HeaderProps) {
                                 iconLeft={<PlusIcon color={COLORS.plum} style={styles.icon} />}
                                 onPress={() => setIsCreateModalOpen(true)}
                             />
-                            {isSettingsPage ? (
+                            {canCreateAlbum ? (
                                 <AlbumsModal
                                     visible={isCreateModalOpen}
                                     onClose={() => setIsCreateModalOpen(false)}
                                     onSubmit={handleSave}
                                 />
-                            ) : isGroupChatsPage ? (
+                            ) : canCreateChat ? (
                                 <CreateGroupModals
                                     visible={isCreateModalOpen}
                                     onClose={() => setIsCreateModalOpen(false)}
@@ -135,6 +129,6 @@ export function Header(props: HeaderProps) {
                     />
                 </View>
             </View>
-        </View>
+        </SafeAreaView>
     );
 }

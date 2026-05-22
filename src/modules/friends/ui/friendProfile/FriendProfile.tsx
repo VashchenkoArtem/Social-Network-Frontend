@@ -18,6 +18,7 @@ interface IProps {
 }
 
 export function FriendProfile({ userId, requestId }: IProps) {
+    console.log(userId, requestId)
     const router = useRouter();
     const { data: user } = useGetUserByIdQuery(userId);
     const { data } = useGetAlbumsQuery(userId)

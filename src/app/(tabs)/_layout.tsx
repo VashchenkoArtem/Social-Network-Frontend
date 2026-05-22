@@ -26,70 +26,75 @@ const TabButton = ({ route, children, ...props }: any) => {
 };
 export default function TabLayout() {
 	return (
-		<SafeAreaView
-			style={{ flex: 1, backgroundColor: COLORS.white }}
-			edges={["top"]}
+		<Tabs
+			screenOptions={{
+				tabBarStyle: styles.tabs,
+			}}
 		>
-			<Tabs
-				screenOptions={{
-					tabBarStyle: styles.tabs,
-					header: () => <Header />,
+			<Tabs.Screen
+				name="home"
+				options={{
+					tabBarLabel: "Головна",
+					tabBarLabelStyle: constStyles.tabText,
+					tabBarIcon: () => <ICONS.MainPageIcon color={COLORS.black} />,
+					tabBarButton: (props) => <TabButton {...props} route="home" />,
+					header: () => <Header/>
 				}}
-			>
-				<Tabs.Screen
-					name="home"
-					options={{
-						tabBarLabel: "Головна",
-						tabBarLabelStyle: constStyles.tabText,
-						tabBarIcon: () => <ICONS.MainPageIcon color={COLORS.black} />,
-						tabBarButton: (props) => <TabButton {...props} route="home" />,
-					}}
-				/>
+			/>
 
-				<Tabs.Screen
-					name="posts"
-					options={{
-						tabBarLabel: "Мої публікації",
-						tabBarLabelStyle: constStyles.tabText,
-						tabBarIcon: () => <ICONS.MyPostsPageIcon color={COLORS.black} />,
-						tabBarButton: (props) => <TabButton {...props} route="posts" />,
-					}}
-				/>
+			<Tabs.Screen
+				name="posts"
+				options={{
+					tabBarLabel: "Мої публікації",
+					tabBarLabelStyle: constStyles.tabText,
+					tabBarIcon: () => <ICONS.MyPostsPageIcon color={COLORS.black} />,
+					tabBarButton: (props) => <TabButton {...props} route="posts" />,
+					header: () => <Header/>
+				}}
+			/>
 
-				<Tabs.Screen
-					name="friends"
-					options={{
-						header: () => <Header cantCreatePost={true} />,
-						tabBarLabel: "Друзі",
-						tabBarLabelStyle: constStyles.tabText,
-						tabBarIcon: () => <ICONS.FriendsPageIcon color={COLORS.black} />,
-						tabBarButton: (props) => <TabButton {...props} route="friends" />,
-					}}
-				/>
+			<Tabs.Screen
+				name="friends"
+				options={{
+					header: () => <Header cantCreatePost={true} />,
+					tabBarLabel: "Друзі",
+					tabBarLabelStyle: constStyles.tabText,
+					tabBarIcon: () => <ICONS.FriendsPageIcon color={COLORS.black} />,
+					tabBarButton: (props) => <TabButton {...props} route="friends" />,
+				}}
+			/>
 
-				<Tabs.Screen
-					name="chats"
-					options={{
-						header: () => <Header cantEditSelf={true} />,
-						tabBarLabel: "Чати",
-						tabBarLabelStyle: constStyles.tabText,
-						tabBarIcon: () => <ICONS.ChatsPageIcon color={COLORS.black} />,
-						tabBarButton: (props) => <TabButton {...props} route="chats" />,
-					}}
-				/>
-				<Tabs.Screen
-					name="settings"
-					options={{
-						tabBarItemStyle: { display: "none" },
-					}}
-				/>
-				<Tabs.Screen
-					name="(friends)"
-					options={{
-						href: null,
-					}}
-				/>
-			</Tabs>
-		</SafeAreaView>
+			<Tabs.Screen
+				name="chats"
+				options={{
+					header: () => <Header canCreateChat = {true} cantEditSelf={true} />,
+					tabBarLabel: "Чати",
+					tabBarLabelStyle: constStyles.tabText,
+					tabBarIcon: () => <ICONS.ChatsPageIcon color={COLORS.black} />,
+					tabBarButton: (props) => <TabButton {...props} route="chats" />,
+				}}
+			/>
+			<Tabs.Screen
+				name="settings"
+				options={{
+					tabBarItemStyle: { display: "none" },
+					header: () => <Header canCreateAlbum={true}/>,
+				}}
+			/>
+			<Tabs.Screen
+				name="(friends)"
+				options={{
+					href: null,
+					header: () => <Header cantCreatePost={true} />,
+				}}
+			/>
+			<Tabs.Screen
+				name="(chats)"
+				options={{
+					href: null,
+					header: () => <Header canCreateChat = {true} cantEditSelf={true} />,
+				}}
+			/>
+		</Tabs>
 	);
 }

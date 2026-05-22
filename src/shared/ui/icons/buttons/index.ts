@@ -1,3 +1,4 @@
+export { LeftArrowIcon } from "./LeftArrow";
 export { DeleteIcon } from "./deleteIcon";
 export { DotsIcon } from "./dotsIcon";
 export { LogoIcon } from "./LogoIcon";

@@ -1,13 +1,8 @@
 import { StyleSheet } from "react-native";
 import { COLORS } from "@shared/constants/colors";
+import { FONTS } from "@shared/constants/fonts";
 
 export const styles = StyleSheet.create({
-    modal: {
-        margin: 0,
-        // justifyContent: 'flex-end',
-        // marginBottom: 100
-    },
-
     groupChatContainer: {
         flexDirection: "column",
         justifyContent: "space-between",
@@ -16,19 +11,19 @@ export const styles = StyleSheet.create({
         borderWidth: 1,
         flex: 1,
         backgroundColor: COLORS.white,
-        paddingVertical: 16,
         paddingHorizontal: 16,
+        paddingVertical: 16
+    
     },
 
     groupChatHeader: {
-        height: 58,
         borderBottomWidth: 1,
         borderColor: COLORS.lightGray,
         paddingBottom: 10,
-
         flexDirection: "row",
         alignItems: "center",
-        justifyContent: "flex-start"
+        justifyContent: "flex-start",
+        gap: 10
     },
 
     close: {
@@ -37,46 +32,36 @@ export const styles = StyleSheet.create({
     },
 
     infoHeaderContainer: {
+        flex: 1,
         flexDirection: "row",
         justifyContent: "flex-start",
         alignItems: "flex-start",
         gap: 10
     },
 
-    chatInfo: {
-        flexDirection: "column",
-        justifyContent: "flex-start",
-        alignItems: "flex-start",
-        gap: 5
-    },
-
     chatName: {
         fontSize: 24,
         fontWeight: 500,
-        color: COLORS.black
+        color: COLORS.black,
+        fontFamily: FONTS.medium
     },
 
     chatOnlineStatus: {
         fontSize: 14,
         fontWeight: 400,
-        color: COLORS.lightGray
+        color: COLORS.lightGray,
+        fontFamily: FONTS.regular
     },
 
 
     inputMessageContainer: {
+        padding: 1,
         width: "100%",
         flexDirection: "row",
         alignItems: "center",
-        justifyContent: 'center',
         gap: 24
     },
 
-    messageBtnContainer: {
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 16,
-        marginBottom: 16
-    },
 
     menuContainer: {
         position: "absolute",
@@ -107,5 +92,12 @@ export const styles = StyleSheet.create({
         color: COLORS.black,
         fontSize: 16,
         fontWeight: 500
+    },
+    chatInfo: {
+
+    },
+    messageBtnContainer: {
+        flexDirection: "row",
+        gap: 16
     }
 });

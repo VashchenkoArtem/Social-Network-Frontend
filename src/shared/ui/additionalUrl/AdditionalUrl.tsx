@@ -4,7 +4,7 @@ import { styles } from "./styles";
 import { COLORS } from "@shared/constants/colors";
 
 export function AdditionalUrls(props: IProps) {
-	const { radioTabsArray, chosenTab, setChosenTab } = props;
+	const { radioTabsArray, chosenTab, setChosenTab, chatContent } = props;
 	return (
 		<View style={styles.additionalUrls }> 
 			<View style={styles.tabs}>
@@ -40,23 +40,28 @@ export function AdditionalUrls(props: IProps) {
 					);
 				})}
 			</View>
-			<View style = {{backgroundColor: COLORS.preWhite, flex: 1, paddingTop: 6}}>
-				{radioTabsArray.map((element) => {
-					if (chosenTab !== element.title) {
-						return null;
-					}
+			{ !chatContent 
+			? (
+				<View style = {{backgroundColor: COLORS.preWhite, flex: 1, paddingTop: 6}}>
+					{radioTabsArray.map((element) => {
+						if (chosenTab !== element.title) {
+							return null;
+						}
 
-					return (
-						<View
-							key={element.title}
-							style={{ backgroundColor: "white", flex: 1}}
-						>
-							{element.content}
-						</View>
-					);
-				})}
+						return (
+							<View
+								key={element.title}
+								style={{ backgroundColor: "white", flex: 1}}
+							>
+								{element.content}
+							</View>
+						);
+					})}
 
-			</View>
+				</View>
+			) 
+			: chatContent
+			}
 		</View>
 	);
 }

@@ -5,7 +5,6 @@ import { StyleSheet } from "react-native";
 export const inputStyles = StyleSheet.create({
 	wrapper: {
 		width: "100%",
-		marginBottom: 20,
 	},
 	label: {
 		fontSize: 16,

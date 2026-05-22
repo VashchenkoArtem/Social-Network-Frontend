@@ -11,4 +11,5 @@ export interface IInputProps extends TextInputProps {
 	error?: string;
 	validationSchema?: yup.AnySchema;
 	inputType?: "text" | "password" | "date";
+	notMarginBottom?: boolean
 }

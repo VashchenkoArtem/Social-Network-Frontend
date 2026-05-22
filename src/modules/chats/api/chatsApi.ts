@@ -1,5 +1,5 @@
 import { baseApi } from "@shared/api/baseApi";
-import { IChatWithUsers } from "./api.types";
+import { IChat, IChatWithUsers } from "./api.types";
 
 export interface ICreateGroupChatDto {
     name: string;
@@ -29,7 +29,17 @@ export const chatApi = baseApi.injectEndpoints({
                 method: 'POST',
                 body
             }),
-            invalidatesTags: ["GroupChats"]
+            invalidatesTags: ["GroupChats"]}),
+        deleteGroupChat: builder.mutation<IChat, number>({
+            query: (chatId) => ({
+                url: `group-chats/${chatId}`,
+                method: 'DELETE'
+            })
+        }),
+        getChatById: builder.query<IChat, number>({
+            query: (chatId) => ({
+                url: `chat/${chatId}`
+            })
         })
     })
 })
@@ -37,5 +47,7 @@ export const chatApi = baseApi.injectEndpoints({
 export const {
     useGetGroupChatsQuery,
     useGetPersonalChatsQuery,
-    useCreateGroupChatMutation
+    useCreateGroupChatMutation,
+    useDeleteGroupChatMutation,
+    useGetChatByIdQuery
 } = chatApi

@@ -26,5 +26,8 @@ export const styles = StyleSheet.create({
         color: COLORS.black,
         fontWeight: 500,
         fontFamily: FONTS.medium
+    },
+    itemList: {
+        gap: 16,
     }
 })

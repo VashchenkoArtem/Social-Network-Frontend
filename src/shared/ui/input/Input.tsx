@@ -18,6 +18,7 @@ export function Input(props: IInputProps) {
 		error: externalError,
 		validationSchema,
 		onChangeText,
+		notMarginBottom,
 		...rest
 	} = props;
 
@@ -67,7 +68,7 @@ export function Input(props: IInputProps) {
 	}
 
 	return (
-		<View style={inputStyles.wrapper}>
+		<View style={[inputStyles.wrapper, !notMarginBottom && {marginBottom: 20}]}>
 			{label && <Text style={inputStyles.label}>{label}</Text>}
 
 			<View style={[inputStyles.container, inputStyles[currentVariant]]}>
