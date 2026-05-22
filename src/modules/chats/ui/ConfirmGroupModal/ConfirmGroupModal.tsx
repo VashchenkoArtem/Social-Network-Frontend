@@ -111,6 +111,7 @@ export function ConfirmGroupModal({
             setGroupName("");
             onClose(); 
         } catch (error: unknown) {
+            console.log(error)
             Alert.alert("Помилка", "Не вдалося створити групу");
         }
     };
