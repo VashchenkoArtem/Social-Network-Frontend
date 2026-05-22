@@ -1,4 +1,3 @@
-
 export interface IChatWithUsers {
     users: {
         user: {
@@ -15,4 +14,11 @@ export interface IChatWithUsers {
     is_group: boolean
     avatar: string
     adminId: number
+}
+export interface IChat {
+    id: number;
+    name: string;
+    is_group: boolean;
+    avatar: string;
+    adminId: number;
 }

@@ -15,5 +15,4 @@ export function GroupChats(){
         </View>
 
     )
-    
 }

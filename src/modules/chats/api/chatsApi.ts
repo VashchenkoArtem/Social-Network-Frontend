@@ -1,5 +1,5 @@
 import { baseApi } from "@shared/api/baseApi";
-import { IChatWithUsers } from "./api.types";
+import { IChat, IChatWithUsers } from "./api.types";
 
 export const chatApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -16,10 +16,18 @@ export const chatApi = baseApi.injectEndpoints({
                 method: 'GET'
             })
         }),
+
+        deleteGroupChat: builder.mutation<IChat, number>({
+            query: (chatId) => ({
+                url: `group-chats/${chatId}`,
+                method: 'DELETE'
+            })
+        }),
     })
 })
 
 export const {
     useGetGroupChatsQuery,
-    useGetPersonalChatsQuery
+    useGetPersonalChatsQuery,
+    useDeleteGroupChatMutation
 } = chatApi
