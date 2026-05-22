@@ -1,3 +1,4 @@
+import { Contacts } from "@modules/chats/ui/Contacts/Contacts";
 import { GroupChats } from "@modules/chats/ui/groupChats/GroupChats";
 import { PersonalChats } from "@modules/chats/ui/personalChats/PersonalChats";
 import { COLORS } from "@shared/constants/colors";
@@ -17,8 +18,9 @@ export default function ChatPage() {
 			icon: <ICONS.FriendsPageIcon color = {COLORS.black}/>,
 			content: (
 				<View
-					style={{ flex: 1, marginTop: 7, marginBottom: 48 }}
+					style={{ flex: 1, marginBottom: 48 }}
 				>
+					<Contacts></Contacts>
 				</View>
 			),
 		},
@@ -27,7 +29,7 @@ export default function ChatPage() {
 			icon: <ICONS.ChatsPageIcon color = {COLORS.black}/>,
 			content: (
 				<View
-					style={{ flex: 1, marginTop: 7, marginBottom: 48 }}
+					style={{ flex: 1, marginBottom: 48 }}
 				>
 					<PersonalChats />
 				</View>
@@ -38,7 +40,7 @@ export default function ChatPage() {
 			icon: <ICONS.ChatsPageIcon color = {COLORS.black}/>,
 			content: (
 				<View
-					style={{ flex: 1, marginTop: 7, marginBottom: 48 }}
+					style={{ flex: 1, marginBottom: 48 }}
 				>
 					<GroupChats />
 				</View>

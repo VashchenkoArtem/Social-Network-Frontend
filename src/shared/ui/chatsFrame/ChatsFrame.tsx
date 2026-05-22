@@ -5,10 +5,10 @@ import { SERVER } from "@shared/constants/server";
 import { Input } from "../input";
 import { SearchIcon } from "../icons/inputs/Search";
 import { COLORS } from "@shared/constants/colors";
+import { FriendRequest } from "@modules/friends/api/api.types";
 
 export function ChatsFrame(props: IChatProps) {
     const { Icon, frameTitle, items } = props;
-
     return (
         <View style={styles.mainContainer}>
             <View style={styles.mainContainerHeader}>

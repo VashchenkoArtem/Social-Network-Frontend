@@ -5,7 +5,7 @@ import { StyleSheet } from "react-native";
 export const styles = StyleSheet.create({
 	additionalUrls: {
 		paddingTop: 25,
-		flex: 1,
+		flex: 1
 	},
 	additionalUrlText: {
 		fontSize: 17,
@@ -33,9 +33,7 @@ export const styles = StyleSheet.create({
 		borderTopColor: COLORS.black,
 		borderTopWidth: 2
 	},
-	selectedWithIcon: {
-		marginTop: 100
-	},
+
 	notSelectedWithoutIcon: {
 		color: COLORS.gray,
 	},
@@ -49,7 +47,7 @@ export const styles = StyleSheet.create({
 		flexDirection: "row",
 		gap: 16,
 		width: "100%",
-		justifyContent: "center"
+		justifyContent: "center",
 	},
 	visible: {
 		display: "flex",

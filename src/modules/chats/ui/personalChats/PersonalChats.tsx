@@ -8,7 +8,7 @@ export function PersonalChats(){
     const { data: personalChats } = useGetPersonalChatsQuery(undefined, {
         pollingInterval: 3000
     })
-    console.log(personalChats)
+    console.log(personalChats, "personal")
     if (!personalChats) return null
     return (
         <View style = {{flex: 1}}>

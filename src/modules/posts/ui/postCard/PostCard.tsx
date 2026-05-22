@@ -19,10 +19,8 @@ export function PostCard(props: IProps){
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [deletePost] = useDeletePostMutation();
-
     const photos = post.photos ?? [];
     const [isPostModalOpen, setisPostModalOpen] = useState(false)
-
     const handleEdit = () => {
         setIsMenuOpen(false);
         setTimeout(() => {
