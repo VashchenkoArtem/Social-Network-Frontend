@@ -23,11 +23,17 @@ export const chatApi = baseApi.injectEndpoints({
                 method: 'DELETE'
             })
         }),
+        getChatById: builder.query<IChat, number>({
+            query: (chatId) => ({
+                url: `chat/${chatId}`
+            })
+        })
     })
 })
 
 export const {
     useGetGroupChatsQuery,
     useGetPersonalChatsQuery,
-    useDeleteGroupChatMutation
+    useDeleteGroupChatMutation,
+    useGetChatByIdQuery
 } = chatApi

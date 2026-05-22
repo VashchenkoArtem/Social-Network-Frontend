@@ -4,7 +4,8 @@ import { COLORS } from "@shared/constants/colors";
 export const styles = StyleSheet.create({
     modal: {
         margin: 0,
-        justifyContent: "flex-start"
+        // justifyContent: 'flex-end',
+        // marginBottom: 100
     },
 
     groupChatContainer: {
@@ -16,7 +17,7 @@ export const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: COLORS.white,
         paddingVertical: 16,
-        paddingHorizontal: 16
+        paddingHorizontal: 16,
     },
 
     groupChatHeader: {
@@ -36,6 +37,13 @@ export const styles = StyleSheet.create({
     },
 
     infoHeaderContainer: {
+        flexDirection: "row",
+        justifyContent: "flex-start",
+        alignItems: "flex-start",
+        gap: 10
+    },
+
+    chatInfo: {
         flexDirection: "column",
         justifyContent: "flex-start",
         alignItems: "flex-start",
@@ -59,10 +67,16 @@ export const styles = StyleSheet.create({
         width: "100%",
         flexDirection: "row",
         alignItems: "center",
-        justifyContent: "space-between",
+        justifyContent: 'center',
         gap: 24
     },
 
+    messageBtnContainer: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 16,
+        marginBottom: 16
+    },
 
     menuContainer: {
         position: "absolute",

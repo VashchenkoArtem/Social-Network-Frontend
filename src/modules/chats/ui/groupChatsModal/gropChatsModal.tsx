@@ -6,7 +6,7 @@ import { COLORS } from "@shared/constants/colors";
 import { IChat } from "@modules/chats/api/api.types";
 import { Input } from "@shared/ui/input";
 import { Button } from "@shared/ui/button";
-import { Pressable, TouchableOpacity, View } from "react-native";
+import { Pressable, TouchableOpacity, View, Text } from "react-native";
 import { useDeleteGroupChatMutation } from "@modules/chats/api/chatsApi";
 
 interface IChatModalProps {
@@ -20,7 +20,7 @@ export function ChatModal(props: IChatModalProps) {
     const [isMenuOpen, setIsMenuOpen] = useState(false)
 
     const [deleteGroupChat] = useDeleteGroupChatMutation()
-
+    console.log(chat, "chattt")
     if (!chat) return null
 
     return (
@@ -30,6 +30,7 @@ export function ChatModal(props: IChatModalProps) {
             animationIn="slideInDown"
             animationOut="slideOutUp"
             swipeDirection="up"
+            backdropOpacity={0}
             onSwipeComplete={onClose}
             onBackdropPress={onClose}
             useNativeDriver
@@ -38,10 +39,11 @@ export function ChatModal(props: IChatModalProps) {
                 <View style={styles.groupChatHeader}>
 
                     <TouchableOpacity onPress={onClose}>
-                        <Text style={styles.close}>✕</Text>
+                        <Text style={styles.close}>&lt;</Text>
                     </TouchableOpacity>
 
-                    <View style={styles.infoHeaderContainer}>                        
+                    <View style={styles.infoHeaderContainer}>              
+                                  
                         <Text style={styles.chatName}>
                             {chat.name}
                         </Text>
@@ -84,11 +86,11 @@ export function ChatModal(props: IChatModalProps) {
                     </View>
                 </View>
 
-            
+                <View>
+                    
+                </View>
 
                 <View style={styles.inputMessageContainer}>
-                    <Input placeholder="Повідомлення" />
-
                     <Button 
                         variant="white" 
                         iconLeft={<ICONS.MyPostsPageIcon color = {COLORS.plum}/>}
@@ -98,6 +100,8 @@ export function ChatModal(props: IChatModalProps) {
                         variant="purple" 
                         iconLeft={<ICONS.ArrowIcon color = {COLORS.plum}/>}
                     />
+                    <Input placeholder="Повідомлення" />
+
                 </View>
 
             </View>

@@ -89,6 +89,12 @@ export default function TabLayout() {
 						href: null,
 					}}
 				/>
+				<Tabs.Screen
+					name="(chats)"
+					options={{
+						href: null,
+					}}
+				/>
 			</Tabs>
 		</SafeAreaView>
 	);
