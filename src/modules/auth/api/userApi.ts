@@ -2,7 +2,6 @@ import { baseApi } from "@shared/api/baseApi";
 import {
 	RegistrationData,
 	AuthToken,
-	User,
 	ProfileData,
 	LoginData,
 } from "./api.types";
@@ -68,7 +67,7 @@ export const userApi = baseApi.injectEndpoints({
 			},
 			invalidatesTags: ["User", "Album"],
 		}),
-		updatePassword: builder.mutation<User, ProfileData>({
+		updatePassword: builder.mutation<IUser, ProfileData>({
 			query: (body) => {
 				return {
 					url: "update-password",
@@ -85,7 +84,7 @@ export const userApi = baseApi.injectEndpoints({
 			}),
 			providesTags: ["User"],
 		}),
-		updateUserSignature: builder.mutation<User, { signature: string }>({
+		updateUserSignature: builder.mutation<IUser, { signature: string }>({
             query: ({ signature }) => {
                 const formData = new FormData();
                 formData.append("signature", {

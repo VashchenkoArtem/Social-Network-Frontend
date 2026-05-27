@@ -1,16 +1,17 @@
 import { baseApi } from "@shared/api/baseApi";
-import { CreatePostData, Post } from "./api.types";
+import { CreatePostData } from "./api.types";
 import { CreateAlbumDto } from "@modules/settings/api/albumApi";
+import { IPost } from "../ui/postCard/types";
 
 export const postApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
-        getAllPosts: builder.query<Post[], void>({
+        getAllPosts: builder.query<IPost[], void>({
             query: () => ({
                 url: 'posts?take=5',
                 method: 'GET'
             }),
         }),
-        myPosts: builder.query<Post[], void>({
+        myPosts: builder.query<IPost[], void>({
             query: () => ({
                 url: 'posts/my',
                 method: 'GET'
@@ -18,7 +19,7 @@ export const postApi = baseApi.injectEndpoints({
             providesTags: ['Post']
         }),
         
-        createPost: builder.mutation<Post, FormData>({
+        createPost: builder.mutation<IPost, FormData>({
             query: (body) => {
                 return {
                 url: 'posts',
@@ -28,14 +29,14 @@ export const postApi = baseApi.injectEndpoints({
             invalidatesTags: ['Post']
         }),
 
-        deletePost: builder.mutation<Post, number>({
+        deletePost: builder.mutation<IPost, number>({
             query: (postId) => ({
                 url: `posts/${postId}`,
                 method: 'DELETE'
             })
         }),
 
-        updatePost: builder.mutation<Post, { id: number; formData: FormData }>({
+        updatePost: builder.mutation<IPost, { id: number; formData: FormData }>({
             query: ({ id, formData }) => ({
                 url: `posts/${id}`,
                 method: 'PATCH',

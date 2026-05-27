@@ -19,7 +19,7 @@ export function PostCard(props: IProps){
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [deletePost] = useDeletePostMutation();
-    const photos = post.photos ?? [];
+    const photos = post.post_app_postimage ?? [];
     const [isPostModalOpen, setisPostModalOpen] = useState(false)
     const handleEdit = () => {
         setIsMenuOpen(false);
@@ -27,21 +27,23 @@ export function PostCard(props: IProps){
             setIsEditModalOpen(true);
         }, 500);
     };
+    const authorProfile = post.user_app_user.profile_app_profile
+    const authorUser = post.user_app_user
     return (
         <View style={styles.postContainer}>
             <View style={styles.postHeader}>
                 <View style={styles.postAvatarSignatureInfo}>
                     <View style={styles.postAvatarInfo}>
                         <Image style={styles.authorAvatar} source={
-							post.author.avatar
-							? { uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${post.author.avatar}`, }
+							authorProfile.avatar
+							? { uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${authorProfile.avatar}.jpg`, }
 							: require("../../../../assets/defaultAvatar.png")
 					}/>
-                        <Text style={styles.authorName}>{post.author.user.username}</Text>
+                        <Text style={styles.authorName}>{authorUser.username}</Text>
                     </View>
-                    { post.author.signature && 
+                    { authorProfile.signature && 
                     <Image style={styles.authorSignature} source={{
-                        uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${post.author.signature}`
+                        uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${authorProfile.signature}.jpg`
                     }}/>}
                 </View>
                 { isEditingPost && (
@@ -114,18 +116,18 @@ export function PostCard(props: IProps){
                 <View>
                     <Text style={styles.postDescription}>{ post.content }</Text>
                     <View style = {{flexDirection: "row", gap: 5}}>
-                        { post.tags?.map((tag) => {
+                        { post.post_app_post_tags?.map((tag) => {
                             return (
-                                <Text style = {styles.tag} key = {tag.tag.id}>#{tag.tag.name}</Text>
+                                <Text style = {styles.tag} key = {tag.post_app_tag.id}>#{tag.post_app_tag.name}</Text>
                             )
                         })}
                     </View>
                 </View>
 
                 <View>
-                    { post.urls?.map((url) => {
+                    { post.post_app_postlink?.map((url) => {
                         return (
-                            <Link href={url.href} key={url.id} style = {[styles.tag, {textDecorationLine: "underline"}]}>{url.href}</Link>
+                            <Link href={url.url} key={url.id} style = {[styles.tag, {textDecorationLine: "underline"}]}>{url.url}</Link>
                         )
                     })}
                 </View>

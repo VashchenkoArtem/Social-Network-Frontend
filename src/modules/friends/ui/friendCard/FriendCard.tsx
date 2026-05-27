@@ -25,12 +25,12 @@ export function FriendCard(props: IProps) {
                 <View style={styles.card}>
                     <View style={styles.cardContent}>
                         <Image style={styles.authorAvatar} source={
-                            user.profile.avatar
-                            ? { uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${user.profile.avatar}`, }
+                            user.profile_app_profile.avatar
+                            ? { uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${user.profile_app_profile.avatar}`, }
                             : require("../../../../assets/defaultAvatar.png")
                         }/>
                         <View style={styles.friendInfo}>
-                            <Text style={styles.friendsFullName}>{ user.firstname } { user.lastname }</Text>
+                            <Text style={styles.friendsFullName}>{ user.first_name } { user.last_name }</Text>
                             <Text style={styles.friendsNickName}>@{ user.username }</Text>
                         </View>
                     </View>

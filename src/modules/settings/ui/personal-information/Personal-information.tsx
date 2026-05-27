@@ -7,7 +7,6 @@ import { EditIcon, PlusIcon } from "@shared/ui/icons/buttons";
 import { COLORS } from "@shared/constants/colors";
 import { Controller, useForm } from "react-hook-form";
 import { Input } from "@shared/ui/input";
-import { ScrollView } from "react-native";
 import { SignatureEditor } from "@shared/ui/signatureEditor";
 import { Image } from "react-native";
 import { TouchableOpacity } from "react-native";
@@ -28,8 +27,8 @@ import { ProfileData, ReactNativeFile } from "@modules/auth/api/api.types";
 
 
 type FormData = {
-	firstname: string;
-	lastname: string;
+	first_name: string;
+	last_name: string;
 	nickname: string;
 	birthDate: string;
 	email: string;
@@ -38,12 +37,6 @@ type FormData = {
 	confirmPassword?: string;
 	avatar?: string;
 };
-
-interface PhotoFile {
-    uri: string;
-    name: string;
-    type: string;
-}
 
 export function PersonalInformation() {
 	const [isEditingSignature, setIsEditingSignature] = useState(false);
@@ -58,7 +51,7 @@ export function PersonalInformation() {
 	const [isDrawing, setIsDrawing] = useState(false);
 	const [updateUserInfo] = useUpdateUserInfoMutation();
 	const [selectedType, setSelectedType] = useState<"alias" | "signature">(
-		user?.profile.signature ? "signature" : "alias",
+		user?.profile_app_profile.signature ? "signature" : "alias",
 	);
 	const {
 		control,
@@ -86,8 +79,8 @@ export function PersonalInformation() {
 	const onSubmit = async (data: FormData) => {
 		try {
 			const payload: ProfileData = {
-				firstname: data.firstname,
-				lastname: data.lastname,
+				firstname: data.first_name,
+				lastname: data.last_name,
 				nickname: data.nickname,
 				birthDate: data.birthDate,
 			};
@@ -199,7 +192,7 @@ export function PersonalInformation() {
 												<AvatarField
 													value={value}
 													onChange={() => pickImage(onChange)}
-													avatar={user.profile.avatar}
+													avatar={user.profile_app_profile.avatar}
 												/>
 											</View>
 
@@ -229,7 +222,7 @@ export function PersonalInformation() {
 							</View>
 
 
-							<Text style={styles.name}>{user.profile.pseudonym}</Text>
+							<Text style={styles.name}>{user.profile_app_profile.pseudonym}</Text>
 
 							{!isEditingProfile && (
 								<Text style={styles.username}>@{user.username}</Text>
@@ -272,27 +265,27 @@ export function PersonalInformation() {
 								]}
 							>
 								<Controller
-									name="firstname"
+									name="first_name"
 									control={control}
 									render={({ field }) => (
 										<Input
 											label="Ім'я"
 											placeholder=""
 											editable={isEditingPersonalInfo}
-											defaultValue={user.firstname ? user.firstname : ""}
+											defaultValue={user.first_name ? user.first_name : ""}
 											onChangeText={field.onChange}
 										/>
 									)}
 								/>
 								<Controller
-									name="lastname"
+									name="last_name"
 									control={control}
 									render={({ field }) => (
 										<Input
 											label="Прізвище"
 											placeholder=""
 											editable={isEditingPersonalInfo}
-											defaultValue={user.lastname ? user.lastname : ""}
+											defaultValue={user.last_name ? user.last_name : ""}
 											onChangeText={field.onChange}
 										/>
 									)}
@@ -306,8 +299,8 @@ export function PersonalInformation() {
 											label="Дата народження"
 											placeholder=""
 											defaultValue={
-												user.profile.birth_date
-													? new Date(user.profile.birth_date).toLocaleDateString("ua-UA")
+												user.profile_app_profile.birth_date
+													? new Date(user.profile_app_profile.birth_date).toLocaleDateString("ua-UA")
 													: ""
 											}
 											value={field.value || ""}
@@ -420,7 +413,7 @@ export function PersonalInformation() {
 								<Text style={styles.checkboxLabel}>Псевдонім автора</Text>
 							</TouchableOpacity>
 							<Text style={styles.signatureTextPreview}>
-								{user?.profile.pseudonym}
+								{user?.profile_app_profile.pseudonym}
 							</Text>
 						</View>
 
@@ -444,10 +437,10 @@ export function PersonalInformation() {
 						</TouchableOpacity>
 
 						{!isEditingSignature &&
-							(user?.profile.signature ? (
+							(user?.profile_app_profile.signature ? (
 								<View style={styles.signatureImageWrapper}>
 									<Image
-										source={{  uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${user?.profile.signature}` }}
+										source={{  uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${user?.profile_app_profile.signature}` }}
 										style={styles.signatureImage}
 									/>
 								</View>

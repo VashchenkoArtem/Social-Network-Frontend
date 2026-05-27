@@ -3,11 +3,10 @@ import { IAlbum } from "@shared/ui/albumsModal/types";
 export interface IUser {
 	id: number;
 	email: string;
-	firstname: string | null;
-	lastname: string | null;
+	first_name: string | null;
+	last_name: string | null;
 	username: string | null;
-	profile: IProfile
-	avatar?: IAvatar[];
+	profile_app_profile: IProfile
 }
 export interface IProfile {
 	pseudonym: string | null;

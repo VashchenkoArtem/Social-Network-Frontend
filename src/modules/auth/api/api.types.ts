@@ -1,16 +1,6 @@
-export interface User {
-	id: number;
-	firstname: string | null;
-	lastname: string | null;
-	nickname: string | null;
-	alias: string | null;
-	email: string;
-	avatar: string | null;
-	signature: string | null;
-	birthDate: string | null;
-}
+import { IUser } from "@shared/types/user.types";
 
-export type UserWithoutPassword = Omit<User, "password">;
+export type UserWithoutPassword = Omit<IUser, "password">;
 
 export interface RegistrationData {
 	email: string;
@@ -40,7 +30,7 @@ export interface ReactNativeFile {
 }
 
 
-export interface UpdateUserRequest extends Partial<Omit<User, "id" | "email">> {
+export interface UpdateUserRequest extends Partial<Omit<IUser, "id" | "email">> {
 	password?: string;
 }
 export interface ProfileData {

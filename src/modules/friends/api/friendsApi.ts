@@ -1,6 +1,6 @@
 import { baseApi } from "@shared/api/baseApi";
-import { FriendRequest, CreateFriendRequest, UpdateFriendRequest, Profile, UserWithoutPassword } from './api.types'
-import { Post } from "@modules/posts/api/api.types";
+import { FriendRequest, CreateFriendRequest, UpdateFriendRequest } from './api.types'
+import { IUser } from "@shared/types/user.types";
 
 export const friendApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -41,19 +41,19 @@ export const friendApi = baseApi.injectEndpoints({
             })
         }),
 
-        getRecommendedPeople: builder.query<Profile[], void>({
+        getRecommendedPeople: builder.query<IUser[], void>({
             query: () => ({
                 url: 'recommended',
                 method: 'GET'
             })
         }),
-        getUserById: builder.query<Profile, number>({
+        getUserById: builder.query<IUser, number>({
                     query: (id) => ({
                         url: `users/${id}`,
                         method: 'GET'
                     })
                 }),
-        getPostsByUserId: builder.query<Post[], number>({
+        getPostsByUserId: builder.query<IUser[], number>({
             query: (userId) => ({
                 url: `users/${userId}/posts`,
                 method: "GET"

@@ -1,12 +1,33 @@
 import { Tabs, usePathname } from "expo-router";
 import { ICONS } from "@shared/ui";
-import { COLORS } from "@shared/constants/colors";
 import { constStyles } from "@shared/constants/styles";
 import { Header } from "@shared/ui/header";
-import { useState } from "react";
-import { styles } from "./styles";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { Pressable, View } from "react-native";
+import { COLORS } from "@shared/constants/colors";
+import { StyleSheet } from "react-native";
+
+const styles = StyleSheet.create({
+	tabs: {
+		flexDirection: "row",
+		gap: 23,
+	},
+	tab: {
+		alignItems: "center",
+		justifyContent: "center",
+		paddingTop: 6,
+		borderTopWidth: 2,
+		borderTopColor: "transparent",
+		minWidth: 47,
+		height: 54,
+	},
+	activeTab: {
+		borderTopColor: COLORS.plum,
+		borderTopWidth: 2,
+	},
+	container: {
+		flex: 1,
+	},
+});
 
 const { MainPageIcon, MyPostsPageIcon, FriendsPageIcon, ChatsPageIcon } = ICONS;
 const TabButton = ({ route, children, ...props }: any) => {

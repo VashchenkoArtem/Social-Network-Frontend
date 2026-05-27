@@ -20,21 +20,15 @@ import { useContext, useEffect, useState } from "react";
 import { UserContext } from "@modules/auth/context/user-context";
 import { PostTags } from "@modules/tabs/ui/postTags/postTags";
 import { PostLinks } from "@modules/tabs/ui/postLinks/postLinks";
-import { Post } from "@modules/posts/api/api.types";
 import { SERVER } from "@shared/constants/server";
 import { useGetTagsQuery } from "@modules/tabs/api/tagsApi";
+import { IPost } from "../postCard/types";
 
-
-interface ReactNativeFile {
-    uri: string;
-    name: string;
-    type: string;
-}
 
 
 export function CreatePostForm(props: {
 	setIsCreatePostModalOpen: (type: boolean) => void;
-    editData?: Post;
+    editData?: IPost;
 }) {
 	const { setIsCreatePostModalOpen, editData } = props;
 	const { data: allTags } = useGetTagsQuery();
@@ -65,12 +59,12 @@ export function CreatePostForm(props: {
 				title: editData.title,
 				topic: editData.topic || "",
 				content: editData.content,
-				tags: editData.tags?.map(t => t.tag.id) || [],
-				links: editData.urls?.map(u => u.href) || [],
+				tags: editData.post_app_post_tags?.map(t => t.post_app_tag.id) || [],
+				links: editData.post_app_postlink?.map(u => u.url) || [],
 			});
 			
-			if (editData.photos) {
-				const existingUris = editData.photos.map(p => 
+			if (editData.post_app_postimage) {
+				const existingUris = editData.post_app_postimage.map(p => 
 					`http://${SERVER.host}:${SERVER.port}/media/thumb/${p.original_image}`
 				);
 				setPostImages(existingUris); 

@@ -1,15 +1,3 @@
-import { IUser } from "@shared/types/user.types"
-
-export interface Post {
-    id: number 
-    title: string
-    topic: string
-    content: string 
-    photos?: PostPhoto[]
-    tags?: Tag[] 
-    author: IProfile
-    urls?: Url[] 
-}
 export interface IProfile{
     avatar?: string,
     birth_date?: string,
@@ -42,18 +30,18 @@ export interface PostPhoto {
 }
 
 export interface Tag {
-    tag: {
+    post_app_tag: {
         id: number
         name: string
     }
-    postId: number 
-    tagId: number 
+    post_id: number 
+    tag_id: number 
 }
 
 export interface Url {
     id: number 
-    postId: number 
-    href: string 
+    post_id: number 
+    url: string 
 }
 
 export interface CreatePostData {
