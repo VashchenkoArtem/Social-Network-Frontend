@@ -40,12 +40,12 @@ export function FriendProfile({ userId, requestId }: IProps) {
         >
             <View style={styles.card}>
                 <Image style={styles.authorAvatar} source={
-                    user.profile.avatar
-                    ? { uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${user.profile.avatar}` }
+                    user.profile_app_profile.avatar
+                    ? { uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${user.profile_app_profile.avatar}` }
                     : require("../../../../assets/defaultAvatar.png")
                 }/>
                 <View style={styles.friendInfo}>
-                    <Text style={styles.friendsFullName}>{ user.firstname } { user.lastname }</Text>
+                    <Text style={styles.friendsFullName}>{ user.first_name } { user.last_name }</Text>
                     <Text style={styles.friendsNickName}>@{ user.username }</Text>
                 </View>
 
@@ -79,18 +79,37 @@ export function FriendProfile({ userId, requestId }: IProps) {
                 }
             </View>
             { data && 
-                <View style = {styles.card}>
-                    <View style = {styles.headerCard}>
-                        <View style = {{gap: 8, flexDirection: "row", alignItems: "center"}}>
-                            <ICONS.MyPostsPageIcon color = {COLORS.gray}/>
-                            <Text style = {[styles.textGray, styles.title]}>Альбоми</Text>
+                (data?.length > 0 && (
+                    <View style={styles.card}>
+                        <View style={styles.headerCard}>
+                            <View
+                                style={{
+                                    gap: 8,
+                                    flexDirection: "row",
+                                    alignItems: "center"
+                                }}
+                            >
+                                <ICONS.MyPostsPageIcon color={COLORS.gray} />
+
+                                <Text style={[styles.textGray, styles.title]}>
+                                    Альбоми
+                                </Text>
+                            </View>
+
+                            <Text style={[styles.cardLink]}>
+                                Дивитись всі
+                            </Text>
                         </View>
-                        <Text style = {[styles.cardLink]}>Дивитись всі</Text>
+
+                        <FriendAlbum
+                            album={data[0]}
+                            key={data[0].id}
+                        />
                     </View>
-                    <FriendAlbum album={data[0]} key = {data[0].id}></FriendAlbum>
-                </View>
+                ))
             }
             { posts?.map((post) => {
+                console.log(post)
                 return(
                     <PostCard post = {post} key={post.id} isEditingPost={false}/>
                 )

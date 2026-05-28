@@ -13,7 +13,9 @@ export function FriendCard(props: IProps) {
     const { user, requestId, buttonText } = props;
     
     if (!user) return null
-
+    console.log(user, "user")
+    console.log(user.profile_app_profile, "profile")
+    
     const [deleteFriendRequest] = useDeleteFriendRequestMutation()
     const [deleteFriendRequestModal, setDeleteFriendRequestModal] = useState(false)
     const [createFriendShip] = useCreateFriendRequestMutation()

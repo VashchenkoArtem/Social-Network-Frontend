@@ -1,6 +1,7 @@
 import { baseApi } from "@shared/api/baseApi";
 import { FriendRequest, CreateFriendRequest, UpdateFriendRequest } from './api.types'
 import { IUser } from "@shared/types/user.types";
+import { IPost } from "@modules/posts/ui/postCard/types";
 
 export const friendApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -53,7 +54,7 @@ export const friendApi = baseApi.injectEndpoints({
                         method: 'GET'
                     })
                 }),
-        getPostsByUserId: builder.query<IUser[], number>({
+        getPostsByUserId: builder.query<IPost[], number>({
             query: (userId) => ({
                 url: `users/${userId}/posts`,
                 method: "GET"

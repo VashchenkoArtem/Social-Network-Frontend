@@ -9,32 +9,58 @@ import { IUser } from "@shared/types/user.types";
 
 
 
-export function FriendFrame({ frameName, data, buttonText, setChosenTab, messageIfNull }: IProps) {
-    const isFriendRequests = (
-        items: FriendRequest[] | IUser[]
-    ): items is FriendRequest[] => {
-        return items.length > 0 && "from_profile" in items[0]
-    }
-    const { user } = useContext(UserContext)!
-    const getOtherUser = (friendship: FriendRequest, userId: number) => {
-        const from = friendship.user_app_user_user_app_friendship_from_user_idTouser_app_user;
-        const to = friendship.user_app_user_user_app_friendship_to_user_idTouser_app_user;
+export function FriendFrame({
+    frameName,
+    data,
+    buttonText,
+    setChosenTab,
+    messageIfNull,
+    type
+}: IProps) {
+    const { user } = useContext(UserContext)!;
+
+    if (!user) return null;
+
+    const getOtherUser = (
+        friendship: FriendRequest,
+        userId: number
+    ) => {
+        const from =
+            friendship.user_app_user_user_app_friendship_from_user_idTouser_app_user;
+
+        const to =
+            friendship.user_app_user_user_app_friendship_to_user_idTouser_app_user;
 
         return from.id === userId ? to : from;
     };
-    if (!user) return null
+
     return (
         <View style={styles.friendCards}>
             <View style={styles.cardHeader}>
-                <Text style={styles.cardTitle}>{frameName}</Text>
-                <Text style={styles.cardLink} onPress={() => setChosenTab(frameName)}>Дивитись всі</Text>
+                <Text style={styles.cardTitle}>
+                    {frameName}
+                </Text>
+
+                <Text
+                    style={styles.cardLink}
+                    onPress={() => setChosenTab(frameName)}
+                >
+                    Дивитись всі
+                </Text>
             </View>
 
             <View>
-                {!data?.length ? <Text style={styles.nullMessage}>{messageIfNull}</Text> : isFriendRequests(data)
-                    ? data.map((friendRequest) => {
-                        const friend = getOtherUser(friendRequest, user.id); 
-                        console.log(friend)
+                {!data?.length ? (
+                    <Text style={styles.nullMessage}>
+                        {messageIfNull}
+                    </Text>
+                ) : type === "requests" ? (
+                    data.map((friendRequest) => {
+                        const friend = getOtherUser(
+                            friendRequest,
+                            user.id
+                        );
+
                         return (
                             <FriendCard
                                 key={friendRequest.id}
@@ -44,19 +70,16 @@ export function FriendFrame({ frameName, data, buttonText, setChosenTab, message
                             />
                         );
                     })
-                    : data.map((profile) => {
-                        console.log(profile, "asdasddasdasd")
-                        return(
-                            <FriendCard
-                                buttonText={buttonText}
-                                key={profile.id}
-                                user={profile}
-                            />
-                        )
-
-                    }
-                    )}
+                ) : (
+                    data.map((profile) => (
+                        <FriendCard
+                            key={profile.id}
+                            buttonText={buttonText}
+                            user={profile}
+                        />
+                    ))
+                )}
             </View>
         </View>
-    )
+    );
 }

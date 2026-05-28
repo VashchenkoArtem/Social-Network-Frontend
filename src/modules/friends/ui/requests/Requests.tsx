@@ -10,6 +10,6 @@ export function Requests(props: {setChosenTab: (title: string) => void}){
     console.log(data)
     if (!data) { return null }
     return (
-        <FriendFrame setChosenTab = {setChosenTab} buttonText="Підтвердити" frameName="Запити" messageIfNull="У вас поки немає запитів" data={data}/>
+        <FriendFrame type = "requests" setChosenTab = {setChosenTab} buttonText="Підтвердити" frameName="Запити" messageIfNull="У вас поки немає запитів" data={data}/>
     )
 }

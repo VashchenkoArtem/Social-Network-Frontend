@@ -9,6 +9,6 @@ export function Recommended(props: {setChosenTab: (title: string) => void}){
     })
     if (!data) return null
     return (
-        <FriendFrame setChosenTab={setChosenTab} buttonText="Додати" frameName="Рекомендації" messageIfNull="У вас поки немає рекомендацій" data = {data}/>
+        <FriendFrame type = "friends" setChosenTab={setChosenTab} buttonText="Додати" frameName="Рекомендації" messageIfNull="У вас поки немає рекомендацій" data = {data}/>
     )
 }
