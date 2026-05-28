@@ -27,7 +27,6 @@ export const AddAlbumPhoto = ({ albumId }: Props) => {
 			name: asset.fileName ?? "photo.jpg",
 			type: asset.mimeType ?? "image/jpeg",
 		}));
-		console.log(files)
 
 		await addPhoto({
 			albumId,

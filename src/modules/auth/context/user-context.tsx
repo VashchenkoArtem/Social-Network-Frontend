@@ -1,7 +1,8 @@
 import { IUser } from "@shared/types/user.types";
-import { createContext, ReactNode, useEffect, useState } from "react";
+import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import { useMeQuery } from "../api/userApi";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { socket } from "@shared/socket/socket";
 
 interface IUserContext {
 	user: IUser | null;
@@ -15,6 +16,14 @@ export const UserContext = createContext<IUserContext | null>(null);
 interface IUserContextProvider {
 	children: ReactNode;
 }
+export function useUserContext() {
+	const { user } = useContext(UserContext)!
+	if (user) {
+		return {user}
+	}
+	return
+}
+
 
 export function UserProvider(props: IUserContextProvider) {
 	const { children } = props;
@@ -36,7 +45,12 @@ export function UserProvider(props: IUserContextProvider) {
 
 	useEffect(() => {
 		if (data && token) {
-			setUser(data);
+			setUser({
+				...data,
+				id: Number(data.id)
+			});
+			socket.auth = { token: `Bearer ${token}` }
+			socket.connect()
 		} else if (!token) {
 			setUser(null);
 		}

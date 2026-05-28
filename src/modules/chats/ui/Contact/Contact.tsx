@@ -8,7 +8,7 @@ export function ContactCard(props: {friend: FriendRequest}){
     return (
         <View>
             <Image
-                source = {{uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${friend.from_profile.profile.avatar}`}}
+                source = {{uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${friend.user_app_user_user_app_friendship_from_user_idTouser_app_user.profile_app_profile.avatar}`}}
             ></Image>
         </View>
     )

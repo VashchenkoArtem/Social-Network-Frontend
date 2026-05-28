@@ -2,8 +2,6 @@ import { useGetGroupChatsQuery } from "@modules/chats/api/chatsApi";
 import { COLORS } from "@shared/constants/colors";
 import { ICONS } from "@shared/ui";
 import { ChatsFrame } from "@shared/ui/chatsFrame/ChatsFrame";
-import { useState } from "react";
-import { View } from "react-native";
 
 export function GroupChats(){
     const { data: groupChats } = useGetGroupChatsQuery(undefined, {
@@ -12,7 +10,7 @@ export function GroupChats(){
 
     if (!groupChats) return null
     return (
-            <ChatsFrame items = {groupChats} frameTitle="Групові чати" Icon = {<ICONS.ChatsPageIcon color = {COLORS.gray} height={20}/>}/>
+        <ChatsFrame items = {groupChats} frameTitle="Групові чати" Icon = {<ICONS.ChatsPageIcon color = {COLORS.gray} height={20}/>}/>
 
     )
 }

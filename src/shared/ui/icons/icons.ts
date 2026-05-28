@@ -2,6 +2,8 @@ import { MainPageIcon } from "./urls/MainPageIcon";
 import { MyPostsPageIcon } from "./urls/MyPostsPageIcon";
 import { FriendsPageIcon } from "./urls/FriendsPageIcon";
 import { ChatsPageIcon } from "./urls/ChatsPageIcon";
+import { MessageStatusMarkIcon } from "./urls/MessageStatusMark";
+
 import {
 	ArrowIcon,
 	PlusIcon,
@@ -41,5 +43,6 @@ export const ICONS = {
 	PostLikeIcon,
 	PostThumbUpIcon,
 	PostViewsIcon,
-	LeftArrowIcon
+	LeftArrowIcon,
+	MessageStatusMarkIcon
 };

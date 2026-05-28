@@ -18,7 +18,6 @@ interface IProps {
 }
 
 export function FriendProfile({ userId, requestId }: IProps) {
-    console.log(userId, requestId)
     const router = useRouter();
     const { data: user } = useGetUserByIdQuery(userId);
     const { data } = useGetAlbumsQuery(userId)
@@ -109,7 +108,6 @@ export function FriendProfile({ userId, requestId }: IProps) {
                 ))
             }
             { posts?.map((post) => {
-                console.log(post)
                 return(
                     <PostCard post = {post} key={post.id} isEditingPost={false}/>
                 )

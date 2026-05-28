@@ -16,7 +16,7 @@ interface ISelectParticipantsModalProps {
     onNextStep: () => void;
 }
 
-type FriendProfileType = FriendRequest["from_profile"];
+type FriendProfileType = FriendRequest["user_app_user_user_app_friendship_to_user_idTouser_app_user"];
 
 interface IFriendSection {
     title: string;
@@ -34,13 +34,13 @@ export function SelectParticipantsModal({
     const [searchQuery, setSearchQuery] = useState<string>("");
 
     const friends = useMemo(() => {
-        return friendsRequests.map((request) => request.from_profile);
+        return friendsRequests.map((request) => request.user_app_user_user_app_friendship_from_user_idTouser_app_user);
     }, [friendsRequests]);
 
     const sections = useMemo<IFriendSection[]>(() => {
         const filteredFriends = friends.filter((friend) => {
-            const firstname = friend.firstname || "";
-            const lastname = friend.lastname || "";
+            const firstname = friend.first_name || "";
+            const lastname = friend.last_name || "";
             const username = friend.username || "";
             const fullName = `${firstname} ${lastname}`.toLowerCase();
             const searchNormalized = searchQuery.toLowerCase();
@@ -51,7 +51,7 @@ export function SelectParticipantsModal({
         const groups: Record<string, FriendProfileType[]> = {};
 
         filteredFriends.forEach((friend) => {
-            const nameKey = friend.firstname || friend.username || "U";
+            const nameKey = friend.first_name || friend.username || "U";
             const firstLetter = nameKey[0].toUpperCase();
             if (!groups[firstLetter]) groups[firstLetter] = [];
             groups[firstLetter].push(friend);
@@ -62,8 +62,8 @@ export function SelectParticipantsModal({
             .map((letter) => ({
                 title: letter,
                 data: groups[letter].sort((friendA, friendB) => {
-                    const nameA = friendA.firstname || friendA.username || "";
-                    const nameB = friendB.firstname || friendB.username || "";
+                    const nameA = friendA.first_name || friendA.username || "";
+                    const nameB = friendB.first_name || friendB.username || "";
                     return nameA.localeCompare(nameB, "uk");
                 }),
             }));
@@ -71,8 +71,8 @@ export function SelectParticipantsModal({
 
     const renderItem = ({ item }: { item: FriendProfileType }) => {
         const isSelected = selectedUserIds.includes(item.id);
-        const avatarUri = item.profile?.avatar 
-            ? `http://${SERVER.host}:${SERVER.port}/media/thumb/${item.profile.avatar}`
+        const avatarUri = item.profile_app_profile?.avatar 
+            ? `http://${SERVER.host}:${SERVER.port}/media/thumb/${item.profile_app_profile.avatar}`
             : null;
 
         return (
@@ -87,12 +87,12 @@ export function SelectParticipantsModal({
                     ) : (
                         <View style={[styles.avatar, styles.placeholderAvatar]}>
                             <Text style={styles.placeholderText}>
-                                {item.firstname ? item.firstname[0].toUpperCase() : "U"}
+                                {item.first_name ? item.first_name[0].toUpperCase() : "U"}
                             </Text>
                         </View>
                     )}
                     <Text style={styles.friendName}>
-                        {item.firstname} {item.lastname}
+                        {item.first_name} {item.first_name}
                     </Text>
                 </View>
 

@@ -36,14 +36,14 @@ export function PostCard(props: IProps){
                     <View style={styles.postAvatarInfo}>
                         <Image style={styles.authorAvatar} source={
 							authorProfile.avatar
-							? { uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${authorProfile.avatar}.jpg`, }
+							? { uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${authorProfile.avatar}`, }
 							: require("../../../../assets/defaultAvatar.png")
 					}/>
                         <Text style={styles.authorName}>{authorUser.username}</Text>
                     </View>
                     { authorProfile.signature && 
                     <Image style={styles.authorSignature} source={{
-                        uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${authorProfile.signature}.jpg`
+                        uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${authorProfile.signature}`
                     }}/>}
                 </View>
                 { isEditingPost && (

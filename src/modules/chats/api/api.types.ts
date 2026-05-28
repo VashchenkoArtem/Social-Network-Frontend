@@ -1,12 +1,14 @@
 export interface IChatWithUsers {
-    users: {
-        user: {
+    chat_app_chat_users: {
             id: number
-            username: string | null
-            profile: {
-                avatar: string | null
-            } | null
-        }
+            user_app_user: {
+                id: number
+                username: string
+                profile_app_profile: {
+                    avatar: string | null;
+                    pseudonym: string | null
+                }
+            }
     }[]
 
     id: number

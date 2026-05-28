@@ -31,9 +31,13 @@ interface IFriend {
 interface IFriendRequest {
     id: number;
     status: string | null;
-    senderId: number;
-    receiverId: number;
-    from_profile: IFriend;
+
+    from_user_id: number;
+    to_user_id: number;
+
+    user_app_user_user_app_friendship_from_user_idTouser_app_user: IFriend;
+
+    user_app_user_user_app_friendship_to_user_idTouser_app_user: IFriend;
 }
 
 interface IConfirmGroupModalProps {
@@ -70,8 +74,11 @@ export function ConfirmGroupModal({
 
     const chosenFriends = React.useMemo<IFriend[]>(() => {
         return friendsRequests
-            .map((request: IFriendRequest) => request.from_profile)
-            .filter((friend: IFriend) => selectedUserIds.includes(friend.id));
+            .map((request) => {
+                return request.user_app_user_user_app_friendship_from_user_idTouser_app_user;
+            })
+            .filter(Boolean)
+            .filter((friend) => selectedUserIds.includes(friend.id));
     }, [friendsRequests, selectedUserIds]);
 
     const pickGroupImage = async () => {

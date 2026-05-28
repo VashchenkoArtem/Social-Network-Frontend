@@ -1,6 +1,6 @@
 import { useDeleteGroupChatMutation, useGetChatByIdQuery } from "@modules/chats/api/chatsApi"
 import { useRouter } from "expo-router"
-import { useState } from "react"
+import { useContext, useState } from "react"
 import { TouchableOpacity, View, Text, Image, Pressable } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { IChat } from "@modules/chats/api/api.types"
@@ -10,14 +10,19 @@ import { Input } from "@shared/ui/input"
 import { Button } from "@shared/ui/button"
 import { SERVER } from "@shared/constants/server"
 import { styles } from "./chat.styles"
+import { socket } from "@shared/socket/socket"
+import { UserContext } from "@modules/auth/context/user-context"
+import { Messages } from "@modules/message/ui/messages/Messages"
 
-export function Chat(props: { chatId: number | undefined}){
+export function Chat(props: { chatId: number}){
     const { chatId } = props
     const { data: chat} = useGetChatByIdQuery(Number(chatId))
     const router = useRouter()
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
     const [deleteGroupChat] = useDeleteGroupChatMutation()
-    if (!chat) return null
+    const [messageText, setMessageText] = useState<string>("")
+    const { user } = useContext(UserContext)!
+    if (!chat || !user) return null
     return (
         <View style={styles.groupChatContainer}>
             <View style={styles.groupChatHeader}>
@@ -77,13 +82,16 @@ export function Chat(props: { chatId: number | undefined}){
                 </View>
             </View>
 
+                <Messages chatId={chatId} />
             <View style={styles.inputMessageContainer}>
                 <View style = {{ flex: 1, justifyContent: "center"}}>
-                    <Input 
-                        inputType='text'
-                        placeholder="Повідомлення"
-                        notMarginBottom={true}
-                    />
+                <Input
+                inputType="text"
+                placeholder="Повідомлення"
+                notMarginBottom={true}
+                value={messageText} 
+                onChangeText={(text) => setMessageText(text)}
+                />
                 </View>
 
                 <View style={styles.messageBtnContainer}>
@@ -95,6 +103,14 @@ export function Chat(props: { chatId: number | undefined}){
                     <Button 
                         variant="purple" 
                         iconLeft={<ICONS.ArrowIcon width={20} height={20} color = {COLORS.white}/>}
+                        onPress={() => {
+                            socket.emit("sendMessage", {
+                                text: messageText,
+                                chat_id: chatId,
+                                sender_id: user.id
+                            })
+                            setMessageText("")
+                        }}
                     />
                 </View>
                 
