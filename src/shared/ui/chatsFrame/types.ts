@@ -1,9 +1,9 @@
-import { IChatWithUsers } from "@modules/chats/api/api.types";
+import { IChat } from "@modules/chats/api/api.types";
 import { FriendRequest } from "@modules/friends/api/api.types";
 import { ReactNode } from "react";
 
 export interface IChatProps {
     Icon: ReactNode;
     frameTitle: string;
-    items: IChatWithUsers[]
+    items: IChat[]
 }

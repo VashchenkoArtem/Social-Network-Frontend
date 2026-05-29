@@ -14,7 +14,7 @@ import { View, Text, TouchableOpacity, Pressable, Image } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 
 export default function ChatScreen(){
-	const [chosenTab, setChosenTab] = useState<string>("Групові чати");
+	const [chosenTab, setChosenTab] = useState<string>("Повідомлення");
     const params = useLocalSearchParams()
     const chatId = 
         typeof params.chatId === 'string'
@@ -28,6 +28,7 @@ export default function ChatScreen(){
                 setChosenTab={setChosenTab}
                 radioTabsArray={radioTabsArray}
                 chatContent={<Chat chatId={chatId}/>}
+                isChats={true}
             />
         </SafeAreaView>
     )

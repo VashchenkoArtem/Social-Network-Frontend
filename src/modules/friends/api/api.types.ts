@@ -9,14 +9,14 @@ export interface FriendRequest {
     user_app_user_user_app_friendship_from_user_idTouser_app_user: IUser
 }
 export interface CreateFriendRequest {
-    status?: "Pending";
+    status?: string;
     senderId?: number;
     receiverId: number;
 }
 
 export interface UpdateFriendRequest {
     requestId: number
-    status: "Pending" | "Accepted"
+    status: "Pending" | "Accepted" | "Canceled"
     
 }
 

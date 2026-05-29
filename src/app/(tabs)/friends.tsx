@@ -14,15 +14,15 @@ export default function FriendsPage() {
 	const radioTabsArray: IRadioTab[] = [
 		{ title: "Головна", content: <Friends setChosenTab={setChosenTab}/> },
 		{ title: "Запити", content: 
-			<ScrollView style = {{marginTop: 24, marginBottom: 48}} contentContainerStyle={{gap: 8}}>
+			<ScrollView style = {{marginTop: 24}} contentContainerStyle={{gap: 8}}>
 				<Requests setChosenTab={setChosenTab}/>
 			</ScrollView> },
 		{ title: "Рекомендації", content: 
-			<ScrollView style = {{marginTop: 24, marginBottom: 48}} contentContainerStyle={{gap: 8}}>
+			<ScrollView style = {{marginTop: 24}} contentContainerStyle={{gap: 8}}>
 				<Recommended setChosenTab={setChosenTab}/>
 			</ScrollView>  },
 		{ title: "Всі друзі", content: 
-			<ScrollView style = {{marginTop: 24, marginBottom: 48}} contentContainerStyle={{gap: 8}}>
+			<ScrollView style = {{marginTop: 24}} contentContainerStyle={{gap: 8}}>
 				<AllFriends setChosenTab={setChosenTab}/>
 			</ScrollView> },
 	];

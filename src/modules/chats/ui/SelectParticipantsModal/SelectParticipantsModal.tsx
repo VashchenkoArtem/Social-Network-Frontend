@@ -34,14 +34,13 @@ export function SelectParticipantsModal({
     const [searchQuery, setSearchQuery] = useState<string>("");
 
     const friends = useMemo(() => {
-        return friendsRequests.map((request) => request.user_app_user_user_app_friendship_from_user_idTouser_app_user);
+        return friendsRequests.map((request) => request);
     }, [friendsRequests]);
-
     const sections = useMemo<IFriendSection[]>(() => {
         const filteredFriends = friends.filter((friend) => {
-            const firstname = friend.first_name || "";
-            const lastname = friend.last_name || "";
-            const username = friend.username || "";
+            const firstname = friend.user.first_name || "";
+            const lastname = friend.user.last_name || "";
+            const username = friend.user.username || "";
             const fullName = `${firstname} ${lastname}`.toLowerCase();
             const searchNormalized = searchQuery.toLowerCase();
 
@@ -51,10 +50,10 @@ export function SelectParticipantsModal({
         const groups: Record<string, FriendProfileType[]> = {};
 
         filteredFriends.forEach((friend) => {
-            const nameKey = friend.first_name || friend.username || "U";
+            const nameKey = friend.user.first_name || friend.user.username || "U";
             const firstLetter = nameKey[0].toUpperCase();
             if (!groups[firstLetter]) groups[firstLetter] = [];
-            groups[firstLetter].push(friend);
+            groups[firstLetter].push(friend.user);
         });
 
         return Object.keys(groups)

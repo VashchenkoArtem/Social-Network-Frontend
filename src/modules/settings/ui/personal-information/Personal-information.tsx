@@ -79,10 +79,10 @@ export function PersonalInformation() {
 	const onSubmit = async (data: FormData) => {
 		try {
 			const payload: ProfileData = {
-				firstname: data.first_name,
-				lastname: data.last_name,
-				nickname: data.nickname,
-				birthDate: data.birthDate,
+				first_name: data.first_name,
+				last_name: data.last_name,
+				username: data.nickname,
+				birth_date: data.birthDate,
 			};
 
 			if (data.avatar) {

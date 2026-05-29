@@ -14,7 +14,7 @@ import { socket } from "@shared/socket/socket"
 import { UserContext } from "@modules/auth/context/user-context"
 import { Messages } from "@modules/message/ui/messages/Messages"
 
-export function Chat(props: { chatId: number}){
+export function Chat(props: { chatId: number | undefined}){
     const { chatId } = props
     const { data: chat} = useGetChatByIdQuery(Number(chatId))
     const router = useRouter()
@@ -22,26 +22,35 @@ export function Chat(props: { chatId: number}){
     const [deleteGroupChat] = useDeleteGroupChatMutation()
     const [messageText, setMessageText] = useState<string>("")
     const { user } = useContext(UserContext)!
-    if (!chat || !user) return null
+    if (!chat || !user || !chatId) return null
+    const otherUser = chat.chat_app_chat_users.filter(
+        (chatUser) => chatUser.user_id !== user.id
+    )[0];
     return (
         <View style={styles.groupChatContainer}>
             <View style={styles.groupChatHeader}>
 
                 <TouchableOpacity onPress={() => {
                     router.replace("/chats")
-                        
+                    socket.emit("leaveChat", {
+                        chatId: chat.id
+                    })
                     }}>
                     <Text style={styles.close} ><ICONS.LeftArrowIcon color = {COLORS.gray}/></Text>
                 </TouchableOpacity>
 
                 <View style={styles.infoHeaderContainer}>              
                     <Image source={{
-                            uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${chat.avatar}`
-                    }} width={46} height = {46} style = {{ borderRadius: 123}}/>
+                            uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${otherUser.user_app_user.profile_app_profile.avatar}`
+                    }} width={46} height = {46} style = {{ borderRadius: 123, backgroundColor: COLORS.gray}}/>
 
                     <View style={styles.chatInfo}>                        
                         <Text style={styles.chatName}>
-                            {chat.name}
+                            { chat.is_group 
+                            ? chat.name
+                            : otherUser.user_app_user.username
+                        }
+                            
                         </Text>
 
                         <Text style={styles.chatOnlineStatus}>
@@ -75,14 +84,16 @@ export function Chat(props: { chatId: number}){
                                 }}
                             >
                                 <ICONS.ExitIcon color={COLORS.black} />
-                                <Text style={styles.menuBtnText}>Покинути групу</Text>
+                                <Text style={styles.menuBtnText}>{ chat.is_group 
+                                                                    ? "Покинути групу"
+                                                                    : "Видалити чат"}</Text>
                             </TouchableOpacity>
                         </Pressable>
                     )}
                 </View>
             </View>
 
-                <Messages chatId={chatId} />
+            <Messages chatId={chatId} />
             <View style={styles.inputMessageContainer}>
                 <View style = {{ flex: 1, justifyContent: "center"}}>
                 <Input

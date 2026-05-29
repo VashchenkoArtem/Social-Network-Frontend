@@ -4,10 +4,15 @@ import { styles } from "./styles";
 import { COLORS } from "@shared/constants/colors";
 
 export function AdditionalUrls(props: IProps) {
-	const { radioTabsArray, chosenTab, setChosenTab, chatContent } = props;
+	const { radioTabsArray, chosenTab, setChosenTab, chatContent, isChats } = props;
 	return (
 		<View style={styles.additionalUrls }> 
-			<View style={styles.tabs}>
+			<View
+			style={[
+				styles.tabs,
+				isChats ? { justifyContent: "center", } :undefined
+			]}
+			>
 				{radioTabsArray.map((element) => {
 					return (
 						<Pressable
@@ -42,7 +47,7 @@ export function AdditionalUrls(props: IProps) {
 			</View>
 			{ !chatContent 
 			? (
-				<View style = {{backgroundColor: COLORS.preWhite, flex: 1, paddingTop: 6}}>
+				<View style = {isChats ? {backgroundColor: COLORS.preWhite, flex: 1, paddingTop: 6}: {flex: 1}}>
 					{radioTabsArray.map((element) => {
 						if (chosenTab !== element.title) {
 							return null;
@@ -51,7 +56,7 @@ export function AdditionalUrls(props: IProps) {
 						return (
 							<View
 								key={element.title}
-								style={{ backgroundColor: "white", flex: 1}}
+								style={[isChats ? {backgroundColor: COLORS.white, flex:1}:{ flex: 1}]}
 							>
 								{element.content}
 							</View>

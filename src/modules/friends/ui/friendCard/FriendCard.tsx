@@ -10,7 +10,7 @@ import Modal from "react-native-modal";
 
 export function FriendCard(props: IProps) {
     const router = useRouter();
-    const { user, requestId, buttonText } = props;
+    const { user, requestId, buttonText, isFromRecommended } = props;
     
     if (!user) return null
     
@@ -30,18 +30,19 @@ export function FriendCard(props: IProps) {
                             : require("../../../../assets/defaultAvatar.png")
                         }/>
                         <View style={styles.friendInfo}>
-                            <Text style={styles.friendsFullName}>{ user.first_name } { user.last_name }</Text>
+                            <Text style={styles.friendsFullName}>{ user.first_name }asdasdad { user.last_name }</Text>
                             <Text style={styles.friendsNickName}>@{ user.username }</Text>
                         </View>
                     </View>
                     <View style={styles.cardButtons}>
                         <Button variant="purple" text = {buttonText} onPress={async () => {
-                            if (requestId){
+                            if (buttonText === "Підтвердити" || buttonText === "Додати"){
+                                console.log(user.id, requestId)
                                 router.push({
                                     pathname: `/(friends)/${user.id}`, 
                                     params: {
                                         userId: user.id,
-                                        requestId: requestId
+                                        requestId: requestId,
                                     }
                             })
                             }else {
@@ -85,7 +86,10 @@ export function FriendCard(props: IProps) {
                                         <Button variant="white" text="Скасувати" onPress={() => setDeleteFriendRequestModal(false)} />
                                         <Button variant="purple" text="Підтвердити" onPress={() => {
                                                 if (requestId){
-                                                    deleteFriendRequest(requestId)
+                                                    updateFriendRequest({
+                                                        requestId,
+                                                        status: "Canceled"
+                                                    })
                                                 }
                                                 setIsVisible(false)
                                                 setDeleteFriendRequestModal(false)

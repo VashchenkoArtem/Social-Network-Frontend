@@ -12,14 +12,6 @@ import { SearchIcon } from "@shared/ui/icons/inputs/Search";
 
 export function Contacts(){
     const { data } = useGetAllFriendsQuery()
-    const { user } = useContext(UserContext)!
-    console.log(data)
-    if (!data) return null
-    const filteredData = data.filter(
-        (item) =>
-            item.user_app_user_user_app_friendship_from_user_idTouser_app_user?.id === user?.id ||
-            item.user_app_user_user_app_friendship_to_user_idTouser_app_user?.id === user?.id
-    );
 
     return (
         <View style = {styles.mainContainer}>
@@ -28,27 +20,17 @@ export function Contacts(){
                 <Text style = {styles.frameTitle}>Контакти</Text>
             </View>
             <Input iconLeft={<SearchIcon color={COLORS.gray} width={20} height={20} />} placeholder="Пошук" notMarginBottom={true}/>
-            <FlatList
-            data={filteredData}
-            renderItem={({ item }) => {
-            const friend =
-                item.user_app_user_user_app_friendship_from_user_idTouser_app_user.id === user?.id
-                ? item.user_app_user_user_app_friendship_to_user_idTouser_app_user
-                : item.user_app_user_user_app_friendship_from_user_idTouser_app_user;
-    
-            const avatarUri = `http://${SERVER.host}:${SERVER.port}/media/thumb/${friend.profile_app_profile.avatar}`;
-    
-            return (
-                <View style={{ flexDirection: "row", gap: 12, alignItems: "center", marginBottom: 12 }}>
-                <Image
-                    source={{ uri: avatarUri }}
-                    style={{ width: 46, height: 46, borderRadius: 23 }}
+            {data && (
+                <FlatList
+                data={data}
+                renderItem={({ item }) => {
+        
+                return (
+                    <ContactCard friend={item.user}/>
+                );
+                }}
                 />
-                <Text style = {styles.groupName}>{friend.username}</Text>
-                </View>
-            );
-            }}
-            />
+            )}
         </View>
     )
 }

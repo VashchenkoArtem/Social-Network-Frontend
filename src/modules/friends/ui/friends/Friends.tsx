@@ -12,7 +12,7 @@ import { AllFriends } from "../allFriends/AllFriends"
 export function Friends(props: {setChosenTab: (title: string) => void}){
     const { setChosenTab } = props
     return (
-        <ScrollView style = {{marginTop: 24, marginBottom: 48}} contentContainerStyle={{gap: 8}}>
+        <ScrollView style = {{marginTop: 24}} contentContainerStyle={{gap: 8}}>
             <Requests setChosenTab={setChosenTab}/>
             <Recommended setChosenTab={setChosenTab}/>
             <AllFriends setChosenTab={setChosenTab}/>

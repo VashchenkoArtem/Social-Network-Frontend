@@ -6,6 +6,7 @@ import { UserContext } from "@modules/auth/context/user-context";
 import { FriendRequest } from "@modules/friends/api/api.types";
 import { IProps } from "./types";
 import { IUser } from "@shared/types/user.types";
+import { getOtherUser } from "@shared/utils/friends";
 
 
 
@@ -15,24 +16,10 @@ export function FriendFrame({
     buttonText,
     setChosenTab,
     messageIfNull,
-    type
 }: IProps) {
     const { user } = useContext(UserContext)!;
 
     if (!user) return null;
-
-    const getOtherUser = (
-        friendship: FriendRequest,
-        userId: number
-    ) => {
-        const from =
-            friendship.user_app_user_user_app_friendship_from_user_idTouser_app_user;
-
-        const to =
-            friendship.user_app_user_user_app_friendship_to_user_idTouser_app_user;
-
-        return from.id === userId ? to : from;
-    };
 
     return (
         <View style={styles.friendCards}>
@@ -49,36 +36,22 @@ export function FriendFrame({
                 </Text>
             </View>
 
-            <View>
+            <View style={{gap: 10}}>
                 {!data?.length ? (
                     <Text style={styles.nullMessage}>
                         {messageIfNull}
                     </Text>
-                ) : type === "requests" ? (
-                    data.map((friendRequest) => {
-                        const friend = getOtherUser(
-                            friendRequest,
-                            user.id
-                        );
-
+                    )
+                    : (data.map((friendRequest) => {
                         return (
                             <FriendCard
                                 key={friendRequest.id}
                                 buttonText={buttonText}
-                                user={friend}
+                                user={friendRequest.user}
                                 requestId={friendRequest.id}
                             />
                         );
-                    })
-                ) : (
-                    data.map((profile) => (
-                        <FriendCard
-                            key={profile.id}
-                            buttonText={buttonText}
-                            user={profile}
-                        />
-                    ))
-                )}
+                    }))}
             </View>
         </View>
     );

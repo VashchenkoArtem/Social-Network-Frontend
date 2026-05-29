@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, FlatList, Image, Alert } from "react-nati
 import Modal from "react-native-modal";
 import * as ImagePicker from "expo-image-picker"; 
 import { useGetAllFriendsQuery } from "@modules/friends/api/friendsApi"; 
-import { useCreateGroupChatMutation } from "@modules/chats/api/chatsApi";
+import { useCreateChatMutation } from "@modules/chats/api/chatsApi";
 import { Input } from "@shared/ui/input"; 
 import { SERVER } from "@shared/constants/server";
 import { COLORS } from "@shared/constants/colors";
@@ -70,7 +70,7 @@ export function ConfirmGroupModal({
 }: IConfirmGroupModalProps) {
     const { data: friendsRequestsData } = useGetAllFriendsQuery(undefined);
     const friendsRequests = (friendsRequestsData || []) as unknown as IFriendRequest[];
-    const [createGroupChat, { isLoading: isCreating }] = useCreateGroupChatMutation();
+    const [createGroupChat, { isLoading: isCreating }] = useCreateChatMutation();
 
     const chosenFriends = React.useMemo<IFriend[]>(() => {
         return friendsRequests

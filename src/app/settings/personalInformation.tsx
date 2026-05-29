@@ -1,48 +1,36 @@
 import { Layout } from "@shared/ui/layout/Layout";
-import { UserContext } from "@modules/auth/context/user-context";
+import { UserContext, useUserContext } from "@modules/auth/context/user-context";
 import { useContext } from "react";
 import { View, Text, Image, ScrollView, StyleSheet } from "react-native";
 import { COLORS } from "@shared/constants/colors";
 import { Redirect } from "expo-router";
+import { getAvatar } from "@shared/utils/avatar";
 
 export default function PersonalInformationScreen() {
-    const context = useContext(UserContext);
+    const {user} = useUserContext()!
 
     // if (!context?.user) return <Redirect href="/login" />;
 
-    const user = context?.user ?? {
-	    id: 1,
-	    email: "test@gmail.com",
-	    firstname: "Lina",
-	    lastname: "Li",
-	    nickname: "thelili",
-	    alias: null,
-	    avatars: [],
-	    signature: null,
-	    birthDate: null,
-	};
+    const avatar = getAvatar(user.profile_app_profile.avatar) 
 
-    const lastAvatar = user.avatars?.[user.avatars.length - 1];
-    const avatar = lastAvatar
-        ? { uri: `http://192.168.0.104:8000/media/thumb/${lastAvatar.filename}` }
-        : require("../../assets/defaultAvatar.png")
-
-    const fullName = [user.firstname, user.lastname].filter(Boolean).join(" ");
+    const fullName = [user.first_name, user.last_name].filter(Boolean).join(" ");
 
     return (
         <Layout>
             <ScrollView contentContainerStyle={styles.container}>
                 <View style={styles.avatarWrapper}>
-                    <Image source={avatar} style={styles.avatar} />
+                    <Image source={{
+                        uri: avatar
+                        }} style={styles.avatar} />
                     <View style={styles.onlineIndicator} />
                 </View>
 
                 {!!fullName && <Text style={styles.name}>{fullName}</Text>}
-                {!!user.nickname && (
-                    <Text style={styles.username}>@{user.nickname}</Text>
+                {!!user.username && (
+                    <Text style={styles.username}>@{user.username}</Text>
                 )}
-                {!!user.alias && (
-                    <Text style={styles.alias}>{user.alias}</Text>
+                {!!user.profile_app_profile.pseudonym && (
+                    <Text style={styles.alias}>{user.profile_app_profile.pseudonym}</Text>
                 )}
             </ScrollView>
         </Layout>

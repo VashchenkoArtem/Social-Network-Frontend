@@ -1,4 +1,4 @@
-import { View, Text, Image } from 'react-native'
+import { View, Text, Image, TouchableOpacity } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller'
 import { Button } from "@shared/ui/button";
 import { styles } from './styles'
@@ -8,19 +8,20 @@ import { useGetAlbumsQuery } from '@modules/settings/api/albumApi';
 import { FriendAlbum } from '../friendAlbum/FriendAlbum';
 import { ICONS } from '@shared/ui';
 import { COLORS } from '@shared/constants/colors';
-import { useDeleteFriendRequestMutation, useGetPostsByUserIdQuery, useGetUserByIdQuery, useUpdateFriendRequestMutation } from '../../api/friendsApi';
+import { useCreateFriendRequestMutation, useDeleteFriendRequestMutation, useGetPostsByUserIdQuery, useGetUserByIdQuery, useUpdateFriendRequestMutation } from '../../api/friendsApi';
 import { useState } from 'react';
 import { PostCard } from '@modules/posts/ui/postCard/PostCard';
 
 interface IProps {
     userId: number;
-    requestId: number
+    requestId?: number;
 }
 
 export function FriendProfile({ userId, requestId }: IProps) {
     const router = useRouter();
     const { data: user } = useGetUserByIdQuery(userId);
     const { data } = useGetAlbumsQuery(userId)
+    const [ createFriendRequest ] = useCreateFriendRequestMutation()
     const [ updateFriendRequest ] = useUpdateFriendRequestMutation()
     const [isAccepted, setIsAccepted ] = useState<boolean>(false)
     const { data: posts } = useGetPostsByUserIdQuery(userId)
@@ -38,6 +39,13 @@ export function FriendProfile({ userId, requestId }: IProps) {
             }}
         >
             <View style={styles.card}>
+                <View style = {{width: "100%", paddingHorizontal: 16}}>
+                    <TouchableOpacity onPress={() => {
+                        router.replace("/(friends)")
+                        }}>
+                        <Text style={styles.close} ><ICONS.LeftArrowIcon color = {COLORS.gray}/></Text>
+                    </TouchableOpacity>
+                </View>
                 <Image style={styles.authorAvatar} source={
                     user.profile_app_profile.avatar
                     ? { uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${user.profile_app_profile.avatar}` }
@@ -65,14 +73,32 @@ export function FriendProfile({ userId, requestId }: IProps) {
                 { !isAccepted && 
                     <View style={styles.cardButtons}>
                         <Button variant="purple" text = "Підтвердити"  onPress={async () => {
+                            if (requestId){
+                                await updateFriendRequest({
+                                    requestId: requestId,
+                                    status: "Accepted"
+                                })
+                            }else{
+                                await createFriendRequest({
+                                    receiverId: userId
+                                })
+                            }
                             router.push("/(tabs)/friends")
-                            await updateFriendRequest({
-                                requestId: requestId,
-                                status: "Accepted"
-                            })
                         }}/>
                         <Button variant="white" text = "Видалити" onPress={async () => {
-                            await deleteFriendRequest(requestId)
+                            if (requestId){
+                                await updateFriendRequest({
+                                    requestId: requestId,
+                                    status: "Canceled"
+                                })
+                                router.push("/(friends)")
+                            }else{
+                                await createFriendRequest({
+                                    receiverId: userId,
+                                    status: "Canceled"
+                                })
+                                router.push("/(friends)")
+                            }
                         }}/>
                     </View>
                 }
@@ -101,8 +127,8 @@ export function FriendProfile({ userId, requestId }: IProps) {
                         </View>
 
                         <FriendAlbum
-                            album={data[0]}
-                            key={data[0].id}
+                            album={data[data.length - 1]}
+                            key={data[data.length - 1].id}
                         />
                     </View>
                 ))

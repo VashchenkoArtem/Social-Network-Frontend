@@ -15,15 +15,18 @@ export function FriendAlbum(props: {album: Album}){
                 <Text style = {[styles.textGray, styles.year]}>{album.year} рік</Text>
             </View>
             <View style = {{gap: 5}}>
-                { album.photos.length !== 0 && 
-                    <Image
-                        source={{
-                            uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${album.photos[album.photos.length - 1].image}`
-                        }}
-                        height={162}
-                        width={343}
-                        style = {{borderRadius: 10}}
-                    />
+                { album.photos  && 
+                    ( album.photos.length !== 0  && 
+                        <Image
+                            source={{
+                                uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${album.photos[album.photos.length - 1].image}`
+                            }}
+                            height={162}
+                            width={343}
+                            style = {{borderRadius: 10}}
+                        />
+                    )
+
                 }
             </View>
         </View>

@@ -7,8 +7,9 @@ export function Requests(props: {setChosenTab: (title: string) => void}){
     const { data } = useGetAllRequestsQuery(undefined, {
         pollingInterval: 5000
     })
+    console.log(data)
     if (!data) { return null }
     return (
-        <FriendFrame type = "requests" setChosenTab = {setChosenTab} buttonText="Підтвердити" frameName="Запити" messageIfNull="У вас поки немає запитів" data={data}/>
+        <FriendFrame setChosenTab = {setChosenTab} buttonText="Підтвердити" frameName="Запити" messageIfNull="У вас поки немає запитів" data={data}/>
     )
 }

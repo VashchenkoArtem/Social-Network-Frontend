@@ -18,7 +18,7 @@ export default function FriendProfileScreen(){
             ? Number(params.requestId)
             : undefined
 
-    if (userId == null || requestId == null) return <Redirect href={"(tabs)/friends"}/>
+    if (userId == null) return <Redirect href={"(tabs)/friends"}/>
 
     return <FriendProfile userId={userId} requestId = {requestId}/>
 }

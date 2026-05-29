@@ -1,5 +1,5 @@
 import { baseApi } from "@shared/api/baseApi";
-import { IChat, IChatWithUsers } from "./api.types";
+import { IChat } from "./api.types";
 
 export interface ICreateGroupChatDto {
     name: string;
@@ -8,7 +8,7 @@ export interface ICreateGroupChatDto {
 
 export const chatApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
-        getGroupChats: builder.query<IChatWithUsers[], void>({
+        getGroupChats: builder.query<IChat[], void>({
             query: () => ({
                 url: 'group-chats',
                 method: 'GET'
@@ -16,16 +16,16 @@ export const chatApi = baseApi.injectEndpoints({
             providesTags: ["GroupChats"]
         }),
 
-        getPersonalChats: builder.query<IChatWithUsers[], void>({
+        getPersonalChats: builder.query<IChat[], void>({
             query: () => ({
                 url: 'personal-chats',
                 method: 'GET'
             })
         }),
 
-        createGroupChat: builder.mutation<IChatWithUsers, ICreateGroupChatDto>({
+        createChat: builder.mutation<IChat, ICreateGroupChatDto>({
             query: (body) => ({
-                url: 'group-chats',
+                url: 'chats',
                 method: 'POST',
                 body
             }),
@@ -41,13 +41,14 @@ export const chatApi = baseApi.injectEndpoints({
                 url: `chat/${chatId}`
             })
         })
-    })
+    }),
+    overrideExisting: true
 })
 
 export const {
     useGetGroupChatsQuery,
     useGetPersonalChatsQuery,
-    useCreateGroupChatMutation,
+    useCreateChatMutation,
     useDeleteGroupChatMutation,
     useGetChatByIdQuery
 } = chatApi

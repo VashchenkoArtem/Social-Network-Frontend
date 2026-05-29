@@ -21,12 +21,7 @@ export const styles = StyleSheet.create({
         fontWeight: 500,
         fontFamily: FONTS.regular
     },
-    groupName: {
-        fontSize: 16,
-        color: COLORS.black,
-        fontWeight: 500,
-        fontFamily: FONTS.medium
-    },
+
     itemList: {
         gap: 16,
     }

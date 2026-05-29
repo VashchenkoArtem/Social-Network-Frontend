@@ -34,15 +34,15 @@ export interface UpdateUserRequest extends Partial<Omit<IUser, "id" | "email">> 
 	password?: string;
 }
 export interface ProfileData {
-    firstname?: string;
-    lastname?: string;
-    nickname?: string;
-    alias?: string;
+    first_name?: string;
+    last_name?: string;
+    username?: string;
+    pseudonym?: string;
     email?: string;
     password?: string;
     avatar?: string | ReactNativeFile;
     signature?: string | ReactNativeFile;
-    birthDate?: string;
+    birth_date?: string;
 }
 
 

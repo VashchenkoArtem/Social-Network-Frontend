@@ -5,7 +5,10 @@ export const styles = StyleSheet.create({
     friendPostsContainer: {
 
     },
-
+    close: {
+        fontSize: 20,
+        color: COLORS.lightGray
+    },
     authorAvatar: {
         width: 96,
         height: 96,

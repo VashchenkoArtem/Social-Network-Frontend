@@ -12,7 +12,7 @@ export const radioTabsArray: IRadioTab[] = [
         icon: <ICONS.FriendsPageIcon color = {COLORS.black}/>,
         content: (
             <View
-                style={{ flex: 1, marginBottom: 48 }}
+                style={{ flex: 1 }}
             >
                 <Contacts></Contacts>
             </View>
@@ -23,7 +23,7 @@ export const radioTabsArray: IRadioTab[] = [
         icon: <ICONS.ChatsPageIcon color = {COLORS.black}/>,
         content: (
             <View
-                style={{ flex: 1, marginBottom: 48 }}
+                style={{ flex: 1 }}
             >
                 <PersonalChats />
             </View>
@@ -34,7 +34,7 @@ export const radioTabsArray: IRadioTab[] = [
         icon: <ICONS.ChatsPageIcon color = {COLORS.black}/>,
         content: (
             <View
-                style={{ flex: 1, marginBottom: 48 }}
+                style={{ flex: 1 }}
             >
                 <GroupChats />
             </View>

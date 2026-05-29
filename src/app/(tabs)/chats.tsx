@@ -21,6 +21,7 @@ export default function ChatPage() {
 				chosenTab={chosenTab}
 				setChosenTab={setChosenTab}
 				radioTabsArray={radioTabsArray}
+				isChats={true}
 			/>
 		</SafeAreaView>
 	);
