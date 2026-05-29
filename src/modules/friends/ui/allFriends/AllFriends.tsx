@@ -8,6 +8,6 @@ export function AllFriends(props: {setChosenTab: (title: string) => void}){
     })
     if (!data) return null
     return (
-        <FriendFrame type = "requests" setChosenTab={setChosenTab} buttonText="Повідомлення" frameName="Всі друзі" messageIfNull="У вас поки немає друзів" data={data}/>
+        <FriendFrame  setChosenTab={setChosenTab} buttonText="Повідомлення" frameName="Всі друзі" messageIfNull="У вас поки немає друзів" data={data}/>
     )
 }

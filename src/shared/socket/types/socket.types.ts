@@ -4,10 +4,15 @@ export interface ClientEvents {
     joinChat: (data: { chatId: number }) => void
     leaveChat: (data: { chatId: number }) => void
     sendMessage: (data: ICreateMessage) => void
+    getOnlineUsers: () => void;
 }
 
 export interface ServerEvents {
-    newMessage: (message: IMessage) => void
+    newMessage: (message: IMessage) => void;
+
+    userOnline: (data: { userId: number }) => void;
+    userOffline: (data: { userId: number }) => void;
+    onlineUsersList: (users: number[]) => void;
 }
 
 export interface SocketData {

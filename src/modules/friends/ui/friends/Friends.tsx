@@ -1,4 +1,4 @@
-import { View, Text, ScrollView } from "react-native"
+import { View, Text, ScrollView, FlatList } from "react-native"
 import { FriendCard } from "../friendCard"
 import { useContext } from "react"
 import { UserContext } from "@modules/auth/context/user-context"
@@ -11,12 +11,27 @@ import { AllFriends } from "../allFriends/AllFriends"
 
 export function Friends(props: {setChosenTab: (title: string) => void}){
     const { setChosenTab } = props
+    const componentsData = [
+        <Requests setChosenTab={setChosenTab}/>,
+        <Recommended setChosenTab={setChosenTab}/>,
+        <AllFriends setChosenTab={setChosenTab}/>
+    ]
     return (
-        <ScrollView style = {{marginTop: 24}} contentContainerStyle={{gap: 8}}>
-            <Requests setChosenTab={setChosenTab}/>
-            <Recommended setChosenTab={setChosenTab}/>
-            <AllFriends setChosenTab={setChosenTab}/>
-        </ScrollView>
+        <FlatList
+            contentContainerStyle={{gap: 8, marginTop: 24}}
+            data = {componentsData}
+            keyExtractor = {(item) => {
+                return item.type.name
+            }}
+            renderItem = {({item}) => {
+                return item
+            }}
+        />
+        // <ScrollView style = {{marginTop: 24}} contentContainerStyle={{gap: 8}}>
+        //     <Requests setChosenTab={setChosenTab}/>
+        //     <Recommended setChosenTab={setChosenTab}/>
+        //     <AllFriends setChosenTab={setChosenTab}/>
+        // </ScrollView>
     )
 }
 

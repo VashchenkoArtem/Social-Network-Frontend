@@ -24,8 +24,8 @@ export function ChatsFrame(props: IChatProps) {
                 {Icon}
                 <Text style={styles.frameTitle}>{frameTitle}</Text>
             </View>
-            <Input iconLeft={<SearchIcon color={COLORS.gray} width={20} height={20} />} placeholder="Пошук" notMarginBottom={true}/>
-            
+            <Input iconLeft={<SearchIcon color={COLORS.gray} width={20} height={20} />} placeholder="Пошук" notMarginBottom={true}/>                    
+
             <FlatList
                 contentContainerStyle = {styles.itemList}
                 keyExtractor={item => String(item.id)}
@@ -34,7 +34,6 @@ export function ChatsFrame(props: IChatProps) {
                         return <PersonalChatFrame chat = {item}/>
                     }}
             />
-
         </View>
     );
 }

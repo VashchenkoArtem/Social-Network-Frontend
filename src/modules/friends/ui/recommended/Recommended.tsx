@@ -8,8 +8,7 @@ export function Recommended(props: {setChosenTab: (title: string) => void}){
     const { data } = useGetRecommendedPeopleQuery(undefined, {
         pollingInterval: 5000   
     })
-    if (!data) return null
-    const userFromRequest = data.map((user) => {
+    const userFromRequest = data?.map((user) => {
             return {
                 user: user
             }

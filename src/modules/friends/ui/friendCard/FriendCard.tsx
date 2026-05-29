@@ -10,7 +10,7 @@ import Modal from "react-native-modal";
 
 export function FriendCard(props: IProps) {
     const router = useRouter();
-    const { user, requestId, buttonText, isFromRecommended } = props;
+    const { user, requestId, buttonText } = props;
     
     if (!user) return null
     
@@ -37,7 +37,6 @@ export function FriendCard(props: IProps) {
                     <View style={styles.cardButtons}>
                         <Button variant="purple" text = {buttonText} onPress={async () => {
                             if (buttonText === "Підтвердити" || buttonText === "Додати"){
-                                console.log(user.id, requestId)
                                 router.push({
                                     pathname: `/(friends)/${user.id}`, 
                                     params: {
@@ -45,10 +44,6 @@ export function FriendCard(props: IProps) {
                                         requestId: requestId,
                                     }
                             })
-                            }else {
-                                await createFriendShip({
-                                    receiverId: user.id
-                                })
                             }
                         }}/>
                         <Button 

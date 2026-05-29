@@ -4,5 +4,4 @@ export interface IProps {
     user: IUser | null;
     requestId?: number
     buttonText: string;
-    isFromRecommended?: boolean
 }

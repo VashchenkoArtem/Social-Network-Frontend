@@ -12,7 +12,7 @@ import { useRouter } from "expo-router";
 import { socket } from "@shared/socket/socket";
 import { COLORS } from "@shared/constants/colors";
 
-export function ContactCard(props: {friend: IUser}){
+export function ContactCard(props: {friend: IUser, isOnline: boolean}){
     const [ createChat ] = useCreateChatMutation()
     const { friend } = props
     const router = useRouter()

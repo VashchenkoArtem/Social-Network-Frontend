@@ -5,7 +5,7 @@ import { Requests } from "@modules/friends/ui/requests/Requests";
 import { AdditionalUrls } from "@shared/ui/additionalUrl";
 import { IRadioTab } from "@shared/ui/additionalUrl/types";
 import { useState } from "react";
-import { ScrollView } from "react-native";
+import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
  
 
@@ -14,17 +14,17 @@ export default function FriendsPage() {
 	const radioTabsArray: IRadioTab[] = [
 		{ title: "Головна", content: <Friends setChosenTab={setChosenTab}/> },
 		{ title: "Запити", content: 
-			<ScrollView style = {{marginTop: 24}} contentContainerStyle={{gap: 8}}>
+			<View style = {{marginTop: 24, gap: 8}}>
 				<Requests setChosenTab={setChosenTab}/>
-			</ScrollView> },
+			</View> },
 		{ title: "Рекомендації", content: 
-			<ScrollView style = {{marginTop: 24}} contentContainerStyle={{gap: 8}}>
+			<View style = {{marginTop: 24, gap: 8}}>
 				<Recommended setChosenTab={setChosenTab}/>
-			</ScrollView>  },
+			</View>  },
 		{ title: "Всі друзі", content: 
-			<ScrollView style = {{marginTop: 24}} contentContainerStyle={{gap: 8}}>
+			<View style = {{marginTop: 24, gap: 8}}>
 				<AllFriends setChosenTab={setChosenTab}/>
-			</ScrollView> },
+			</View> },
 	];
 	return (
 		<SafeAreaView style={{ flex: 1 }} edges={["left", "right"]}>

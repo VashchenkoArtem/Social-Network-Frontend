@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, Text, FlatList } from "react-native";
 import { FriendCard } from "../friendCard";
 import { styles } from "./friendFrame.styles";
 import { useContext } from "react";
@@ -41,8 +41,25 @@ export function FriendFrame({
                     <Text style={styles.nullMessage}>
                         {messageIfNull}
                     </Text>
-                    )
-                    : (data.map((friendRequest) => {
+                    ): (
+                        <FlatList
+                            style={{gap: 10}}
+                            data={data}
+                            keyExtractor={(item) => {
+                                return String(item.id)
+                            }}
+                            renderItem={({ item }) => {
+                                return (
+                                    <FriendCard
+                                        buttonText={buttonText}
+                                        user={item.user}
+                                        requestId={item.id}
+                                    />
+                                )
+                            }}
+                        />
+                    )}
+                    {/* : (data.map((friendRequest) => {
                         return (
                             <FriendCard
                                 key={friendRequest.id}
@@ -51,7 +68,7 @@ export function FriendFrame({
                                 requestId={friendRequest.id}
                             />
                         );
-                    }))}
+                    }))} */}
             </View>
         </View>
     );

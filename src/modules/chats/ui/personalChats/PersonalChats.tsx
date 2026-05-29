@@ -8,7 +8,6 @@ export function PersonalChats(){
     const { data: personalChats } = useGetPersonalChatsQuery(undefined, {
         pollingInterval: 3000
     })
-    if (!personalChats) return null
     return (
         <View style = {{flex: 1}}>
             <ChatsFrame items = {personalChats} frameTitle="Повідомлення" Icon = {<ICONS.ChatsPageIcon color = {COLORS.gray} height={20}/>}/>

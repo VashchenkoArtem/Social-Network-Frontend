@@ -5,5 +5,5 @@ import { ReactNode } from "react";
 export interface IChatProps {
     Icon: ReactNode;
     frameTitle: string;
-    items: IChat[]
+    items: IChat[] | null | undefined
 }

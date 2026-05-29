@@ -27,11 +27,17 @@ export const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 500,
     },
+
     nullMessage: {
+		fontFamily: FONTS.regular,        
         width: "100%",
-        textAlign: "center",
         fontSize: 16,
         color: COLORS.gray,
-		fontFamily: FONTS.regular,
+        textAlign: "center",
+        marginTop: 10,
+        letterSpacing: 0.3,
+        fontWeight: 500,
+        opacity: 0.89,
+        fontStyle: 'italic'
     }
 })

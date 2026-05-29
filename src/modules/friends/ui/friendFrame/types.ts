@@ -11,7 +11,7 @@ interface FriendFrameBaseProps {
     buttonText: string;
     setChosenTab: (tab: string) => void;
     messageIfNull: string;
-    data: FriendsProps[]
+    data: FriendsProps[] | null | undefined
 }
 
 
