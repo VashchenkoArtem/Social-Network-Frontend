@@ -22,4 +22,22 @@ export const styles = StyleSheet.create({
 		borderTopColor: COLORS.plum,
 		borderTopWidth: 2,
 	},
+	badge: {
+		position: 'absolute',
+		right: -6, 
+        top: -4, 
+		borderRadius: 10,
+        minWidth: 16,
+        height: 16,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingHorizontal: 4,
+		backgroundColor: COLORS.red,
+	},
+	badeText: {
+		color: COLORS.white,
+		fontSize: 9,
+        fontWeight: '700',
+        textAlign: 'center' 
+	}
 });

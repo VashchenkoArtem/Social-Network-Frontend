@@ -7,4 +7,5 @@ export interface UrlProps {
 	isChat?: boolean;
 	isFriends?: boolean;
 	tabName?: string;
+	unreadCount?: number;
 }

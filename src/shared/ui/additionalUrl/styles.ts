@@ -45,7 +45,7 @@ export const styles = StyleSheet.create({
 	},
 	tabs: {
 		flexDirection: "row",
-		gap: 16,
+		gap: 1,
 		width: "100%"
 	},
 	visible: {

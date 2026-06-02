@@ -13,6 +13,7 @@ import { styles } from "./chat.styles"
 import { socket } from "@shared/socket/socket"
 import { UserContext } from "@modules/auth/context/user-context"
 import { Messages } from "@modules/message/ui/messages/Messages"
+import { getAvatar } from "@shared/utils/avatar"
 
 export function Chat(props: { chatId: number | undefined}){
     const { chatId } = props
@@ -41,7 +42,7 @@ export function Chat(props: { chatId: number | undefined}){
 
                 <View style={styles.infoHeaderContainer}>              
                     <Image source={{
-                            uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${otherUser.user_app_user.profile_app_profile.avatar}`
+                            uri: getAvatar(chat.avatar)
                     }} width={46} height = {46} style = {{ borderRadius: 123, backgroundColor: COLORS.gray}}/>
 
                     <View style={styles.chatInfo}>                        
@@ -118,7 +119,9 @@ export function Chat(props: { chatId: number | undefined}){
                             socket.emit("sendMessage", {
                                 text: messageText,
                                 chat_id: chatId,
-                                sender_id: user.id
+                                sender_id: user.id,
+                                avatar: user.profile_app_profile.avatar ? user.profile_app_profile.avatar : getAvatar(user.profile_app_profile.avatar),
+                                username: user.username || ""
                             })
                             setMessageText("")
                         }}

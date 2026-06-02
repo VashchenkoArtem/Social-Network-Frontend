@@ -63,7 +63,6 @@ export const styles = StyleSheet.create({
 	userAddAvatarButtons: {
 		alignItems: "center",
 		flexDirection: "row",
-		justifyContent: "center",
 		width: "100%",
 		gap: 24,
 	},
@@ -230,7 +229,9 @@ export const styles = StyleSheet.create({
 		fontSize: 14,
 		textDecorationLine: "underline",
 	},
-	userAvatarContainer: {},
+	userAvatarContainer: {
+		alignItems: "center"
+	},
 	modalContainer: {
 		paddingTop: 39,
 		paddingHorizontal: 16,

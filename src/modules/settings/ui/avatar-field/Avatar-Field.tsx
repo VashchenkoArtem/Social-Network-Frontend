@@ -7,39 +7,26 @@ import { Button } from "@shared/ui/button";
 import { PlusIcon } from "@shared/ui/icons/buttons/Plus";
 import { COLORS } from "@shared/constants/colors";
 import { SERVER } from "@shared/constants/server";
+import { getAvatar } from "@shared/utils/avatar";
 
 interface AvatarFieldProps {
-	value?: string;
-	onChange: (uri: string) => void;
-	avatar: string | null
+    value?: string;
+    onPress: () => void;
+    avatar: string | null;
 }
 
-export function AvatarField({ value, onChange, avatar }: AvatarFieldProps) {
-	async function pickImage() {
-		const result = await ImagePicker.launchImageLibraryAsync({
-			mediaTypes: ["images"],
-			allowsEditing: true,
-			aspect: [1, 1],
-			quality: 0.5,
-		});
-
-		if (result.canceled) return;
-
-		const asset = result.assets[0];
-		onChange(asset.uri);
-	}
-	
-	const getImageSource = () => {
-        if (value) return { uri: value };
-        if (avatar) return { uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${avatar}` }; 
-        return require("../../../../assets/defaultAvatar.png");
-    };
-
-	return (
-        <TouchableOpacity onPress={pickImage} style={styles.ContainerAvatar}>
+export function AvatarField({ value, onPress, avatar }: AvatarFieldProps) {
+    return (
+        <TouchableOpacity
+            onPress={onPress}
+            style={styles.ContainerAvatar}
+        >
             <View style={styles.AvatarView}>
                 <Image
-                    source={getImageSource()}
+                    source={{uri: value 
+						? value 
+						: getAvatar(avatar)
+					}}
                     style={styles.SelectedAvatar}
                 />
             </View>

@@ -6,7 +6,7 @@ export interface Album {
 	is_shown: boolean;
 	authorId: number;
 
-	photos: {
+	photos?: {
 		id: number;
 		image: string;
 		albumId: number;

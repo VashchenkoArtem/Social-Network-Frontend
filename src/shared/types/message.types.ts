@@ -25,4 +25,6 @@ export interface ICreateMessage{
     text: string;
     chat_id: number;
     sender_id: number;
+    username: string;
+    avatar: string
 }

@@ -1,4 +1,4 @@
-import { Text, View } from "react-native";
+import { ActivityIndicator, Text, View } from "react-native";
 import { useContext, useState } from "react";
 import { Button } from "@shared/ui/button";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
@@ -24,6 +24,7 @@ import { Redirect } from "expo-router";
 import { SERVER } from "@shared/constants/server";
 import * as ImagePicker from "expo-image-picker";
 import { ProfileData, ReactNativeFile } from "@modules/auth/api/api.types"; 
+import { FONTS } from "@shared/constants/fonts";
 
 
 type FormData = {
@@ -45,11 +46,10 @@ export function PersonalInformation() {
 	const [isEditingPassword, setIsEditingPassword] = useState(false);
 	const [ updateUserSignature ] = useUpdateUserSignatureMutation()
 	const [sendCode] = useSendCodeMutation();
-	const [updateUser, { isLoading }] = useUpdateUserInfoMutation();
 	const { user, token } = useContext(UserContext)!;
 	const [isVisible, setIsVisible] = useState(false);
 	const [isDrawing, setIsDrawing] = useState(false);
-	const [updateUserInfo] = useUpdateUserInfoMutation();
+	const [updateUserInfo, { isLoading }] = useUpdateUserInfoMutation();
 	const [selectedType, setSelectedType] = useState<"alias" | "signature">(
 		user?.profile_app_profile.signature ? "signature" : "alias",
 	);
@@ -76,38 +76,39 @@ export function PersonalInformation() {
 		setSelectedType("signature");
 		setIsEditingSignature(false);
 	}
+
 	const onSubmit = async (data: FormData) => {
-		try {
-			const payload: ProfileData = {
-				first_name: data.first_name,
-				last_name: data.last_name,
-				username: data.nickname,
-				birth_date: data.birthDate,
-			};
+			try {
+				const payload: ProfileData = {
+					first_name: data.first_name,
+					last_name: data.last_name,
+					username: data.nickname,
+					birth_date: data.birthDate,
+				};
 
-			if (data.avatar) {
-				const isLocalUri = data.avatar.startsWith('file') || data.avatar.startsWith('ph');
-				
-				if (isLocalUri) {
-					payload.avatar = {
-						uri: data.avatar,
-						name: 'avatar.jpg',
-						type: 'image/jpeg',
-					} as any;
+				if (data.avatar) {
+					const isLocalUri = data.avatar.startsWith('file') || data.avatar.startsWith('ph');
+					
+					if (isLocalUri) {
+						payload.avatar = {
+							uri: data.avatar,
+							name: 'avatar.jpg',
+							type: 'image/jpeg',
+						} as any;
+					}
 				}
-			}
 
-			await updateUserInfo(payload).unwrap();
-			
-			reset(data); 
-			setIsEditingProfile(false);
-			setIsEditingPersonalInfo(false);
-			
-			console.log("Дані успішно збережено");
-		} catch (error) {
-			console.error("Помилка оновлення:", error);
-		}
-	};
+				await updateUserInfo(payload).unwrap();
+				
+				reset(data); 
+				setIsEditingProfile(false);
+				setIsEditingPersonalInfo(false);
+				
+				console.log("Дані успішно збережено");
+			} catch (error) {
+				console.error("Помилка оновлення:", error);
+			}
+		};
 
 	const handleEditProfilePress = () => {
 		if (isEditingProfile) {
@@ -142,7 +143,7 @@ export function PersonalInformation() {
 
 	const pickImage = async (onChange: (uri: string) => void) => {
 		const result = await ImagePicker.launchImageLibraryAsync({
-			mediaTypes: ImagePicker.MediaTypeOptions.Images, 
+			mediaTypes: "images", 
 			allowsEditing: true,
 			aspect: [1, 1],
 			quality: 0.8,
@@ -162,6 +163,9 @@ export function PersonalInformation() {
 				extraKeyboardSpace={20}
 				scrollEnabled={!isDrawing}
 			>
+				{isLoading && (
+					<ActivityIndicator style = {{marginTop: 24}} size = {20}/>
+				)}
 				<View style={styles.personalInformationContainer}>
 
 					<View style={styles.profileCardBlock}>
@@ -179,7 +183,7 @@ export function PersonalInformation() {
 
 						<View style={styles.profileCardAvatarBlock}>
 							{isEditingProfile && (
-								<Text>Оберіть або завантажте фото профілю</Text>
+								<Text style = {{ fontFamily: FONTS.regular}}>Оберіть або завантажте фото профілю</Text>
 							)}
 
 							<View style={styles.userAvatarContainer}>
@@ -187,11 +191,11 @@ export function PersonalInformation() {
 									name="avatar"
 									control={control}
 									render={({ field: { onChange, value } }) => (
-										<>
+										<View style = {{ alignItems: "center", gap: 9 }}>
 											<View style={styles.userAvatarContainer}>
 												<AvatarField
 													value={value}
-													onChange={() => pickImage(onChange)}
+													onPress={() => pickImage(onChange)}
 													avatar={user.profile_app_profile.avatar}
 												/>
 											</View>
@@ -213,10 +217,11 @@ export function PersonalInformation() {
 														onPress={() => pickImage(onChange)}
 														isSettings={true}
 														style={{ borderWidth: 0 }}
-													/>
+														/>
 												</View>
 											)}
-										</>
+										</View>
+										
 									)}
 								/>
 							</View>

@@ -15,7 +15,7 @@ export function Url(props: UrlProps) {
 	if (!fontsLoaded) {
 		return null;
 	}
-	const { text, icon, href, isChat, isFriends } = props;
+	const { text, icon, href, isChat, isFriends, unreadCount = 0 } = props;
 	return (
 		<View
 			style={[
@@ -36,7 +36,17 @@ export function Url(props: UrlProps) {
 						: null),
 			]}
 		>
-			{icon}
+			<View style={{ position: 'relative' }}>
+                {icon}
+                
+                {isChat && unreadCount > 0 && (
+                    <View style={badgeStyles.badge}>
+                        <Text style={badgeStyles.badgeText}>
+                            {unreadCount > 99 ? '99+' : unreadCount}
+                        </Text>
+                    </View>
+                )}
+            </View>
 			<Text style={[styles.urlText]}>{text}</Text>
 		</View>
 	);

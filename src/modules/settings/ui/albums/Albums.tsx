@@ -86,6 +86,7 @@ export const AlbumsPage = () => {
 	const { data: albums = [] } = useGetAlbumsQuery(user.id, {
 		pollingInterval: 3000,
 	});
+    console.log(albums)
 	const handlePhotoVisibility = async (photoId: number, isVisible: boolean) => {
 		try {
 			await togglePhotoVisibility({photoId, isVisible})
@@ -199,36 +200,37 @@ return (
                                     )}
                                 </View>
                             </View>
+                            { album.photos && (
+                                <View style={styles.albumPhotoContainer}>
+                                    {album.photos.map((photo) => (
+                                        <View key={photo.id}>
+                                            <Image
+                                                source={{
+                                                    uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${photo.image}`,
+                                                }}
+                                                style={styles.albumPhoto}
+                                                blurRadius={photo.is_shown && album.is_shown ? 0 : 9}
+                                            />
+                                            <View style={styles.photoBtns}>
+                                                <TouchableOpacity
+                                                    style={styles.photoBtn}
+                                                    onPress={() => handlePhotoVisibility(photo.id, !photo.is_shown)}
+                                                >
+                                                    {photo.is_shown && album.is_shown
+                                                        ? <ICONS.EyeOpen color={COLORS.plum} />
+                                                        : <ICONS.EyeClose color={COLORS.plum} />
+                                                    }
+                                                </TouchableOpacity>
 
-                            <View style={styles.albumPhotoContainer}>
-                                {album.photos.map((photo) => (
-                                    <View key={photo.id}>
-                                        <Image
-                                            source={{
-                                                uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${photo.image}`,
-                                            }}
-                                            style={styles.albumPhoto}
-                                            blurRadius={photo.is_shown && album.is_shown ? 0 : 9}
-                                        />
-                                        <View style={styles.photoBtns}>
-                                            <TouchableOpacity
-                                                style={styles.photoBtn}
-                                                onPress={() => handlePhotoVisibility(photo.id, !photo.is_shown)}
-                                            >
-                                                {photo.is_shown && album.is_shown
-                                                    ? <ICONS.EyeOpen color={COLORS.plum} />
-                                                    : <ICONS.EyeClose color={COLORS.plum} />
-                                                }
-                                            </TouchableOpacity>
-
-                                            <View style={styles.photoBtn}>
-                                                <DeletePhoto photoId={photo.id} />
+                                                <View style={styles.photoBtn}>
+                                                    <DeletePhoto photoId={photo.id} />
+                                                </View>
                                             </View>
                                         </View>
-                                    </View>
-                                ))}
-                                <AddAlbumPhoto albumId={album.id} />
-                            </View>
+                                    ))}
+                                    <AddAlbumPhoto albumId={album.id} />
+                                </View>
+                            )}
                         </View>
                     ))}
             </View>

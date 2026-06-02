@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, Text, ActivityIndicator, RefreshControl } from "react-native";
 import { PostCard } from "../postCard/PostCard";
 import { WelcomeDetailsModal } from "@shared/ui/modalUIU";
 import { Redirect, useLocalSearchParams } from "expo-router";
@@ -12,20 +12,33 @@ export function HomePage(){
 	const [isWelcomeVisible, setIsWelcomeVisible] = useState(
         isNewUser === "true",
 	);    
-    const { data } = useGetAllPostsQuery(undefined, {
-        pollingInterval: 5000
-    });
+    const [refreshing, setRefreshing] = useState(false);
+    const onRefresh = async () => {
+        setRefreshing(true);
+        await refetch();
+        setRefreshing(false);
+    };
+
+    const {
+        data,
+        isFetching,
+        refetch
+    } = useGetAllPostsQuery();
     const { user } = useContext(UserContext)! 
     if (!user) {
         return <Redirect href={"/login"}></Redirect>;
     }
     if (!data) return null
+    if (isFetching)return <ActivityIndicator style={{marginTop: 24}} size = {20} />
     return (
         <KeyboardAwareScrollView
-            keyboardShouldPersistTaps="handled"
-            contentContainerStyle={{
-                flexGrow: 1,
-            }}
+            refreshControl={
+                <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={onRefresh}
+                />
+            }
+            scrollEventThrottle={300}
         >
             <WelcomeDetailsModal
 				isVisible={isWelcomeVisible}

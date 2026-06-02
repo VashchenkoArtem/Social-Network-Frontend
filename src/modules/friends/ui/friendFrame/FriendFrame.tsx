@@ -46,7 +46,7 @@ export function FriendFrame({
                             style={{gap: 10}}
                             data={data}
                             keyExtractor={(item) => {
-                                return String(item.id)
+                                return String(item.user.id)
                             }}
                             renderItem={({ item }) => {
                                 return (

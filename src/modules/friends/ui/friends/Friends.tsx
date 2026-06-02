@@ -12,21 +12,22 @@ import { AllFriends } from "../allFriends/AllFriends"
 export function Friends(props: {setChosenTab: (title: string) => void}){
     const { setChosenTab } = props
     const componentsData = [
-        <Requests setChosenTab={setChosenTab}/>,
+        <Requests isMarginTop={true} setChosenTab={setChosenTab}/>,
         <Recommended setChosenTab={setChosenTab}/>,
-        <AllFriends setChosenTab={setChosenTab}/>
+        <AllFriends isMarginBottom={true} setChosenTab={setChosenTab}/>
     ]
     return (
-        <FlatList
-            contentContainerStyle={{gap: 8, marginTop: 24}}
-            data = {componentsData}
-            keyExtractor = {(item) => {
-                return item.type.name
-            }}
-            renderItem = {({item}) => {
-                return item
-            }}
-        />
+            <FlatList
+    
+                contentContainerStyle={{gap: 8}}
+                data = {componentsData}
+                keyExtractor = {(item) => {
+                    return item.type.name
+                }}
+                renderItem = {({item}) => {
+                    return item
+                }}
+            />
         // <ScrollView style = {{marginTop: 24}} contentContainerStyle={{gap: 8}}>
         //     <Requests setChosenTab={setChosenTab}/>
         //     <Recommended setChosenTab={setChosenTab}/>

@@ -24,7 +24,6 @@ export function Message(props: IMessageProps) {
                         <View style={styles.messageInfoContainer}>
                             <Text style={styles.sendTime}>{createdDate}</Text>
                             <MessageStatusMarkIcon width={10} height={10} color = {COLORS.gray}/>             
-                            {/* <Text style={styles.sendStatus>✓</Text> */}
                         </View>
                     </View>
                 </View>

@@ -3,10 +3,16 @@ import { Url } from "../url";
 import { ICONS } from "../icons/icons";
 import { styles } from "./styles";
 import { COLORS } from "@shared/constants/colors";
+import { useGetAllUnreadMessageQuery } from "@modules/message/api/messageApi";
 
 const { MainPageIcon, MyPostsPageIcon, FriendsPageIcon, ChatsPageIcon } = ICONS;
 
 export function Footer() {
+	const { data: unreadMessages = [] } = useGetAllUnreadMessageQuery(undefined, {
+		pollingInterval: 3000
+	});
+	console.log(unreadMessages, " messafafadsds")
+	const totalUnreadCount = unreadMessages.length;
 	return (
 		<View style={styles.urlsContainer}>
 			<Url
@@ -30,6 +36,7 @@ export function Footer() {
 				text="Чати"
 				icon={<ChatsPageIcon style={styles.urlIcon} color={COLORS.black} />}
 				isChat={true}
+				unreadCount={totalUnreadCount} 
 			></Url>
 		</View>
 	);

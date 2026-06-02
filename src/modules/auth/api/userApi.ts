@@ -43,7 +43,8 @@ export const userApi = baseApi.injectEndpoints({
 		updateUserInfo: builder.mutation<void, ProfileData>({
 			query: (userData) => {
 				const formData = new FormData();
-				
+				console.log("avatar", userData.avatar);
+				console.log("type", typeof userData.avatar);
 				(Object.keys(userData) as Array<keyof ProfileData>).forEach(key => {
 					const value = userData[key];
 					if (key !== 'avatar' && key !== 'signature' && value !== undefined) {

@@ -7,6 +7,7 @@ import { useRouter } from "expo-router";
 import { useCreateFriendRequestMutation, useDeleteFriendRequestMutation, useUpdateFriendRequestMutation } from "@modules/friends/api/friendsApi";
 import { useState } from "react";
 import Modal from "react-native-modal";
+import { getAvatar } from "@shared/utils/avatar";
 
 export function FriendCard(props: IProps) {
     const router = useRouter();
@@ -19,18 +20,15 @@ export function FriendCard(props: IProps) {
     const [createFriendShip] = useCreateFriendRequestMutation()
     const [ updateFriendRequest ] = useUpdateFriendRequestMutation()
     const [isVisible, setIsVisible] = useState<boolean>(true)
+    if (!user.profile_app_profile) return null
     return (
         <>
             {isVisible && (
                 <View style={styles.card}>
                     <View style={styles.cardContent}>
-                        <Image style={styles.authorAvatar} source={
-                            user.profile_app_profile.avatar
-                            ? { uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${user.profile_app_profile.avatar}`, }
-                            : require("../../../../assets/defaultAvatar.png")
-                        }/>
+                        <Image style={styles.authorAvatar} source={{ uri: getAvatar(user.profile_app_profile.avatar)}}/>
                         <View style={styles.friendInfo}>
-                            <Text style={styles.friendsFullName}>{ user.first_name }asdasdad { user.last_name }</Text>
+                            <Text style={styles.friendsFullName}>{ user.first_name } { user.last_name }</Text>
                             <Text style={styles.friendsNickName}>@{ user.username }</Text>
                         </View>
                     </View>
@@ -83,7 +81,7 @@ export function FriendCard(props: IProps) {
                                                 if (requestId){
                                                     updateFriendRequest({
                                                         requestId,
-                                                        status: "Canceled"
+                                                        status: "canceled"
                                                     })
                                                 }
                                                 setIsVisible(false)

@@ -12,6 +12,7 @@ import Modal from "react-native-modal"
 
 import { CreatePostForm } from "@modules/posts/ui/create-post-form";
 import { useDeletePostMutation } from "@modules/posts/api/postsApi";
+import { getAvatar } from "@shared/utils/avatar";
 
 
 export function PostCard(props: IProps){
@@ -34,11 +35,7 @@ export function PostCard(props: IProps){
             <View style={styles.postHeader}>
                 <View style={styles.postAvatarSignatureInfo}>
                     <View style={styles.postAvatarInfo}>
-                        <Image style={styles.authorAvatar} source={
-							authorProfile.avatar
-							? { uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${authorProfile.avatar}`, }
-							: require("../../../../assets/defaultAvatar.png")
-					}/>
+                        <Image style={styles.authorAvatar} source={{ uri: getAvatar(authorProfile.avatar) }}/>
                         <Text style={styles.authorName}>{authorUser.username}</Text>
                     </View>
                     { authorProfile.signature && 

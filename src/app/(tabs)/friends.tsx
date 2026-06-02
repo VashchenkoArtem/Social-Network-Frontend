@@ -15,7 +15,7 @@ export default function FriendsPage() {
 		{ title: "Головна", content: <Friends setChosenTab={setChosenTab}/> },
 		{ title: "Запити", content: 
 			<View style = {{marginTop: 24, gap: 8}}>
-				<Requests setChosenTab={setChosenTab}/>
+				<Requests isMarginBottom={true} setChosenTab={setChosenTab}/>
 			</View> },
 		{ title: "Рекомендації", content: 
 			<View style = {{marginTop: 24, gap: 8}}>
@@ -23,7 +23,7 @@ export default function FriendsPage() {
 			</View>  },
 		{ title: "Всі друзі", content: 
 			<View style = {{marginTop: 24, gap: 8}}>
-				<AllFriends setChosenTab={setChosenTab}/>
+				<AllFriends isMarginBottom={true} setChosenTab={setChosenTab}/>
 			</View> },
 	];
 	return (

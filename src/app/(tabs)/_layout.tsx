@@ -10,6 +10,7 @@ const styles = StyleSheet.create({
 	tabs: {
 		flexDirection: "row",
 		gap: 23,
+		height: 55,
 	},
 	tab: {
 		alignItems: "center",

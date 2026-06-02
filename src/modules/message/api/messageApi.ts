@@ -7,7 +7,7 @@ export const messageApi = baseApi.injectEndpoints({
     endpoints: ( builder ) => ({
         getMessages: builder.query<IMessage[], IMessageQuery>({
             query: ({chatId, cursorId, take}) => ({
-                url: `messages/${chatId}?cursorId=${cursorId}&take=${take}`
+                url: `messages/chats/${chatId}?cursorId=${cursorId}&take=${take}`
             }),
             async onCacheEntryAdded(
             arg,
@@ -41,11 +41,25 @@ export const messageApi = baseApi.injectEndpoints({
             forceRefetch: ({ currentArg, previousArg }) => {
                 return currentArg !== previousArg
             }
+        }),
+        getAllUnreadMessage: builder.query<IMessage[], void>({
+            query: () => ({
+                url: "messages/unread",
+            })
+        }),
+        getUnreadMessageFromChat: builder.query<IMessage[], number>({
+            query: (chatid) => ({
+                url: "/messages/unreadChat",
+                method: "POST",
+                body: [{chatid}]
+            })
         })
     }),
     overrideExisting: true
 })
 
 export const { 
-    useGetMessagesQuery 
+    useGetMessagesQuery,
+    useGetAllUnreadMessageQuery,
+    useGetUnreadMessageFromChatQuery
 } = messageApi

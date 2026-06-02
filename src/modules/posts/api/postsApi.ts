@@ -7,7 +7,7 @@ export const postApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
         getAllPosts: builder.query<IPost[], void>({
             query: () => ({
-                url: 'posts?take=5',
+                url: 'posts?take=3',
                 method: 'GET'
             }),
         }),
@@ -44,7 +44,8 @@ export const postApi = baseApi.injectEndpoints({
             }),
             invalidatesTags: ['Post']
         }),
-    })
+    }),
+    overrideExisting: true
 })
 
 export const {

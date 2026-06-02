@@ -76,7 +76,7 @@ export function FriendProfile({ userId, requestId }: IProps) {
                             if (requestId){
                                 await updateFriendRequest({
                                     requestId: requestId,
-                                    status: "Accepted"
+                                    status: "accepted"
                                 })
                             }else{
                                 await createFriendRequest({
@@ -89,13 +89,13 @@ export function FriendProfile({ userId, requestId }: IProps) {
                             if (requestId){
                                 await updateFriendRequest({
                                     requestId: requestId,
-                                    status: "Canceled"
+                                    status: "canceled"
                                 })
                                 router.push("/(friends)")
                             }else{
                                 await createFriendRequest({
                                     receiverId: userId,
-                                    status: "Canceled"
+                                    status: "canceled"
                                 })
                                 router.push("/(friends)")
                             }

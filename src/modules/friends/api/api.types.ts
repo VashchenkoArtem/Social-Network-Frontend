@@ -16,7 +16,7 @@ export interface CreateFriendRequest {
 
 export interface UpdateFriendRequest {
     requestId: number
-    status: "Pending" | "Accepted" | "Canceled"
+    status: "pending" | "accepted" | "canceled"
     
 }
 
