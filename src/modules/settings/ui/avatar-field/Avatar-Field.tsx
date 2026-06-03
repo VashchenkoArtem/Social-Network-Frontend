@@ -23,9 +23,9 @@ export function AvatarField({ value, onPress, avatar }: AvatarFieldProps) {
         >
             <View style={styles.AvatarView}>
                 <Image
-                    source={{uri: value 
-						? value 
-						: getAvatar(avatar)
+                    source={{uri: value
+						? value
+						: `http://${SERVER.host}:${SERVER.port}/media/thumb/${avatar}` 
 					}}
                     style={styles.SelectedAvatar}
                 />

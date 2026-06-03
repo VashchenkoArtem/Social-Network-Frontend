@@ -3,7 +3,7 @@ import { ClientEvents, ServerEvents } from "./types/socket.types";
 import { SERVER } from "@shared/constants/server";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-console.log(`http://${SERVER.host}:${SERVER.port}`)
+
 export const socket: Socket<ServerEvents, ClientEvents> = io(`http://${SERVER.host}:${SERVER.port}`, {
     autoConnect: false
 });

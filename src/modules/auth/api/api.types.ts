@@ -40,7 +40,7 @@ export interface ProfileData {
     pseudonym?: string;
     email?: string;
     password?: string;
-    avatar?: string | ReactNativeFile;
+    avatar?:  ReactNativeFile;
     signature?: string | ReactNativeFile;
     birth_date?: string;
 }

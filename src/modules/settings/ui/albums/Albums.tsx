@@ -79,12 +79,11 @@ export const AlbumsPage = () => {
 		
 		setModalVisible(false);
 	};
-	
 	if (!user) {
-		return <Redirect href={"/login"}></Redirect>;
+        return <Redirect href={"/login"}></Redirect>;
 	}
 	const { data: albums = [] } = useGetAlbumsQuery(user.id, {
-		pollingInterval: 3000,
+        pollingInterval: 3000,
 	});
     console.log(albums)
 	const handlePhotoVisibility = async (photoId: number, isVisible: boolean) => {

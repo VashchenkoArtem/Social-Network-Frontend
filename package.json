@@ -15,6 +15,7 @@
     "@react-native-async-storage/async-storage": "2.2.0",
     "@reduxjs/toolkit": "^2.11.2",
     "@types/react": "~19.2.10",
+    "axios": "^1.17.0",
     "expo": "^56.0.8",
     "expo-constants": "~56.0.15",
     "expo-font": "~56.0.5",

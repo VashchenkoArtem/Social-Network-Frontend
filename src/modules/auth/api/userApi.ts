@@ -42,29 +42,16 @@ export const userApi = baseApi.injectEndpoints({
 		}),
 		updateUserInfo: builder.mutation<void, ProfileData>({
 			query: (userData) => {
-				const formData = new FormData();
-				console.log("avatar", userData.avatar);
-				console.log("type", typeof userData.avatar);
-				(Object.keys(userData) as Array<keyof ProfileData>).forEach(key => {
-					const value = userData[key];
-					if (key !== 'avatar' && key !== 'signature' && value !== undefined) {
-						formData.append(key, String(value));
-					}
-				});
+			const formData = new FormData();
+			if (userData.first_name) formData.append("first_name", userData.first_name)
+			if (userData.last_name) formData.append("last_name", userData.last_name)
+			if (userData.email) formData.append("email", userData.email)
 
-				if (userData.avatar) {
-					const avatarFile = typeof userData.avatar === 'string' 
-						? { uri: userData.avatar, name: 'avatar.jpg', type: 'image/jpeg' }
-						: userData.avatar;
-
-					formData.append('avatars', avatarFile as any);
-				}
-
-				return {
-					url: 'update-user',
-					method: 'PATCH',
-					body: formData,
-				};
+			return {
+				url: 'update-user',
+				method: 'PATCH',
+				body: formData,
+			};
 			},
 			invalidatesTags: ["User", "Album"],
 		}),

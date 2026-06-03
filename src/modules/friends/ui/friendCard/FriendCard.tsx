@@ -51,7 +51,7 @@ export function FriendCard(props: IProps) {
                                 event.stopPropagation()
                                 // setIsVisible(false)
                                 if (requestId){
-                                    console.log(deleteFriendRequestModal)
+                                    
                                     setDeleteFriendRequestModal(!deleteFriendRequestModal)
                                 }
                         }}/>

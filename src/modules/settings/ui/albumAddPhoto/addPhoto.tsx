@@ -5,13 +5,40 @@ import { Button } from "@shared/ui/button";
 import { ICONS } from "@shared/ui";
 import { COLORS } from "@shared/constants/colors";
 import { styles } from "./styles";
+import { SERVER } from "@shared/constants/server";
+import { ReactNativeFile } from "@modules/auth/api/api.types";
+import { useUserContext } from "@modules/auth/context/user-context";
 
 type Props = {
 	albumId: number;
 };
 
 export const AddAlbumPhoto = ({ albumId }: Props) => {
-	const [addPhoto] = useAddAlbumPhotoMutation();
+	const { token } = useUserContext()!
+	const addPhoto = async ({albumId,files}: {albumId: number, files: ReactNativeFile[]}) => {
+		const xhr = new XMLHttpRequest();
+		const formData = new FormData();
+
+		// albumId как обычное поле
+		formData.append('albumId', String(albumId));
+
+		xhr.open('PATCH', `http://${SERVER.host}:${SERVER.port}/add-photo`);
+
+		xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+
+		// ❌ НЕ ставим Content-Type вручную
+
+		xhr.onload = () => {
+			console.log('STATUS:', xhr.status);
+			console.log('RESPONSE:', xhr.responseText);
+		};
+
+		xhr.onerror = (e) => {
+			console.log('XHR ERROR:', e);
+		};
+
+		xhr.send(formData);
+	};
 
 	const pickImage = async () => {
 		const result = await ImagePicker.launchImageLibraryAsync({

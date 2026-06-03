@@ -17,9 +17,9 @@ interface IUserContextProvider {
 	children: ReactNode;
 }
 export function useUserContext() {
-	const { user } = useContext(UserContext)!
+	const { user, token } = useContext(UserContext)!
 	if (user) {
-		return {user}
+		return {user, token}
 	}
 	return
 }

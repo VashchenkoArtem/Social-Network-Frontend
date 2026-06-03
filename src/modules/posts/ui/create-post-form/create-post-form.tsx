@@ -17,7 +17,7 @@ import { ICONS } from "@shared/ui";
 import { COLORS } from "@shared/constants/colors";
 import * as ImagePicker from "expo-image-picker";
 import { useContext, useEffect, useState } from "react";
-import { UserContext } from "@modules/auth/context/user-context";
+import { UserContext, useUserContext } from "@modules/auth/context/user-context";
 import { PostTags } from "@modules/tabs/ui/postTags/postTags";
 import { PostLinks } from "@modules/tabs/ui/postLinks/postLinks";
 import { SERVER } from "@shared/constants/server";
@@ -31,6 +31,7 @@ export function CreatePostForm(props: {
     editData?: IPost;
 }) {
 	const { setIsCreatePostModalOpen, editData } = props;
+	const { token } = useUserContext()!
 	const { data: allTags } = useGetTagsQuery();
 	const {
 		handleSubmit,
@@ -107,19 +108,20 @@ export function CreatePostForm(props: {
 		formData.append("content", data.content);
 		formData.append("topic", data.topic || "");
 		formData.append("authorId", String(user?.id));
-
+		const xhr = new XMLHttpRequest();
 		postImages.forEach((uri: string, index: number) => {
-			if (uri.startsWith('file://') || uri.startsWith('content://')) {
-				const fileToUpload = {
-					uri,
-					name: `photo_${Date.now()}_${index}.jpg`,
-					type: "image/jpeg",
-				};
-				formData.append("images", fileToUpload as unknown as Blob);
-			} else {
-				formData.append("existingPhotos", uri);
-			}
+		if (uri.startsWith('file://') || uri.startsWith('content://')) {
+			formData.append('images', {
+			uri,
+			name: `photo_${Date.now()}_${index}.jpg`,
+			type: 'image/jpeg',
+			} as any);
+		} else {
+			formData.append('existingPhotos', uri);
+		}
 		});
+
+
 
 		data.tags?.forEach((tagId: number) => {
 			formData.append("tags", String(tagId));
@@ -135,15 +137,19 @@ export function CreatePostForm(props: {
 			if (editData) {
 				await updatePost({ id: editData.id, formData }).unwrap();
 			} else {
-				await createPost(formData).unwrap();
-			}
-			
-			reset();
-			setPostImages([]);
-			setIsCreatePostModalOpen(false);
-		} catch (error) {
-			console.error("Помилка збереження:", error);
-		}
+				xhr.open('POST', `http://${SERVER.host}:${SERVER.port}/posts`);
+
+				xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+
+				xhr.send(formData);
+					}
+					
+					reset();
+					setPostImages([]);
+					setIsCreatePostModalOpen(false);
+				} catch (error) {
+					console.error("Помилка збереження:", error);
+				}
 	};
 
 

@@ -28,7 +28,8 @@ export const styles = StyleSheet.create({
     authorAvatar: {
         width: 46,
         height: 46,
-        borderRadius: 123
+        borderRadius: 123,
+        backgroundColor: COLORS.preWhite
     },
 
     postAvatarSignatureInfo: {

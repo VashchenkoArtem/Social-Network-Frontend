@@ -10,6 +10,7 @@ import { Input } from "@shared/ui/input";
 import { SignatureEditor } from "@shared/ui/signatureEditor";
 import { Image } from "react-native";
 import { TouchableOpacity } from "react-native";
+import axios from 'axios';
 import {
 	useSendCodeMutation,
 	useUpdateUserInfoMutation,
@@ -71,11 +72,22 @@ export function PersonalInformation() {
 		return <Redirect href={"/login"}></Redirect>;
 	}
 	const passwordValue = watch("password");
-	const handleSaveSignature = async (base64: string) => {
-		await updateUserSignature({ signature: base64 }).unwrap();
-		setSelectedType("signature");
-		setIsEditingSignature(false);
-	}
+	const handleSaveSignature = async (uri: string) => {
+		const xhr = new XMLHttpRequest();
+		const formData = new FormData();
+
+		formData.append('signature', {
+			uri: uri,
+			name: 'signature.png',
+			type: 'image/png',
+		} as any);
+
+		xhr.open('PATCH', `http://${SERVER.host}:${SERVER.port}/signature`);
+
+		xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+
+		xhr.send(formData);
+	};
 
 	const onSubmit = async (data: FormData) => {
 			try {
@@ -85,21 +97,24 @@ export function PersonalInformation() {
 					username: data.nickname,
 					birth_date: data.birthDate,
 				};
-
 				if (data.avatar) {
 					const isLocalUri = data.avatar.startsWith('file') || data.avatar.startsWith('ph');
 					
 					if (isLocalUri) {
-						payload.avatar = {
+						const xhr = new XMLHttpRequest();
+						const formData = new FormData();
+
+						formData.append('avatars', {
 							uri: data.avatar,
 							name: 'avatar.jpg',
 							type: 'image/jpeg',
-						} as any;
+						} as any);
+
+						xhr.open('PATCH', `http://${SERVER.host}:${SERVER.port}/update-user`);
+						xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+						xhr.send(formData);
 					}
 				}
-
-				await updateUserInfo(payload).unwrap();
-				
 				reset(data); 
 				setIsEditingProfile(false);
 				setIsEditingPersonalInfo(false);
