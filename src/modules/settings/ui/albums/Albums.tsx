@@ -85,14 +85,13 @@ export const AlbumsPage = () => {
 	const { data: albums = [] } = useGetAlbumsQuery(user.id, {
         pollingInterval: 3000,
 	});
-    console.log(albums)
 	const handlePhotoVisibility = async (photoId: number, isVisible: boolean) => {
 		try {
 			await togglePhotoVisibility({photoId, isVisible})
 		}catch (error){
 			console.log(error)
 		}
-	}
+	}   
 
 return (
     <KeyboardAwareScrollView

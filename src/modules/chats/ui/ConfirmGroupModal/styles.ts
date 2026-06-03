@@ -6,37 +6,69 @@ const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 export const styles = StyleSheet.create({
     // Базові стилі для самої обгортки react-native-modal
     modal: {
-        justifyContent: "flex-end",
         margin: 0,
+        justifyContent: "center",
+        alignItems: "center"
     },
+
     // Біле вікно модалки, що виїжджає знизу й займає більшу частину екрана
     container: {
-        backgroundColor: COLORS.foggy,
-        borderTopLeftRadius: 24,
-        borderTopRightRadius: 24,
-        paddingHorizontal: 20,
-        paddingTop: 16,
-        paddingBottom: 30,
-        height: SCREEN_HEIGHT * 0.85, // Оптимальна висота за дизайном
+        flexDirection: 'column',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+        gap: 24,
+        backgroundColor: COLORS.white,
+        borderRadius: 20,
+
+        padding: 24,
+        // paddingHorizontal: 44,
+        // paddingBottom: 44
+        // height: SCREEN_HEIGHT * 0.85, 
     },
+
     // Кнопка закриття (хрестик) у верхньому правому кутку
     closeBtn: {
-        alignSelf: "flex-end",
-        padding: 4,
+        width: '100%',
+        justifyContent: 'flex-start'
     },
-    closeBtnText: {
-        fontSize: 18,
-        color: COLORS.black,
-        fontWeight: "500",
+    
+    // closeBtnText: {
+    //     fontSize: 18,
+    //     color: COLORS.black,
+    //     fontWeight: "500",
+    // },
+
+    groupNameInputContainer: {
+        flexDirection: 'column',
+        justifyContent: 'flex-start',
+        alignItems: 'flex-start',
+        gap: 6,
+        width: '100%'
     },
-    // Заголовок модалки "Нова група"
+
+    pickGroupImageContainer: {
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: 24,
+        width: '100%'
+    },
+
+    groupImageBtnsContainer: {
+        flexDirection: "row", 
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        gap: 24
+    },
+
     title: {
-        fontSize: 20,
-        fontWeight: "700",
+        fontSize: 30,
+        fontWeight: 500,
         color: COLORS.black,
         textAlign: "center",
-        marginBottom: 16,
+        // marginBottom: 24,
     },
+
     // Лічильник "Вибрано: Х"
     selectedCount: {
         fontSize: 14,

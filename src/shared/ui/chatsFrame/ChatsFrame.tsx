@@ -17,7 +17,7 @@ export function ChatsFrame(props: IChatProps) {
     const { user } = useUserContext()!;
 
     const [search, setSearch] = useState("");
-    console.log(items)
+
     return (
         <View style={styles.mainContainer}>
             <View style={styles.mainContainerHeader}>

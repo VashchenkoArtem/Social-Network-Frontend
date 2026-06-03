@@ -36,7 +36,7 @@ export function PostCard(props: IProps){
                 <View style={styles.postAvatarSignatureInfo}>
                     <View style={styles.postAvatarInfo}>
                         <Image style={styles.authorAvatar} source={{ uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${authorProfile.avatar}` }}/>
-                        <Text style={styles.authorName}>{authorUser.username} {post.id}</Text>
+                        <Text style={styles.authorName}>{authorUser.username}</Text>
                     </View>
                     { authorProfile.signature && 
                     <Image style={styles.authorSignature} source={{

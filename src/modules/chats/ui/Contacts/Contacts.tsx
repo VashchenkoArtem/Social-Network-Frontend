@@ -14,8 +14,7 @@ import { socket } from "@shared/socket/socket";
 
 export function Contacts() {
     const { data } = useGetAllFriendsQuery();
-    const onlineUsers = useOnlineUsers();
-
+    const onlineUsers = useOnlineUsers()
     return (
         <View style={styles.mainContainer}>
             <View style={styles.mainContainerHeader}>

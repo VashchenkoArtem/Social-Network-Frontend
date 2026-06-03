@@ -3,7 +3,7 @@ import { FONTS } from "@shared/constants/fonts";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
-    groupName: {
+    name: {
         fontSize: 16,
         color: COLORS.black,
         fontWeight: 500,
@@ -19,5 +19,9 @@ export const styles = StyleSheet.create({
         right: 0,
         borderWidth: 2,
         borderColor: "white"
-    }
+    },
+    authorSignature: {
+        width: 130,
+        height: 50
+    },
 })

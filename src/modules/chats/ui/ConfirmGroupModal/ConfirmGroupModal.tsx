@@ -9,6 +9,7 @@ import { SERVER } from "@shared/constants/server";
 import { COLORS } from "@shared/constants/colors";
 import { ICONS } from "@shared/ui"; 
 import { styles } from "./styles"; 
+import { Button } from "@shared/ui/button";
 
 interface IUserProfile {
     avatar: string | null;
@@ -129,33 +130,38 @@ export function ConfirmGroupModal({
             onBackdropPress={onClose}
             style={styles.modal}
             useNativeDriver
-            animationIn="slideInRight"
-            animationOut="slideOutRight"
+            animationIn="zoomInDown"
+            animationOut="zoomOutUp"
+            animationInTiming={250}
+            animationOutTiming={200}
         >
             <View style={styles.container}>
-                <TouchableOpacity style={styles.closeBtn} onPress={onClose} hitSlop={15}>
-                    <ICONS.DeleteIcon color={COLORS.black} width={22} height={22} />
+                {/* hitSlop={15} */}
+                <TouchableOpacity style={styles.closeBtn} onPress={onClose}>
+                    <ICONS.CloseModalIcon color={COLORS.black} width={20} height={20} />
                 </TouchableOpacity>
 
-                <Text style={[styles.title, { color: COLORS.black }]}>Нова група</Text>
+                <Text style={styles.title}>Нова група</Text>
 
-                <Text style={{ fontSize: 14, color: COLORS.gray, marginBottom: 4 }}>Назва</Text>
-                <Input
-                    placeholder="Введіть назву"
-                    value={groupName}
-                    onChangeText={setGroupName}
-                    variant="primary"
-                />
+                <View style={styles.groupNameInputContainer}>
+                    <Text style={{ fontSize: 16, color: COLORS.black }}>Назва</Text>
+                    <Input
+                        placeholder="Введіть назву"
+                        value={groupName}
+                        onChangeText={setGroupName}
+                        variant="primary"
+                    />
+                </View>
 
-                <View style={{ alignItems: "center", marginVertical: 15 }}>
+                <View style={styles.pickGroupImageContainer}>
                     <TouchableOpacity onPress={pickGroupImage} activeOpacity={0.8}>
                         {avatarUri ? (
                             <Image 
                                 source={{ uri: avatarUri }} 
-                                style={{ width: 60, height: 60, borderRadius: 30 }} 
+                                style={{ width: 46, height: 46, borderRadius: 100 }} 
                             />
                         ) : (
-                            <View style={[styles.avatar, { width: 60, height: 60, borderRadius: 30, backgroundColor: COLORS.plum, justifyContent: "center", alignItems: "center" }]}>
+                            <View style={[styles.avatar, { width: 46, height: 46, borderRadius: 30, backgroundColor: COLORS.plum, justifyContent: "center", alignItems: "center" }]}>
                                 <Text style={{ color: COLORS.white, fontSize: 18, fontWeight: "bold" }}>
                                     {groupName ? groupName[0].toUpperCase() : "NG"}
                                 </Text>
@@ -163,22 +169,29 @@ export function ConfirmGroupModal({
                         )}
                     </TouchableOpacity>
 
-                    <View style={{ flexDirection: "row", marginTop: 8, alignItems: "center" }}>
-                        <TouchableOpacity style={{ marginRight: 15 }} onPress={pickGroupImage}>
-                            <Text style={{ color: COLORS.plum, fontWeight: "600" }}>
+                    <View style={styles.groupImageBtnsContainer}>
+                        <TouchableOpacity style={{ marginRight: 15, alignItems: 'center' }} onPress={pickGroupImage}>
+                            <Text style={{ color: COLORS.plum, fontWeight: 500 }}>
                                 {avatarUri ? "Змінити... " : "+ Додайте фото"}
                             </Text>
                         </TouchableOpacity>
+
+                        {!avatarUri && (                            
+                            <TouchableOpacity style={{ flexDirection: 'row', justifyContent: 'space-between', gap: 8, alignItems: 'center' }} onPress={pickGroupImage}>
+                                <ICONS.MyPostsPageIcon color={COLORS.plum}/>
+                                <Text style={{ color: COLORS.plum, fontWeight: 500 }}>Оберіть фото</Text>
+                            </TouchableOpacity>
+                        )}
                         
                         {avatarUri && (
                             <TouchableOpacity onPress={() => onChangeAvatar(null)}>
-                                <Text style={{ color: COLORS.gray, fontWeight: "600" }}>Видалити</Text>
+                                <Text style={{ color: COLORS.gray, fontWeight: 500 }}>Видалити</Text>
                             </TouchableOpacity>
                         )}
                     </View>
                 </View>
 
-                <Text style={{ fontSize: 14, color: COLORS.gray, marginBottom: 8 }}>Учасники</Text>
+                <Text style={{ fontSize: 16, color: COLORS.black, marginBottom: 16, textAlign: 'left' }}>Учасники</Text>
 
                 <FlatList
                     data={chosenFriends}
@@ -215,11 +228,23 @@ export function ConfirmGroupModal({
                 />
 
                 <View style={styles.footerRow}>
-                    <TouchableOpacity style={[styles.btn, styles.btnCancel, { backgroundColor: COLORS.lightestGray }]} onPress={onBackStep}>
+                    {/* <TouchableOpacity style={[styles.btn, styles.btnCancel, { backgroundColor: COLORS.lightestGray }]} onPress={onBackStep}>
                         <Text style={{ color: COLORS.gray }}>Назад</Text>
-                    </TouchableOpacity>
-                    
-                    <TouchableOpacity 
+                    </TouchableOpacity> */}
+                    <Button 
+                        variant="white"
+                        text="Назад"
+                        onPress={onBackStep}
+                    />
+
+                    <Button 
+                        variant="purple"
+                        text="Створити групу"
+                        onPress={handleCreateGroupSubmit}
+                        disabled={!groupName.trim() || selectedUserIds.length === 0 || isCreating}
+                    />
+                                                            
+                    {/* <TouchableOpacity 
                         style={[
                             styles.btn, 
                             styles.btnNext, 
@@ -232,7 +257,7 @@ export function ConfirmGroupModal({
                         <Text style={{ color: COLORS.white }}>
                             {isCreating ? "..." : "Створити групу"}
                         </Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                 </View>
             </View>
         </Modal>

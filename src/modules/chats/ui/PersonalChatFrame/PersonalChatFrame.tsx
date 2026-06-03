@@ -22,12 +22,15 @@ export function PersonalChatFrame(props: {chat: IChat}){
                 router.push(`(chats)/${chat.id}`);
             }}
         >
-            <Image
-                source={{
-                    uri: getAvatar(participantUser.profile_app_profile.avatar)
-                }}
-                style={{ width: 46, height: 46, borderRadius: 123, backgroundColor: COLORS.gray }}
-            />
+            <View>
+                <Image
+                    source={{
+                        uri: getAvatar(participantUser.profile_app_profile.avatar)
+                    }}
+                    style={{ width: 46, height: 46, borderRadius: 123, backgroundColor: COLORS.gray }}
+                />
+                <View style = {styles.contactStatus}/>
+            </View>
 
             <View style = {{ justifyContent: "center", flex: 1}}>
                 <View style = {{ flexDirection: "row",flex: 1, justifyContent: "space-between"}}>

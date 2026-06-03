@@ -8,7 +8,6 @@ export function Requests(props: {setChosenTab: (title: string) => void, isMargin
     const { data } = useGetAllRequestsQuery(undefined, {
         pollingInterval: 5000
     })
-    console.log(data)
     if (!data) { return null }
     return (
         <View style = {[isMarginTop && {marginTop: 24}, isMarginBottom && {marginBottom: 24}]}>

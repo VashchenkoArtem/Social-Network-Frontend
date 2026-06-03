@@ -19,7 +19,7 @@ export const friendApi = baseApi.injectEndpoints({
                 method: 'GET'
             })
         }),
-
+        
         createFriendRequest: builder.mutation<void, CreateFriendRequest>({
             query: (body) => ({
                 url: 'requests',

@@ -28,10 +28,13 @@ export function ContactCard(props: {friend: IUser, isOnline: boolean}){
             router.push(`/(chats)/${chat.id}`)
         }}>
             <View style={{ flexDirection: "row", gap: 12, alignItems: "center", marginBottom: 12 }}>
-                <Image
-                    source={{ uri: getAvatar(friend.profile_app_profile.avatar) }}
-                    style={{ width: 46, height: 46, borderRadius: 123, backgroundColor: COLORS.gray }}
-                />
+                <View>
+                    <Image
+                        source={{ uri: getAvatar(friend.profile_app_profile.avatar) }}
+                        style={{ width: 46, height: 46, borderRadius: 123, backgroundColor: COLORS.gray }}
+                    />
+                    <View style = {styles.contactStatus}/>
+                </View>
                 <Text style = {styles.groupName}>{friend.username}</Text>
             </View>
         </TouchableOpacity>

@@ -13,5 +13,16 @@ export const styles = StyleSheet.create({
         fontSize: 14,
         fontWeight: 400,
         color: COLORS.black
+    },
+    contactStatus: {
+        borderRadius: 123, 
+        backgroundColor: COLORS.lightestGray, 
+        width: 15, 
+        height: 15, 
+        position: "absolute",
+        bottom: 0,
+        right: 0,
+        borderWidth: 2,
+        borderColor: "white"
     }
 })

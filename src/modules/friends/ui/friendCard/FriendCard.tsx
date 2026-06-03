@@ -8,6 +8,8 @@ import { useCreateFriendRequestMutation, useDeleteFriendRequestMutation, useUpda
 import { useState } from "react";
 import Modal from "react-native-modal";
 import { getAvatar } from "@shared/utils/avatar";
+import { useCreateChatMutation } from "@modules/chats/api/chatsApi";
+import { socket } from "@shared/socket/socket";
 
 export function FriendCard(props: IProps) {
     const router = useRouter();
@@ -20,6 +22,7 @@ export function FriendCard(props: IProps) {
     const [createFriendShip] = useCreateFriendRequestMutation()
     const [ updateFriendRequest ] = useUpdateFriendRequestMutation()
     const [isVisible, setIsVisible] = useState<boolean>(true)
+    const [ createChat ] = useCreateChatMutation()
     if (!user.profile_app_profile) return null
     return (
         <>
@@ -42,6 +45,15 @@ export function FriendCard(props: IProps) {
                                         requestId: requestId,
                                     }
                             })
+                            }else if (buttonText === "Повідомлення"){
+                                const chat = await createChat({
+                                    name: "",
+                                    userIds: [user.id]
+                                }).unwrap()
+                                socket.emit("joinChat", {
+                                    chatId: chat.id
+                                })
+                                router.push(`/(chats)/${chat.id}`)
                             }
                         }}/>
                         <Button 
@@ -51,7 +63,6 @@ export function FriendCard(props: IProps) {
                                 event.stopPropagation()
                                 // setIsVisible(false)
                                 if (requestId){
-                                    
                                     setDeleteFriendRequestModal(!deleteFriendRequestModal)
                                 }
                         }}/>

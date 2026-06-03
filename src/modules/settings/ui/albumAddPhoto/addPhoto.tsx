@@ -19,14 +19,11 @@ export const AddAlbumPhoto = ({ albumId }: Props) => {
 		const xhr = new XMLHttpRequest();
 		const formData = new FormData();
 
-		// albumId как обычное поле
 		formData.append('albumId', String(albumId));
 
 		xhr.open('PATCH', `http://${SERVER.host}:${SERVER.port}/add-photo`);
 
 		xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-
-		// ❌ НЕ ставим Content-Type вручную
 
 		xhr.onload = () => {
 			console.log('STATUS:', xhr.status);

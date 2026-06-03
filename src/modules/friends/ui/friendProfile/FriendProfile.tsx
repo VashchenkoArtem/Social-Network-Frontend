@@ -25,7 +25,6 @@ export function FriendProfile({ userId, requestId }: IProps) {
     const [ updateFriendRequest ] = useUpdateFriendRequestMutation()
     const [isAccepted, setIsAccepted ] = useState<boolean>(false)
     const { data: posts } = useGetPostsByUserIdQuery(userId)
-    const [deleteFriendRequest] = useDeleteFriendRequestMutation()
     if (!user) return null
 
 
@@ -70,38 +69,36 @@ export function FriendProfile({ userId, requestId }: IProps) {
                         <Text style = {styles.infoLabel}>Друзі</Text>
                     </View>
                 </View>
-                { !isAccepted && 
-                    <View style={styles.cardButtons}>
-                        <Button variant="purple" text = "Підтвердити"  onPress={async () => {
-                            if (requestId){
-                                await updateFriendRequest({
-                                    requestId: requestId,
-                                    status: "accepted"
-                                })
-                            }else{
-                                await createFriendRequest({
-                                    receiverId: userId
-                                })
-                            }
-                            router.push("/(tabs)/friends")
-                        }}/>
-                        <Button variant="white" text = "Видалити" onPress={async () => {
-                            if (requestId){
-                                await updateFriendRequest({
-                                    requestId: requestId,
-                                    status: "canceled"
-                                })
-                                router.push("/(friends)")
-                            }else{
-                                await createFriendRequest({
-                                    receiverId: userId,
-                                    status: "canceled"
-                                })
-                                router.push("/(friends)")
-                            }
-                        }}/>
-                    </View>
-                }
+                <View style={styles.cardButtons}>
+                    <Button variant="purple" text = "Підтвердити"  onPress={async () => {
+                        if (requestId){
+                            await updateFriendRequest({
+                                requestId: requestId,
+                                status: "accepted"
+                            })
+                        }else{
+                            await createFriendRequest({
+                                receiverId: userId
+                            })
+                        }
+                        router.push("/(tabs)/friends")
+                    }}/>
+                    <Button variant="white" text = "Видалити" onPress={async () => {
+                        if (requestId){
+                            await updateFriendRequest({
+                                requestId: requestId,
+                                status: "canceled"
+                            })
+                            router.push("/(friends)")
+                        }else{
+                            await createFriendRequest({
+                                receiverId: userId,
+                                status: "canceled"
+                            })
+                            router.push("/(friends)")
+                        }
+                    }}/>
+                </View>
             </View>
             { data && 
                 (data?.length > 0 && (

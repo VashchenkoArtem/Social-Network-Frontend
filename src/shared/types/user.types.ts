@@ -3,15 +3,15 @@ import { IAlbum } from "@shared/ui/albumsModal/types";
 export interface IUser {
 	id: number;
 	email: string;
-	first_name: string | null;
-	last_name: string | null;
-	username: string | null;
+	first_name?: string;
+	last_name?: string;
+	username?: string;
 	profile_app_profile: IProfile
 }
 export interface IProfile {
 	pseudonym: string | null;
-	avatar: string | null
-	signature: string | null;
+	avatar?: string
+	signature?: string;
 	birth_date: string | null;
 	is_text_signature: boolean;
 	is_image_signature: boolean | null;
