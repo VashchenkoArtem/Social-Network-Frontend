@@ -13,6 +13,7 @@ import Modal from "react-native-modal"
 import { CreatePostForm } from "@modules/posts/ui/create-post-form";
 import { useDeletePostMutation } from "@modules/posts/api/postsApi";
 import { getAvatar } from "@shared/utils/avatar";
+import { SmallUserCard } from "@shared/ui/smallUserCard/SmallUserCard";
 
 
 export function PostCard(props: IProps){
@@ -32,60 +33,7 @@ export function PostCard(props: IProps){
     const authorUser = post.user_app_user
     return (
         <View style={styles.postContainer}>
-            <View style={styles.postHeader}>
-                <View style={styles.postAvatarSignatureInfo}>
-                    <View style={styles.postAvatarInfo}>
-                        <Image style={styles.authorAvatar} source={{ uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${authorProfile.avatar}` }}/>
-                        <Text style={styles.authorName}>{authorUser.username}</Text>
-                    </View>
-                    { authorProfile.signature && 
-                    <Image style={styles.authorSignature} source={{
-                        uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${authorProfile.signature}`
-                    }}/>}
-                </View>
-                { isEditingPost && (
-                    <Pressable
-                        onPress={() => setisPostModalOpen(false)}
-                    >
-                        <View style={styles.isModalOpenContainer}>
-                            <TouchableOpacity
-                                style={styles.dotIconContainer}
-                                onPress={(event) => {
-                                    event.stopPropagation()
-                                    setisPostModalOpen(!isPostModalOpen)
-                                }}
-                            >
-                                <ICONS.DotsIcon color={COLORS.gray} />
-                            </TouchableOpacity>
-
-                            {isPostModalOpen && (
-                                <View style={styles.postModalMenu}>
-                                    <TouchableOpacity style={styles.postModalMenuBtn} onPress={handleEdit}>
-                                        <ICONS.EditIcon color={COLORS.black} width={18} height={18} />
-                                        <Text style={styles.postModalBtnTxt}>Редагувати</Text>
-                                    </TouchableOpacity>
-
-                                    <View style={styles.devider}></View>
-
-                                    <TouchableOpacity 
-                                        style={styles.postModalMenuBtn}
-                                        onPress={async () => {
-                                            try {
-                                                await deletePost(post.id).unwrap()
-                                            } catch (error) {
-                                                console.error("Delete error:", error)
-                                            }
-                                        }}
-                                    >
-                                        <ICONS.DeleteIcon color={COLORS.black} />
-                                        <Text style={[styles.postModalBtnTxt]}>Видалити публікацію</Text>
-                                    </TouchableOpacity>
-                                </View>
-                            )}
-                        </View>
-                    </Pressable>
-                )}
-            </View>
+            <SmallUserCard username={authorUser.username} avatar={authorProfile.avatar} signature={authorProfile.signature} isPadding={true}/>
             <Modal
                 isVisible={isEditModalOpen}
                 onBackdropPress={() => setIsEditModalOpen(false)}

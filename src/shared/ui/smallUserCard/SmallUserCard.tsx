@@ -6,21 +6,40 @@ import { styles } from "./styles";
 import { SERVER } from "@shared/constants/server";
 
 export function SmallUserCard(props: IProps){
-    const { avatar, username, signature } = props
+    const { avatar, username, signature, isPadding, lastMessage, time } = props
     return (
-        <View style={{ flex: 1, padding: 16, flexDirection: "row",justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-            <View>
-                <Image
-                    source={{ uri: getAvatar(avatar) }}
-                    style={{ width: 46, height: 46, borderRadius: 123, backgroundColor: COLORS.gray }}
-                />
-                <View style = {styles.contactStatus}/>
-                <Text style = {styles.name}>{username}</Text>
+        <View style={[{ width: "100%",alignItems: "flex-start" }, isPadding && {paddingHorizontal: 16,paddingTop: 16 }]}>
+            <View style = {{flex: 1, flexDirection: 'row', alignItems: "center", gap: 10}}>
+                <View>
+                    <Image
+                        source={{ uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${avatar}` }}
+                        style={{ width: 46, height: 46, borderRadius: 123, backgroundColor: COLORS.lightestGray }}
+                    />
+                    <View style = {styles.contactStatus}/>
+                </View>
+                <View style = {{flex: 1, justifyContent: "center"}}>
+                    <View style = {{ flexDirection: "row",flex: 1, justifyContent: "space-between", alignItems: "center"}}>
+                        <Text style = {styles.name}>{username}</Text>
+                        { lastMessage && time && (
+                            <Text style = {{ fontWeight: 400, color: COLORS.gray, fontSize: 12}}>{new Date(time).toLocaleTimeString([], {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                hour12: false
+                            })}</Text>
+                        )}
+                    </View>
+                    { lastMessage && (
+                        <Text style={styles.lastMessage}>
+                            {lastMessage}
+                        </Text>
+                    )}
+                </View>
             </View>
             { signature && 
-            <Image style={styles.authorSignature} source={{
-                uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${signature}`
-            }}/>}
+                <Image style={styles.authorSignature} source={{
+                    uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${signature}`
+                }}/>
+            }
         </View>
     )
 }

@@ -7,6 +7,7 @@ export const styles = StyleSheet.create({
         flex: 1,
         borderWidth: 1,
         borderColor: COLORS.lightGray,
+        backgroundColor: COLORS.white,
         borderRadius: 10,
         gap: 24,
         padding: 16,

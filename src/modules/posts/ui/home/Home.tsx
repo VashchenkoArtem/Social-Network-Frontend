@@ -29,7 +29,7 @@ export function HomePage(){
         return <Redirect href={"/login"}></Redirect>;
     }
     if (!data) return null
-    if (isFetching)return <ActivityIndicator style={{marginTop: 24}} size = {20} />
+    if (isFetching)return <ActivityIndicator style={{marginTop: 24, marginBottom: 24}} size = {20} />
     return (
         <KeyboardAwareScrollView
             refreshControl={
@@ -38,6 +38,7 @@ export function HomePage(){
                     onRefresh={onRefresh}
                 />
             }
+            contentContainerStyle = {{paddingBottom: 8}}
             scrollEventThrottle={300}
         >
             <WelcomeDetailsModal

@@ -33,6 +33,7 @@ export function MyPostsPage(){
             keyboardShouldPersistTaps="handled"
             contentContainerStyle={{
                 flexGrow: 1,
+                paddingBottom: 8
             }}
             refreshControl={
                 <RefreshControl

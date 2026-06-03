@@ -16,6 +16,7 @@ export function FriendFrame({
     buttonText,
     setChosenTab,
     messageIfNull,
+    toDetailPage,
 }: IProps) {
     const { user } = useContext(UserContext)!;
 
@@ -27,13 +28,14 @@ export function FriendFrame({
                 <Text style={styles.cardTitle}>
                     {frameName}
                 </Text>
-
-                <Text
-                    style={styles.cardLink}
-                    onPress={() => setChosenTab(frameName)}
-                >
-                    Дивитись всі
-                </Text>
+                { toDetailPage && (
+                    <Text
+                        style={styles.cardLink}
+                        onPress={() => setChosenTab(frameName)}
+                    >
+                        Дивитись всі
+                    </Text>
+                )}
             </View>
 
             <View style={{gap: 10}}>
@@ -43,7 +45,8 @@ export function FriendFrame({
                     </Text>
                     ): (
                         <FlatList
-                            style={{gap: 10}}
+                            style = {{gap: 10}}
+                            contentContainerStyle={{gap: 10}}
                             data={data}
                             keyExtractor={(item) => {
                                 return String(item.user.id)

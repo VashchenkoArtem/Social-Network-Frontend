@@ -11,6 +11,7 @@ import { useCreateChatMutation } from "@modules/chats/api/chatsApi";
 import { useRouter } from "expo-router";
 import { socket } from "@shared/socket/socket";
 import { COLORS } from "@shared/constants/colors";
+import { SmallUserCard } from "@shared/ui/smallUserCard/SmallUserCard";
 
 export function ContactCard(props: {friend: IUser, isOnline: boolean}){
     const [ createChat ] = useCreateChatMutation()
@@ -27,16 +28,7 @@ export function ContactCard(props: {friend: IUser, isOnline: boolean}){
             })
             router.push(`/(chats)/${chat.id}`)
         }}>
-            <View style={{ flexDirection: "row", gap: 12, alignItems: "center", marginBottom: 12 }}>
-                <View>
-                    <Image
-                        source={{ uri: getAvatar(friend.profile_app_profile.avatar) }}
-                        style={{ width: 46, height: 46, borderRadius: 123, backgroundColor: COLORS.gray }}
-                    />
-                    <View style = {styles.contactStatus}/>
-                </View>
-                <Text style = {styles.groupName}>{friend.username}</Text>
-            </View>
+            <SmallUserCard username={friend.username} avatar={friend.profile_app_profile.avatar} />
         </TouchableOpacity>
     )
 }

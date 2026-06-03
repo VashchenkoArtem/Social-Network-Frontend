@@ -12,14 +12,13 @@ import { AllFriends } from "../allFriends/AllFriends"
 export function Friends(props: {setChosenTab: (title: string) => void}){
     const { setChosenTab } = props
     const componentsData = [
-        <Requests isMarginTop={true} setChosenTab={setChosenTab}/>,
-        <Recommended setChosenTab={setChosenTab}/>,
-        <AllFriends isMarginBottom={true} setChosenTab={setChosenTab}/>
+        <Requests toDetailPage={true} setChosenTab={setChosenTab}/>,
+        <Recommended toDetailPage={true} setChosenTab={setChosenTab}/>,
+        <AllFriends toDetailPage={true} setChosenTab={setChosenTab}/>
     ]
     return (
-            <FlatList
-    
-                contentContainerStyle={{gap: 8}}
+            <FlatList   
+                contentContainerStyle={{gap: 8, paddingBottom: 8, paddingTop: 24}}
                 data = {componentsData}
                 keyExtractor = {(item) => {
                     return item.type.name

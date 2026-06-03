@@ -24,4 +24,9 @@ export const styles = StyleSheet.create({
         width: 130,
         height: 50
     },
+    lastMessage: {
+        fontSize: 14,
+        fontWeight: 400,
+        color: COLORS.black
+    },
 })
