@@ -15,6 +15,15 @@ import { socket } from "@shared/socket/socket";
 export function Contacts() {
     const { data } = useGetAllFriendsQuery();
     const onlineUsers = useOnlineUsers()
+    const [searchQuery, setSearchQuery] = useState("")
+    const filteredContacts = data?.filter((item) => {
+        if (!item?.user?.username) return false
+
+        const username = item.user.username.toLowerCase()
+        const search = searchQuery.toLowerCase()
+
+        return username.includes(search)
+    }) ?? []
     return (
         <View style={styles.mainContainer}>
             <View style={styles.mainContainerHeader}>
@@ -26,10 +35,13 @@ export function Contacts() {
                 iconLeft={<SearchIcon color={COLORS.gray} width={20} height={20} />}
                 placeholder="Пошук"
                 notMarginBottom={true}
+                value={searchQuery}
+                onChangeText={setSearchQuery}
             />
 
             <FlatList
-                data={data}
+                data={filteredContacts}
+                contentContainerStyle={{gap: 16}}
                 keyExtractor={(item) => String(item.user.id)}
                 renderItem={({ item }) => {
                     const isOnline = onlineUsers.has(Number(item.user.id));

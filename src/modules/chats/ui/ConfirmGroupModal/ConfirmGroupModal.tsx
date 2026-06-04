@@ -138,7 +138,7 @@ export function ConfirmGroupModal({
             <View style={styles.container}>
                 {/* hitSlop={15} */}
                 <TouchableOpacity style={styles.closeBtn} onPress={onClose}>
-                    <ICONS.CloseModalIcon color={COLORS.black} width={20} height={20} />
+                    <ICONS.CloseModalIcon color={COLORS.black} width={12} height={12} />
                 </TouchableOpacity>
 
                 <Text style={styles.title}>Нова група</Text>
@@ -172,7 +172,7 @@ export function ConfirmGroupModal({
                     <View style={styles.groupImageBtnsContainer}>
                         <TouchableOpacity style={{ marginRight: 15, alignItems: 'center' }} onPress={pickGroupImage}>
                             <Text style={{ color: COLORS.plum, fontWeight: 500 }}>
-                                {avatarUri ? "Змінити... " : "+ Додайте фото"}
+                                {avatarUri ? "Змінити" : "+ Додайте фото"}
                             </Text>
                         </TouchableOpacity>
 
@@ -191,41 +191,45 @@ export function ConfirmGroupModal({
                     </View>
                 </View>
 
-                <Text style={{ fontSize: 16, color: COLORS.black, marginBottom: 16, textAlign: 'left' }}>Учасники</Text>
+                <View style={styles.groupPartisipantsContainer}>
+                    <Text style={{ fontSize: 16, color: COLORS.black, textAlign: 'left' }}>Учасники</Text>
 
-                <FlatList
-                    data={chosenFriends}
-                    keyExtractor={(item) => item.id.toString()}
-                    showsVerticalScrollIndicator={false}
-                    renderItem={({ item }) => {
-                        const userAvatarUri = item.profile?.avatar 
-                            ? `http://${SERVER.host}:${SERVER.port}/media/thumb/${item.profile.avatar}`
-                            : null;
+                    <FlatList
+                        data={chosenFriends}
+                        style={{ width: '100%' }}
+                        contentContainerStyle={{ width: '100%' }}
+                        keyExtractor={(item) => item.id.toString()}
+                        showsVerticalScrollIndicator={false}
+                        renderItem={({ item }) => {
+                            const userAvatarUri = item.profile?.avatar 
+                                ? `http://${SERVER.host}:${SERVER.port}/media/thumb/${item.profile.avatar}`
+                                : null;
 
-                        return (
-                            <View style={[styles.friendRow, { justifyContent: "space-between" }]}>
-                                <View style={styles.friendInfo}>
-                                    {userAvatarUri ? (
-                                        <Image source={{ uri: userAvatarUri }} style={styles.avatar} />
-                                    ) : (
-                                        <View style={[styles.avatar, styles.placeholderAvatar, { backgroundColor: COLORS.lightestGray }]}>
-                                            <Text style={[styles.placeholderText, { color: COLORS.gray }]}>
-                                                {item.firstname ? item.firstname[0].toUpperCase() : "U"}
-                                            </Text>
-                                        </View>
-                                    )}
-                                    <Text style={[styles.friendName, { color: COLORS.black }]}>
-                                        {item.firstname} {item.lastname}
-                                    </Text>
+                            return (
+                                <View style={[styles.friendRow, { justifyContent: "space-between" }]}>
+                                    <View style={styles.friendInfo}>
+                                        {userAvatarUri ? (
+                                            <Image source={{ uri: userAvatarUri }} style={styles.avatar} />
+                                        ) : (
+                                            <View style={[styles.avatar, styles.placeholderAvatar, { backgroundColor: COLORS.lightestGray }]}>
+                                                <Text style={[styles.placeholderText, { color: COLORS.gray }]}>
+                                                    {item.firstname ? item.firstname[0].toUpperCase() : "U"}
+                                                </Text>
+                                            </View>
+                                        )}
+                                        <Text style={[styles.friendName, { color: COLORS.black }]}>
+                                            {item.firstname} {item.lastname}
+                                        </Text>
+                                    </View>
+                                    
+                                    <TouchableOpacity onPress={() => onRemoveParticipant(item.id)} hitSlop={15}>
+                                        <ICONS.DeleteIcon color={COLORS.gray} width={20} height={20} />
+                                    </TouchableOpacity>
                                 </View>
-                                
-                                <TouchableOpacity onPress={() => onRemoveParticipant(item.id)} hitSlop={15}>
-                                    <ICONS.DeleteIcon color={COLORS.gray} width={20} height={20} />
-                                </TouchableOpacity>
-                            </View>
-                        );
-                    }}
-                />
+                            );
+                        }}
+                    />
+                </View>
 
                 <View style={styles.footerRow}>
                     {/* <TouchableOpacity style={[styles.btn, styles.btnCancel, { backgroundColor: COLORS.lightestGray }]} onPress={onBackStep}>

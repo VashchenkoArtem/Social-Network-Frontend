@@ -49,7 +49,7 @@ export function Chat(props: { chatId: number | undefined}){
                         <Text style={styles.chatName}>
                             { chat.is_group 
                             ? chat.name
-                            : otherUser.user_app_user.username
+                            : otherUser.user_app_user.profile_app_profile.pseudonym
                         }
                             
                         </Text>
@@ -98,11 +98,11 @@ export function Chat(props: { chatId: number | undefined}){
             <View style={styles.inputMessageContainer}>
                 <View style = {{ flex: 1, justifyContent: "center"}}>
                 <Input
-                inputType="text"
-                placeholder="Повідомлення"
-                notMarginBottom={true}
-                value={messageText} 
-                onChangeText={(text) => setMessageText(text)}
+                    inputType="text"
+                    placeholder="Повідомлення"
+                    notMarginBottom={true}
+                    value={messageText} 
+                    onChangeText={(text) => setMessageText(text)}
                 />
                 </View>
 

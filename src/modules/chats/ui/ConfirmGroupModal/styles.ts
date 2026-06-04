@@ -4,40 +4,30 @@ import { COLORS } from "@shared/constants/colors";
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 export const styles = StyleSheet.create({
-    // Базові стилі для самої обгортки react-native-modal
     modal: {
         margin: 0,
         justifyContent: "center",
         alignItems: "center"
     },
 
-    // Біле вікно модалки, що виїжджає знизу й займає більшу частину екрана
     container: {
         flexDirection: 'column',
         justifyContent: 'flex-start',
-        alignItems: 'center',
-        gap: 24,
+        alignItems: 'stretch',
+        gap: 12,
         backgroundColor: COLORS.white,
         borderRadius: 20,
-
-        padding: 24,
-        // paddingHorizontal: 44,
-        // paddingBottom: 44
-        // height: SCREEN_HEIGHT * 0.85, 
+        maxHeight: '80%',
+        maxWidth: '90%',
+        padding: 12,
     },
 
-    // Кнопка закриття (хрестик) у верхньому правому кутку
     closeBtn: {
         width: '100%',
-        justifyContent: 'flex-start'
+        alignSelf: 'stretch',
+        alignItems: 'flex-start',
     },
     
-    // closeBtnText: {
-    //     fontSize: 18,
-    //     color: COLORS.black,
-    //     fontWeight: "500",
-    // },
-
     groupNameInputContainer: {
         flexDirection: 'column',
         justifyContent: 'flex-start',
@@ -47,29 +37,48 @@ export const styles = StyleSheet.create({
     },
 
     pickGroupImageContainer: {
+        width: '100%',
+        // flex: 1,
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        gap: 24,
-        width: '100%'
+        gap: 12,
     },
 
     groupImageBtnsContainer: {
         flexDirection: "row", 
         justifyContent: 'space-between',
         alignItems: 'center',
-        gap: 24
+        gap: 12
     },
 
     title: {
-        fontSize: 30,
+        fontSize: 29,
         fontWeight: 500,
         color: COLORS.black,
         textAlign: "center",
         // marginBottom: 24,
     },
 
-    // Лічильник "Вибрано: Х"
+    groupPartisipantsContainer: {
+        flexDirection: 'column',
+        justifyContent: 'flex-start',
+        alignItems: 'flex-start',
+        width: '100%',
+        gap: 12,
+        textAlign: 'left'
+    },
+
+    footerRow: {
+        width: '100%',
+        alignItems: 'center',
+        flexDirection: "row",
+        justifyContent: "flex-end",
+        gap: 12,
+        // marginTop: 'auto'
+    },
+
+
     selectedCount: {
         fontSize: 14,
         color: COLORS.gray,
@@ -77,7 +86,6 @@ export const styles = StyleSheet.create({
         marginTop: 12,
         marginBottom: 8,
     },
-    // Рядок літери-заголовка у SectionList (А, Б, В...)
     sectionHeader: {
         fontSize: 15,
         fontWeight: "600",
@@ -86,7 +94,6 @@ export const styles = StyleSheet.create({
         paddingVertical: 6,
         marginTop: 6,
     },
-    // Контейнер рядка одного друга
     friendRow: {
         flexDirection: "row",
         alignItems: "center",
@@ -99,20 +106,17 @@ export const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: COLORS.lightestGray,
     },
-    // Інформація про друга (аватар + ім'я) всередині рядка
     friendInfo: {
         flexDirection: "row",
         alignItems: "center",
         flex: 1,
     },
-    // Зображення аватарки
     avatar: {
         width: 40,
         height: 40,
         borderRadius: 20,
         marginRight: 12,
     },
-    // Кругла заглушка, якщо у користувача немає аватарки
     placeholderAvatar: {
         backgroundColor: COLORS.lightestGray,
         justifyContent: "center",
@@ -123,13 +127,11 @@ export const styles = StyleSheet.create({
         fontSize: 15,
         fontWeight: "600",
     },
-    // Текст імені друга
     friendName: {
         fontSize: 16,
         fontWeight: "500",
         color: COLORS.black,
     },
-    // Кастомний круглий чекбокс для першої модалки
     checkbox: {
         width: 22,
         height: 22,
@@ -148,15 +150,6 @@ export const styles = StyleSheet.create({
         fontSize: 12,
         fontWeight: "bold",
     },
-    // Нижня панель для кнопок навігації
-    footerRow: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        gap: 12,
-        marginTop: "auto", // Притискає кнопки до самого низу контейнера
-        paddingTop: 12,
-    },
-    // Базовий клас для кнопок
     btn: {
         flex: 1,
         height: 48,
@@ -164,7 +157,6 @@ export const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
     },
-    // Кнопка "Скасувати" / "Назад"
     btnCancel: {
         backgroundColor: COLORS.lightestGray,
     },
@@ -173,7 +165,6 @@ export const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: "600",
     },
-    // Кнопка "Далі" / "Створити групу"
     btnNext: {
         backgroundColor: COLORS.plum,
     },
@@ -182,7 +173,6 @@ export const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: "600",
     },
-    // Стан заблокованої кнопки, якщо нікого не вибрано
     btnDisabled: {
         backgroundColor: COLORS.lightGray,
         opacity: 0.7,

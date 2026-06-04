@@ -11,7 +11,6 @@ export function Footer() {
 	const { data: unreadMessages = [] } = useGetAllUnreadMessageQuery(undefined, {
 		pollingInterval: 3000
 	});
-	console.log(unreadMessages, " messafafadsds")
 	const totalUnreadCount = unreadMessages.length;
 	return (
 		<View style={styles.urlsContainer}>

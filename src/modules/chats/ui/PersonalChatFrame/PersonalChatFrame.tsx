@@ -24,7 +24,7 @@ export function PersonalChatFrame(props: {chat: IChat}){
             }}
         >
             <SmallUserCard 
-                username={participantUser.username} 
+                pseudonym={participantUser.username} 
                 avatar={participantUser.profile_app_profile.avatar} 
                 lastMessage={
                     chat.chat_app_message.length !== 0

@@ -18,21 +18,35 @@ export function ChatsFrame(props: IChatProps) {
 
     const [search, setSearch] = useState("");
 
+    const filteredMessages = items?.filter(item => {
+        if (!search.trim()) return true
+
+        const searchLw = search.toLowerCase()
+
+        return item.name?.toLowerCase().includes(searchLw)
+    }) ?? []
     return (
         <View style={styles.mainContainer}>
             <View style={styles.mainContainerHeader}>
                 {Icon}
                 <Text style={styles.frameTitle}>{frameTitle}</Text>
             </View>
-            <Input iconLeft={<SearchIcon color={COLORS.gray} width={20} height={20} />} placeholder="Пошук" notMarginBottom={true}/>                    
+            <Input 
+                value = {search}
+                onChangeText = {setSearch}
+                iconLeft={<SearchIcon color={COLORS.gray} width={20} height={20} />} 
+                placeholder="Пошук" 
+                notMarginBottom={true}
+            />                    
 
             <FlatList
                 contentContainerStyle = {styles.itemList}
+                style = {{gap: 16}}
                 keyExtractor={item => String(item.id)}
-                data = {items}
-                    renderItem={({ item }) => {
-                        return <PersonalChatFrame chat = {item}/>
-                    }}
+                data = {filteredMessages}
+                renderItem={({ item }) => {
+                    return <PersonalChatFrame chat = {item}/>
+                }}
             />
         </View>
     );

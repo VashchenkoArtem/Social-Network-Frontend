@@ -33,7 +33,7 @@ export function PostCard(props: IProps){
     const authorUser = post.user_app_user
     return (
         <View style={styles.postContainer}>
-            <SmallUserCard username={authorUser.username} avatar={authorProfile.avatar} signature={authorProfile.signature} isPadding={true}/>
+            <SmallUserCard pseudonym={authorUser.profile_app_profile.pseudonym} avatar={authorProfile.avatar} signature={authorProfile.signature} isPadding={true}/>
             <Modal
                 isVisible={isEditModalOpen}
                 onBackdropPress={() => setIsEditModalOpen(false)}

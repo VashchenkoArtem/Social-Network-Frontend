@@ -1,16 +1,8 @@
-import { useUserContext } from "@modules/auth/context/user-context";
-import { FriendRequest } from "@modules/friends/api/api.types";
-import { SERVER } from "@shared/constants/server";
 import { IUser } from "@shared/types/user.types";
-import { IChatProps } from "@shared/ui/chatsFrame/types";
-import { getAvatar } from "@shared/utils/avatar";
-import { getOtherUser } from "@shared/utils/friends";
-import { View, Image, Text, TouchableOpacity } from "react-native";
-import { styles } from "./styles";
+import { TouchableOpacity } from "react-native";
 import { useCreateChatMutation } from "@modules/chats/api/chatsApi";
 import { useRouter } from "expo-router";
 import { socket } from "@shared/socket/socket";
-import { COLORS } from "@shared/constants/colors";
 import { SmallUserCard } from "@shared/ui/smallUserCard/SmallUserCard";
 
 export function ContactCard(props: {friend: IUser, isOnline: boolean}){
@@ -28,7 +20,7 @@ export function ContactCard(props: {friend: IUser, isOnline: boolean}){
             })
             router.push(`/(chats)/${chat.id}`)
         }}>
-            <SmallUserCard username={friend.username} avatar={friend.profile_app_profile.avatar} />
+            <SmallUserCard pseudonym={friend.profile_app_profile.pseudonym} avatar={friend.profile_app_profile.avatar} />
         </TouchableOpacity>
     )
 }

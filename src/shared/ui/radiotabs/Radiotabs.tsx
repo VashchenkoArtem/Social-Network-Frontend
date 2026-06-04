@@ -14,7 +14,7 @@ export const radioTabsArray: IRadioTab[] = [
             <View
                 style={{ flex: 1, paddingBottom: 8, backgroundColor: COLORS.preWhite }}
             >
-                <Contacts></Contacts>
+                <Contacts/>
             </View>
         ),
     },

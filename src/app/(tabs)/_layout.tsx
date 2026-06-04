@@ -4,7 +4,8 @@ import { constStyles } from "@shared/constants/styles";
 import { Header } from "@shared/ui/header";
 import { Pressable, View } from "react-native";
 import { COLORS } from "@shared/constants/colors";
-import { StyleSheet } from "react-native";
+import { StyleSheet, Text } from "react-native";
+import { useGetAllUnreadMessageQuery } from "@modules/message/api/messageApi";
 
 const styles = StyleSheet.create({
 	tabs: {
@@ -20,6 +21,7 @@ const styles = StyleSheet.create({
 		borderTopColor: "transparent",
 		minWidth: 47,
 		height: 54,
+		position: "relative",
 	},
 	activeTab: {
 		borderTopColor: COLORS.plum,
@@ -28,10 +30,30 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 	},
+	badgeContainer: {
+		position: "absolute",
+		top: 2,
+		right: -6,
+		backgroundColor: COLORS.red,
+		borderRadius: 10,
+		minWidth: 16,
+		height: 16,
+		justifyContent: "center",
+		alignItems: "center",
+		paddingHorizontal: 3,
+		zIndex: 10,
+	},
+	badgeText: {
+		color: COLORS.white,
+		fontSize: 10,
+		fontWeight: "bold",
+		textAlign: "center",
+		lineHeight: 12,
+	},
 });
 
 const { MainPageIcon, MyPostsPageIcon, FriendsPageIcon, ChatsPageIcon } = ICONS;
-const TabButton = ({ route, children, ...props }: any) => {
+const TabButton = ({ route, children, unreadCount, ...props }: any) => {
 	const pathname = usePathname();
 	const isActive = pathname.includes(route);
 
@@ -42,11 +64,24 @@ const TabButton = ({ route, children, ...props }: any) => {
 		>
 			<View style={[styles.tab, isActive ? styles.activeTab : null]}>
 				{children}
+
+				{route === "chats" && unreadCount > 0 && (
+					<View style={styles.badgeContainer}>
+						<Text style={styles.badgeText}>
+							{unreadCount > 99 ? "99+" : unreadCount}
+						</Text>
+					</View>
+				)}
 			</View>
 		</Pressable>
 	);
 };
 export default function TabLayout() {
+	const { data: unreadMessages = [] } = useGetAllUnreadMessageQuery(undefined, {
+		pollingInterval: 3000,
+	});
+	
+	const totalUnreadCount = unreadMessages.length;
 	return (
 		<Tabs
 			screenOptions={{
@@ -93,7 +128,7 @@ export default function TabLayout() {
 					tabBarLabel: "Чати",
 					tabBarLabelStyle: constStyles.tabText,
 					tabBarIcon: () => <ICONS.ChatsPageIcon color={COLORS.black} />,
-					tabBarButton: (props) => <TabButton {...props} route="chats" />,
+					tabBarButton: (props) => <TabButton {...props} route="chats" unreadCount={totalUnreadCount} />,
 				}}
 			/>
 			<Tabs.Screen

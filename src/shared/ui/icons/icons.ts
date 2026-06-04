@@ -23,6 +23,7 @@ import {
 } from "./buttons";
 import { PasswordEyeOpen } from "./inputs/PasswordEyeOpen";
 import { PasswordEyeClose } from "./inputs/PasswordEyeClose";
+import { SearchIcon } from './inputs/Search'
 
 export const ICONS = {
 	MainPageIcon,
@@ -46,5 +47,6 @@ export const ICONS = {
 	PostViewsIcon,
 	LeftArrowIcon,
 	MessageStatusMarkIcon,
-	CloseModalIcon
+	CloseModalIcon,
+	SearchIcon
 };

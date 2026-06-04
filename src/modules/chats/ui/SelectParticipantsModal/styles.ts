@@ -5,112 +5,133 @@ const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 export const styles = StyleSheet.create({
     modal: {
-        justifyContent: "flex-end",
         margin: 0,
+        justifyContent: "center",
+        alignItems: "center"
     },
+
     container: {
-        backgroundColor: COLORS.foggy,
-        borderTopLeftRadius: 24,
-        borderTopRightRadius: 24,
-        paddingHorizontal: 20,
-        paddingTop: 16,
-        paddingBottom: 30,
-        height: SCREEN_HEIGHT * 0.85,
+        flexDirection: 'column',
+        justifyContent: 'flex-start',
+        alignItems: 'stretch',
+        gap: 12,
+        backgroundColor: COLORS.white,
+        borderRadius: 20,
+        maxHeight: '80%',
+        maxWidth: '90%',
+        padding: 12,
     },
+
     closeBtn: {
-        alignSelf: "flex-end",
-        padding: 4,
+        width: '100%',
+        alignSelf: 'stretch',
+        alignItems: 'flex-start',
     },
-    closeBtnText: {
-        fontSize: 18,
-        color: COLORS.black,
-        fontWeight: "500",
-    },
+
     title: {
-        fontSize: 20,
-        fontWeight: "700",
+        fontSize: 29,
+        fontWeight: 500,
         color: COLORS.black,
         textAlign: "center",
-        marginBottom: 16,
     },
+
+    sectionHeaderContainer: {
+        paddingTop: 12,
+        paddingBottom: 6,
+        borderBottomWidth: 1,
+        borderColor: COLORS.lightestGray,
+    },
+
     selectedCount: {
         fontSize: 14,
         color: COLORS.gray,
         fontWeight: "500",
-        marginTop: 12,
-        marginBottom: 8,
+        // marginTop: 12,
+        // marginBottom: 8,
     },
+
     sectionHeader: {
-        fontSize: 15,
-        fontWeight: "600",
-        color: COLORS.gray,
-        backgroundColor: COLORS.foggy,
-        paddingVertical: 6,
-        marginTop: 6,
+        fontSize: 12,
+        fontWeight: 500,
+        color: COLORS.black,
+        // paddingVertical: 6,
+        marginBottom: 6,
     },
+
     friendRow: {
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
         backgroundColor: COLORS.white,
-        paddingHorizontal: 14,
-        paddingVertical: 10,
-        borderRadius: 16,
-        marginBottom: 8,
-        borderWidth: 1,
+        paddingHorizontal: 16,
+        paddingVertical: 8,
+        width: '100%',
+        borderBottomWidth: 1,
         borderColor: COLORS.lightestGray,
     },
+
     friendInfo: {
         flexDirection: "row",
         alignItems: "center",
+        gap: 12,
         flex: 1,
     },
+
     avatar: {
-        width: 40,
-        height: 40,
+        width: 46,
+        height: 46,
         borderRadius: 20,
-        marginRight: 12,
+        // marginRight: 12,
     },
+
     placeholderAvatar: {
         backgroundColor: COLORS.lightestGray,
         justifyContent: "center",
         alignItems: "center",
     },
+
     placeholderText: {
         color: COLORS.gray,
         fontSize: 15,
         fontWeight: "600",
     },
+
     friendName: {
         fontSize: 16,
         fontWeight: "500",
         color: COLORS.black,
     },
+
     checkbox: {
-        width: 22,
-        height: 22,
-        borderRadius: 11,
+        width: 18,
+        height: 18,
+        borderRadius: 4,        
         borderWidth: 2,
-        borderColor: COLORS.lightGray,
+        borderColor: COLORS.plum,
         justifyContent: "center",
         alignItems: "center",
     },
+
     checkboxSelected: {
         backgroundColor: COLORS.plum,
         borderColor: COLORS.plum,
     },
+
     checkboxCheckmark: {
-        color: COLORS.white,
-        fontSize: 12,
-        fontWeight: "bold",
+        color: COLORS.plum,
+        fontSize: 13,
+        fontWeight: 600,
     },
+
     footerRow: {
+        width: '100%',
+        alignItems: 'center',
         flexDirection: "row",
-        justifyContent: "space-between",
-        gap: 12,
-        marginTop: "auto",
-        paddingTop: 12,
+        justifyContent: "flex-end",
+        gap: 16,
+        // marginTop: 'auto'
     },
+
     btn: {
         flex: 1,
         height: 48,

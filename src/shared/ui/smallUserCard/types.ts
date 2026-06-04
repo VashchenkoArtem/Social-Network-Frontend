@@ -1,6 +1,6 @@
 export interface IProps{
     avatar?: string;
-    username?: string;
+    pseudonym?: string;
     signature?: string;
     isPadding?: boolean;
     lastMessage?: string;

@@ -6,7 +6,7 @@ import { styles } from "./styles";
 import { SERVER } from "@shared/constants/server";
 
 export function SmallUserCard(props: IProps){
-    const { avatar, username, signature, isPadding, lastMessage, time } = props
+    const { avatar, pseudonym, signature, isPadding, lastMessage, time } = props
     return (
         <View style={[{ width: "100%",alignItems: "flex-start" }, isPadding && {paddingHorizontal: 16,paddingTop: 16 }]}>
             <View style = {{flex: 1, flexDirection: 'row', alignItems: "center", gap: 10}}>
@@ -19,7 +19,7 @@ export function SmallUserCard(props: IProps){
                 </View>
                 <View style = {{flex: 1, justifyContent: "center"}}>
                     <View style = {{ flexDirection: "row",flex: 1, justifyContent: "space-between", alignItems: "center"}}>
-                        <Text style = {styles.name}>{username}</Text>
+                        <Text style = {styles.name}>{pseudonym}</Text>
                         { lastMessage && time && (
                             <Text style = {{ fontWeight: 400, color: COLORS.gray, fontSize: 12}}>{new Date(time).toLocaleTimeString([], {
                                 hour: '2-digit',

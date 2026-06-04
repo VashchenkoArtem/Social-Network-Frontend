@@ -7,6 +7,9 @@ import { COLORS } from "@shared/constants/colors";
 import { SERVER } from "@shared/constants/server";
 import { styles } from "./styles"; 
 import { FriendRequest } from "@modules/friends/api/api.types";
+import { ICONS } from "@shared/ui/icons/icons";
+import { SearchIcon } from "@shared/ui/icons/inputs";
+import { Button } from "@shared/ui/button";
 
 interface ISelectParticipantsModalProps {
     visible: boolean;
@@ -91,11 +94,12 @@ export function SelectParticipantsModal({
                         </View>
                     )}
                     <Text style={styles.friendName}>
-                        {item.first_name} {item.first_name}
+                        {item.first_name} {item.last_name}
                     </Text>
                 </View>
-
-                <View style={[styles.checkbox, isSelected && styles.checkboxSelected]}>
+                
+                {/* , isSelected && styles.checkboxSelected */}
+                <View style={[styles.checkbox]}>
                     {isSelected && <Text style={styles.checkboxCheckmark}>✓</Text>}
                 </View>
             </TouchableOpacity>
@@ -108,12 +112,14 @@ export function SelectParticipantsModal({
             onBackdropPress={onClose}
             style={styles.modal}
             useNativeDriver
-            animationIn="slideInUp"
-            animationOut="slideOutDown"
+            animationIn="zoomInDown"
+            animationOut="zoomOutUp"
+            animationInTiming={250}
+            animationOutTiming={200}
         >
             <View style={styles.container}>
                 <TouchableOpacity style={styles.closeBtn} onPress={onClose}>
-                    <Text style={styles.closeBtnText}>✕</Text>
+                    <ICONS.CloseModalIcon color={COLORS.black} width={12} height={12} />
                 </TouchableOpacity>
 
                 <Text style={styles.title}>Нова група</Text>
@@ -122,6 +128,7 @@ export function SelectParticipantsModal({
                     placeholder="Пошук"
                     value={searchQuery}
                     onChangeText={setSearchQuery}
+                    iconLeft={<SearchIcon color={COLORS.gray} width={16} height={16} />}
                     variant="primary"
                 />
 
@@ -134,26 +141,41 @@ export function SelectParticipantsModal({
                         sections={sections}
                         keyExtractor={(item) => item.id.toString()}
                         renderItem={renderItem}
-                        renderSectionHeader={({ section: { title } }) => (
-                            <Text style={styles.sectionHeader}>{title}</Text>
+                        renderSectionHeader={({ section }) => (
+                            <View style={styles.sectionHeaderContainer}>
+                                <Text style={styles.sectionHeader}>{section.title}</Text>
+                            </View>
                         )}
                         showsVerticalScrollIndicator={false}
-                        contentContainerStyle={{ paddingBottom: 20 }}
+                        // contentContainerStyle={{ paddingBottom: 16 }}
                     />
                 )}
 
                 <View style={styles.footerRow}>
-                    <TouchableOpacity style={[styles.btn, styles.btnCancel]} onPress={onClose}>
+                    {/* <TouchableOpacity style={[styles.btn, styles.btnCancel]} onPress={onClose}>
                         <Text style={styles.btnCancelText}>Скасувати</Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
+
+                    <Button
+                        variant='white'
+                        text="Скасувати"
+                        onPress={onClose}
+                    />
+
+                    <Button 
+                        variant="purple"
+                        text="Далі"
+                        onPress={onNextStep}
+                        disabled={selectedUserIds.length === 0}
+                    />
                     
-                    <TouchableOpacity 
+                    {/* <TouchableOpacity 
                         style={[styles.btn, styles.btnNext, selectedUserIds.length === 0 && styles.btnDisabled]} 
                         onPress={onNextStep}
                         disabled={selectedUserIds.length === 0}
                     >
                         <Text style={styles.btnNextText}>Далі</Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                 </View>
             </View>
         </Modal>
