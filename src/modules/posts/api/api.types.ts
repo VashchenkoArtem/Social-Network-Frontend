@@ -1,3 +1,5 @@
+import { IPost } from "../ui/postCard/types";
+
 export interface IProfile{
     avatar?: string,
     birth_date?: string,
@@ -50,4 +52,15 @@ export interface CreatePostData {
     content: string
     authorId: number
     photos?: Photo
+}
+export interface PostsPayload{
+    cursor?: number | null;
+    limit?: number;
+}
+export interface PostsResponse {
+    data: IPost[];
+    meta: {
+        nextCursor: number | null;
+        hasMore: boolean
+    }
 }

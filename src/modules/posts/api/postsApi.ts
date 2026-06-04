@@ -1,15 +1,45 @@
 import { baseApi } from "@shared/api/baseApi";
-import { CreatePostData } from "./api.types";
+import { CreatePostData, PostsPayload, PostsResponse } from "./api.types";
 import { CreateAlbumDto } from "@modules/settings/api/albumApi";
 import { IPost } from "../ui/postCard/types";
 
 export const postApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
-        getAllPosts: builder.query<IPost[], void>({
-            query: () => ({
-                url: 'posts?take=3',
-                method: 'GET'
-            }),
+        getAllPosts: builder.query<PostsResponse, PostsPayload>({
+            query: ({ cursor, limit = 3 }) => {
+                const params = new URLSearchParams({
+                    limit: String(limit),
+                });
+
+                if (cursor) {
+                    params.set("cursor", String(cursor));
+                }
+
+                return {
+                    url: `posts?${params.toString()}`,
+                };
+            },
+
+            serializeQueryArgs: () => {
+                return "posts";
+            },
+
+            merge: (currentCache, newItems) => {
+                const existingIds = new Set(
+                    currentCache.data.map(post => post.id)
+                );
+
+                const uniquePosts = newItems.data.filter(
+                    post => !existingIds.has(post.id)
+                );
+
+                currentCache.data.push(...uniquePosts);
+                currentCache.meta = newItems.meta;
+            },
+
+            forceRefetch({ currentArg, previousArg }) {
+                return currentArg?.cursor !== previousArg?.cursor;
+            },
         }),
         myPosts: builder.query<IPost[], void>({
             query: () => ({
