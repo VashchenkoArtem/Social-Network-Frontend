@@ -42,6 +42,8 @@ export const styles = StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
+        alignSelf: 'stretch',
+        textAlign: 'center',
         gap: 12,
     },
 
