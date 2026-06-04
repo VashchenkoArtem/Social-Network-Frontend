@@ -1,5 +1,5 @@
 import { baseApi } from "@shared/api/baseApi";
-import { IMessageQuery } from "./api.types";
+import { IMessageQuery, IUnreadMessageFromChatResponse } from "./api.types";
 import { IMessage, IMessageResponse } from "@shared/types/message.types";
 import { socket } from "@shared/socket/socket";
 
@@ -42,18 +42,21 @@ export const messageApi = baseApi.injectEndpoints({
                 return currentArg !== previousArg
             }
         }),
-        getAllUnreadMessage: builder.query<IMessage[], void>({
+        getAllUnreadMessage: builder.query<number, void>({
             query: () => ({
                 url: "messages/unread",
             })
         }),
-        getUnreadMessageFromChat: builder.query<IMessage[], number>({
-            query: (chatid) => ({
-                url: "/messages/unreadChat",
-                method: "POST",
-                body: [{chatid}]
+        getUnreadMessageFromChat: builder.query<IUnreadMessageFromChatResponse, void>({
+            query: () => ({
+                url: "/messages/unreadChat"
             })
-        })
+        }),
+        markMessagesAsRead: builder.query<void, number>({
+            query: (chatId) => ({
+                url: `/messages/read/chat/${chatId}`
+            })
+        }),
     }),
     overrideExisting: true
 })
@@ -61,5 +64,6 @@ export const messageApi = baseApi.injectEndpoints({
 export const { 
     useGetMessagesQuery,
     useGetAllUnreadMessageQuery,
-    useGetUnreadMessageFromChatQuery
+    useGetUnreadMessageFromChatQuery,
+    useLazyMarkMessagesAsReadQuery
 } = messageApi

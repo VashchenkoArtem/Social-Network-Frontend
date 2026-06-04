@@ -4,5 +4,6 @@ export interface IProps{
     signature?: string;
     isPadding?: boolean;
     lastMessage?: string;
-    time?: Date
+    time?: Date;
+    unreadCount?: number
 }

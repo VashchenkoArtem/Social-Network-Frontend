@@ -5,8 +5,9 @@ import { View } from "react-native";
 import { Contacts } from "@modules/chats/ui/Contacts/Contacts";
 import { PersonalChats } from "@modules/chats/ui/personalChats/PersonalChats";
 import { GroupChats } from "@modules/chats/ui/groupChats/GroupChats";
+import { UnreadMessages } from "../unreadMessages/UndreadMessages";
 
-export const radioTabsArray: IRadioTab[] = [
+export const getRadioTabsArray = (unreadCount?: number): IRadioTab[] => [
     {
         title: "Контакти",
         icon: <ICONS.FriendsPageIcon color = {COLORS.black}/>,
@@ -20,12 +21,15 @@ export const radioTabsArray: IRadioTab[] = [
     },
     {
         title: "Повідомлення",
-        icon: <ICONS.ChatsPageIcon color = {COLORS.black}/>,
+        icon: (<View>
+                <ICONS.ChatsPageIcon color = {COLORS.black}/>
+                <UnreadMessages count={unreadCount}/>
+            </View>),
         content: (
             <View
                 style={{ flex: 1, paddingBottom: 8, backgroundColor: COLORS.preWhite }}
             >
-                <PersonalChats />
+                <PersonalChats count={unreadCount} />
             </View>
         ),
     },
@@ -40,4 +44,4 @@ export const radioTabsArray: IRadioTab[] = [
             </View>
         ),
     },
-];
+]

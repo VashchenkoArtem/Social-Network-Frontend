@@ -10,14 +10,14 @@ import { socket } from "@shared/socket/socket"
 import { useUserContext } from "@modules/auth/context/user-context"
 import { PersonalChatFrame } from "@modules/chats/ui/PersonalChatFrame/PersonalChatFrame"
 import { useState } from "react"
+import { UnreadMessages } from "../unreadMessages/UndreadMessages"
+import { useGetUnreadMessageFromChatQuery } from "@modules/message/api/messageApi"
 
 export function ChatsFrame(props: IChatProps) {
-    const { Icon, frameTitle, items } = props;
-
-    const { user } = useUserContext()!;
-
+    const { Icon, frameTitle, items, unreadMessagesCount } = props;
+    const { data } = useGetUnreadMessageFromChatQuery()
+    const unreadMap: Record<number, number> = data ?? {};
     const [search, setSearch] = useState("");
-
     const filteredMessages = items?.filter(item => {
         if (!search.trim()) return true
 
@@ -28,7 +28,10 @@ export function ChatsFrame(props: IChatProps) {
     return (
         <View style={styles.mainContainer}>
             <View style={styles.mainContainerHeader}>
-                {Icon}
+                <View>
+                    {Icon}  
+                    <UnreadMessages count={unreadMessagesCount}/>
+                </View>
                 <Text style={styles.frameTitle}>{frameTitle}</Text>
             </View>
             <Input 
@@ -40,12 +43,10 @@ export function ChatsFrame(props: IChatProps) {
             />                    
 
             <FlatList
-                contentContainerStyle = {styles.itemList}
-                style = {{gap: 16}}
                 keyExtractor={item => String(item.id)}
                 data = {filteredMessages}
                 renderItem={({ item }) => {
-                    return <PersonalChatFrame chat = {item}/>
+                    return <PersonalChatFrame chat = {item} chatUnreadCount={unreadMap[item.id]}/>
                 }}
             />
         </View>

@@ -15,7 +15,8 @@ export interface IMessage{
         username: string;
         profile_app_profile: {
             id: number;
-            avatar: string
+            avatar: string;
+            pseudonym: string
         }
     }
 }

@@ -15,6 +15,7 @@ export function Message(props: IMessageProps) {
         minute: '2-digit',
         hour12: false
     })
+    console.log(data.user_app_user.profile_app_profile.pseudonym)
     return (
         <View>
             { user.id === data.sender_id ? (
@@ -35,7 +36,7 @@ export function Message(props: IMessageProps) {
                     }} width={46} height = {46} style = {{ borderRadius: 123, marginTop: 8, backgroundColor: COLORS.gray}}/>
                     
                     <View style={styles.notMyMessageContainer}>
-                        <Text style = {styles.username}>{data.user_app_user.username}</Text>
+                        <Text style = {styles.username}>{data.user_app_user.profile_app_profile.pseudonym}</Text>
                         <View style = {{flexDirection: "row", gap: 10}}>
                             <Text style={styles.text}>{data.text}</Text>
                             <View style={styles.messageInfoContainer}>

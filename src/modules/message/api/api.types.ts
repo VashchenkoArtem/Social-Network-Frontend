@@ -3,3 +3,4 @@ export interface IMessageQuery {
     cursorId: number,
     take: number   
 }
+export type IUnreadMessageFromChatResponse = any

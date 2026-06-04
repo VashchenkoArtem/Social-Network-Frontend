@@ -5,5 +5,6 @@ import { ReactNode } from "react";
 export interface IChatProps {
     Icon: ReactNode;
     frameTitle: string;
-    items: IChat[] | null | undefined
+    items: IChat[] | null | undefined;
+    unreadMessagesCount?: number
 }

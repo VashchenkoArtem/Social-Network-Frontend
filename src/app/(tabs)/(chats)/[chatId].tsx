@@ -7,7 +7,7 @@ import { ICONS } from "@shared/ui"
 import { AdditionalUrls } from "@shared/ui/additionalUrl"
 import { Button } from "@shared/ui/button"
 import { Input } from "@shared/ui/input"
-import { radioTabsArray } from "@shared/ui/radiotabs/Radiotabs"
+import { getRadioTabsArray } from "@shared/ui/radiotabs/Radiotabs"
 import { useLocalSearchParams, useRouter } from "expo-router"
 import { useState } from "react"
 import { View, Text, TouchableOpacity, Pressable, Image } from "react-native"
@@ -20,7 +20,8 @@ export default function ChatScreen(){
         typeof params.chatId === 'string'
         ? Number(params.chatId)
         : undefined
-        
+    console.log(params.count)
+    const radioTabsArray = getRadioTabsArray(Number(params.count))
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }} edges={["left", "right"]}>
             <AdditionalUrls

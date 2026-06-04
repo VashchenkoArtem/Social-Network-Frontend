@@ -8,23 +8,23 @@ import { styles } from "./styles";
 import { COLORS } from "@shared/constants/colors";
 import { SmallUserCard } from "@shared/ui/smallUserCard/SmallUserCard";
 
-export function PersonalChatFrame(props: {chat: IChat}){
-    const { chat } = props
+export function PersonalChatFrame(props: {chat: IChat, unreadCount?: number, chatUnreadCount?: number}){
+    const { chat, unreadCount, chatUnreadCount } = props
     const router = useRouter()
     const participantUser = chat.chat_app_chat_users[0].user_app_user
+    console.log(chatUnreadCount)
     return (
         <TouchableOpacity
-            style={{ flexDirection: "row", gap: 12 }}
+            style={[{ flexDirection: "row", gap: 12, paddingVertical: 6, paddingHorizontal: 4 }]}
             onPress={() => {
                 socket.emit("joinChat", {
-                    chatId: chat.id
+                    chatId: chat.id,
                 });
-
-                router.push(`(chats)/${chat.id}`);
+                router.push(`(chats)/${chat.id}?count=${unreadCount}`);
             }}
         >
             <SmallUserCard 
-                pseudonym={participantUser.username} 
+                pseudonym={participantUser.profile_app_profile.pseudonym} 
                 avatar={participantUser.profile_app_profile.avatar} 
                 lastMessage={
                     chat.chat_app_message.length !== 0
@@ -35,6 +35,7 @@ export function PersonalChatFrame(props: {chat: IChat}){
                         ? chat.chat_app_message[0].created_at
                         : undefined
                     }
+                unreadCount={chatUnreadCount}
                 />
         </TouchableOpacity>
     )

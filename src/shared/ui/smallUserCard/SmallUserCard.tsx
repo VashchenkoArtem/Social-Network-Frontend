@@ -4,9 +4,10 @@ import { View, Image, Text } from "react-native";
 import { IProps } from "./types";
 import { styles } from "./styles";
 import { SERVER } from "@shared/constants/server";
+import { UnreadMessages } from "../unreadMessages/UndreadMessages";
 
 export function SmallUserCard(props: IProps){
-    const { avatar, pseudonym, signature, isPadding, lastMessage, time } = props
+    const { avatar, pseudonym, signature, isPadding, lastMessage, time, unreadCount } = props
     return (
         <View style={[{ width: "100%",alignItems: "flex-start" }, isPadding && {paddingHorizontal: 16,paddingTop: 16 }]}>
             <View style = {{flex: 1, flexDirection: 'row', alignItems: "center", gap: 10}}>
@@ -15,6 +16,7 @@ export function SmallUserCard(props: IProps){
                         source={{ uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${avatar}` }}
                         style={{ width: 46, height: 46, borderRadius: 123, backgroundColor: COLORS.lightestGray }}
                     />
+                    <UnreadMessages count={unreadCount} top={0} right={0.5}/>
                     <View style = {styles.contactStatus}/>
                 </View>
                 <View style = {{flex: 1, justifyContent: "center"}}>
@@ -34,6 +36,7 @@ export function SmallUserCard(props: IProps){
                         </Text>
                     )}
                 </View>
+
             </View>
             { signature && 
                 <Image style={styles.authorSignature} source={{

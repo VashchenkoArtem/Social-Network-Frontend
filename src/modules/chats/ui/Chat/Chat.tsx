@@ -1,6 +1,6 @@
 import { useDeleteGroupChatMutation, useGetChatByIdQuery } from "@modules/chats/api/chatsApi"
 import { useRouter } from "expo-router"
-import { useContext, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { TouchableOpacity, View, Text, Image, Pressable } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { IChat } from "@modules/chats/api/api.types"
@@ -14,11 +14,17 @@ import { socket } from "@shared/socket/socket"
 import { UserContext } from "@modules/auth/context/user-context"
 import { Messages } from "@modules/message/ui/messages/Messages"
 import { getAvatar } from "@shared/utils/avatar"
+import { useLazyMarkMessagesAsReadQuery } from "@modules/message/api/messageApi"
 
 export function Chat(props: { chatId: number | undefined}){
     const { chatId } = props
     const { data: chat} = useGetChatByIdQuery(Number(chatId))
     const router = useRouter()
+    const [markMessagesAsRead] = useLazyMarkMessagesAsReadQuery();
+
+    useEffect(() => {
+        markMessagesAsRead(Number(chatId))
+    },[])
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
     const [deleteGroupChat] = useDeleteGroupChatMutation()
     const [messageText, setMessageText] = useState<string>("")
@@ -41,9 +47,10 @@ export function Chat(props: { chatId: number | undefined}){
                 </TouchableOpacity>
 
                 <View style={styles.infoHeaderContainer}>              
-                    <Image source={{
-                            uri: getAvatar(chat.avatar)
-                    }} width={46} height = {46} style = {{ borderRadius: 123, backgroundColor: COLORS.gray}}/>
+                                        <Image
+                        source={{ uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${otherUser.user_app_user.profile_app_profile.avatar}` }}
+                        style={{ width: 46, height: 46, borderRadius: 123, backgroundColor: COLORS.lightestGray }}
+                    />
 
                     <View style={styles.chatInfo}>                        
                         <Text style={styles.chatName}>
@@ -53,10 +60,15 @@ export function Chat(props: { chatId: number | undefined}){
                         }
                             
                         </Text>
-
-                        <Text style={styles.chatOnlineStatus}>
-                            2 учасникa, 1 в мережі
-                        </Text>
+                        { chat.is_group ? (
+                            <Text style={styles.chatOnlineStatus}>
+                                2 учасникa, 1 в мережі
+                            </Text>
+                        ) : (
+                            <Text style={styles.chatOnlineStatus}>
+                                Був(-ла) в мережі о 20:45                   
+                            </Text>
+                        )}
                     </View>
                 </View>
 
