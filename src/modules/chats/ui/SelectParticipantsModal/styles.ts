@@ -19,13 +19,14 @@ export const styles = StyleSheet.create({
         borderRadius: 20,
         maxHeight: '80%',
         maxWidth: '90%',
-        padding: 12,
+        padding: 20,
     },
 
     closeBtn: {
+        flexDirection: 'row',
         width: '100%',
-        alignSelf: 'stretch',
-        alignItems: 'flex-start',
+        justifyContent: 'flex-end',
+        alignItems: 'flex-end',
     },
 
     title: {
