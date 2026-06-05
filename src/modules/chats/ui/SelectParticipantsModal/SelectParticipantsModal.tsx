@@ -41,31 +41,33 @@ export function SelectParticipantsModal({
     }, [friendsRequests]);
     const sections = useMemo<IFriendSection[]>(() => {
         const filteredFriends = friends.filter((friend) => {
-            const firstname = friend.user.first_name || "";
-            const lastname = friend.user.last_name || "";
-            const username = friend.user.username || "";
-            const fullName = `${firstname} ${lastname}`.toLowerCase();
-            const searchNormalized = searchQuery.toLowerCase();
+            const pseudonym =
+                friend.user.profile_app_profile?.pseudonym?.toLowerCase() || "";
 
-            return fullName.includes(searchNormalized) || username.toLowerCase().includes(searchNormalized);
+            return pseudonym.includes(searchQuery.toLowerCase());
         });
 
         const groups: Record<string, FriendProfileType[]> = {};
 
         filteredFriends.forEach((friend) => {
-            const nameKey = friend.user.first_name || friend.user.username || "U";
-            const firstLetter = nameKey[0].toUpperCase();
+            const pseudonym =
+                friend.user.profile_app_profile?.pseudonym || "U";
+
+            const firstLetter = pseudonym[0].toUpperCase();
             if (!groups[firstLetter]) groups[firstLetter] = [];
             groups[firstLetter].push(friend.user);
         });
 
         return Object.keys(groups)
-            .sort((elementA, elementB) => elementA.localeCompare(elementB, "uk"))
+            .sort((elementA, elementB) =>
+                elementA.localeCompare(elementB, "uk")
+            )
             .map((letter) => ({
                 title: letter,
                 data: groups[letter].sort((friendA, friendB) => {
-                    const nameA = friendA.first_name || friendA.username || "";
-                    const nameB = friendB.first_name || friendB.username || "";
+                    const nameA = friendA.profile_app_profile?.pseudonym || "";
+                    const nameB = friendB.profile_app_profile?.pseudonym || "";
+
                     return nameA.localeCompare(nameB, "uk");
                 }),
             }));
@@ -89,12 +91,12 @@ export function SelectParticipantsModal({
                     ) : (
                         <View style={[styles.avatar, styles.placeholderAvatar]}>
                             <Text style={styles.placeholderText}>
-                                {item.first_name ? item.first_name[0].toUpperCase() : "U"}
+                                {item.profile_app_profile?.pseudonym?.[0]?.toUpperCase() || "U"}
                             </Text>
                         </View>
                     )}
                     <Text style={styles.friendName}>
-                        {item.first_name} {item.last_name}
+                        {item.profile_app_profile.pseudonym}
                     </Text>
                 </View>
                 
