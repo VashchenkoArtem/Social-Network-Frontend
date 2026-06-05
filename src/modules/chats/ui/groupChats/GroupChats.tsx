@@ -7,10 +7,9 @@ export function GroupChats(){
     const { data: groupChats } = useGetGroupChatsQuery(undefined, {
         pollingInterval: 3000
     })
-
     if (!groupChats) return null
     return (
-        <ChatsFrame items = {groupChats} frameTitle="Групові чати" Icon = {<ICONS.ChatsPageIcon color = {COLORS.gray} height={20}/>}/>
+        <ChatsFrame isGroups={true} items = {groupChats} frameTitle="Групові чати" Icon = {<ICONS.ChatsPageIcon color = {COLORS.gray} height={20}/>}/>
 
     )
 }

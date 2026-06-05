@@ -3,15 +3,20 @@ import { COLORS } from "@shared/constants/colors";
 
 export const styles = StyleSheet.create({
     messageContainer: {
+
         flexDirection: 'row',
         backgroundColor: COLORS.lightGray,
         alignItems: "flex-end",
+        gap: 10
+    },
+    message: {
+        alignItems:"flex-end",
+        gap: 10,
+        backgroundColor: COLORS.lightGray,
         borderRadius: 6,
         paddingHorizontal: 10,
         paddingVertical: 10,
-        gap: 10,
     },
-
     text: {
         fontSize: 14,
         fontWeight: 400,

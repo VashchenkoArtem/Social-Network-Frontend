@@ -98,6 +98,7 @@ export const styles = StyleSheet.create({
         marginTop: 6,
     },
     friendRow: {
+        width: "100%",
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
@@ -106,8 +107,6 @@ export const styles = StyleSheet.create({
         paddingVertical: 10,
         borderRadius: 16,
         marginBottom: 8,
-        borderWidth: 1,
-        borderColor: COLORS.lightestGray,
     },
     friendInfo: {
         flexDirection: "row",
@@ -115,10 +114,11 @@ export const styles = StyleSheet.create({
         flex: 1,
     },
     avatar: {
-        width: 40,
-        height: 40,
-        borderRadius: 20,
+        width: 46,
+        height: 46,
+        borderRadius: 123,
         marginRight: 12,
+        backgroundColor: COLORS.preWhite
     },
     placeholderAvatar: {
         backgroundColor: COLORS.lightestGray,

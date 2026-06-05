@@ -10,6 +10,7 @@ import { COLORS } from "@shared/constants/colors";
 import { ICONS } from "@shared/ui"; 
 import { styles } from "./styles"; 
 import { Button } from "@shared/ui/button";
+import { IUser } from "@shared/types/user.types";
 
 interface IUserProfile {
     avatar: string | null;
@@ -36,9 +37,7 @@ interface IFriendRequest {
     from_user_id: number;
     to_user_id: number;
 
-    user_app_user_user_app_friendship_from_user_idTouser_app_user: IFriend;
-
-    user_app_user_user_app_friendship_to_user_idTouser_app_user: IFriend;
+    user: IUser
 }
 
 interface IConfirmGroupModalProps {
@@ -55,6 +54,7 @@ interface IConfirmGroupModalProps {
 
 interface ICreateGroupChatDtoFake {
     name: string;
+    is_group: boolean;
     userIds: number[];
 }
 
@@ -73,15 +73,13 @@ export function ConfirmGroupModal({
     const friendsRequests = (friendsRequestsData || []) as unknown as IFriendRequest[];
     const [createGroupChat, { isLoading: isCreating }] = useCreateChatMutation();
 
-    const chosenFriends = React.useMemo<IFriend[]>(() => {
-        return friendsRequests
-            .map((request) => {
-                return request.user_app_user_user_app_friendship_from_user_idTouser_app_user;
-            })
+    const chosenFriends = React.useMemo(() => {
+        return (friendsRequests ?? [])
+            .map(r => r.user)
             .filter(Boolean)
-            .filter((friend) => selectedUserIds.includes(friend.id));
+            .filter(user => selectedUserIds.includes(user.id));
     }, [friendsRequests, selectedUserIds]);
-
+    console.log(chosenFriends)
     const pickGroupImage = async () => {
         const result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ['images'], 
@@ -113,6 +111,7 @@ export function ConfirmGroupModal({
                 };
                 formData.append("avatar", fileToUpload as unknown as Blob); 
             }
+            formData.append("is_group", true as any)
 
             await createGroupChat(formData as unknown as ICreateGroupChatDtoFake).unwrap();
             
@@ -201,8 +200,8 @@ export function ConfirmGroupModal({
                         keyExtractor={(item) => item.id.toString()}
                         showsVerticalScrollIndicator={false}
                         renderItem={({ item }) => {
-                            const userAvatarUri = item.profile?.avatar 
-                                ? `http://${SERVER.host}:${SERVER.port}/media/thumb/${item.profile.avatar}`
+                            const userAvatarUri = item.profile_app_profile.avatar
+                                ? `http://${SERVER.host}:${SERVER.port}/media/thumb/${item.profile_app_profile.avatar}`
                                 : null;
 
                             return (
@@ -213,12 +212,12 @@ export function ConfirmGroupModal({
                                         ) : (
                                             <View style={[styles.avatar, styles.placeholderAvatar, { backgroundColor: COLORS.lightestGray }]}>
                                                 <Text style={[styles.placeholderText, { color: COLORS.gray }]}>
-                                                    {item.firstname ? item.firstname[0].toUpperCase() : "U"}
+                                                    {item.first_name ? item.first_name[0].toUpperCase() : "U"}
                                                 </Text>
                                             </View>
                                         )}
                                         <Text style={[styles.friendName, { color: COLORS.black }]}>
-                                            {item.firstname} {item.lastname}
+                                            {item.first_name} {item.last_name}
                                         </Text>
                                     </View>
                                     

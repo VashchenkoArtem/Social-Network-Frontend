@@ -6,5 +6,6 @@ export interface IChatProps {
     Icon: ReactNode;
     frameTitle: string;
     items: IChat[] | null | undefined;
-    unreadMessagesCount?: number
+    unreadMessagesCount?: number;
+    isGroups?: boolean
 }

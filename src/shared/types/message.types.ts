@@ -18,7 +18,11 @@ export interface IMessage{
             avatar: string;
             pseudonym: string
         }
-    }
+    },
+    chat_app_messageimage?: {
+        id: number,
+        image: string
+    }[]
 }
 export interface ICreateMessage{
     id?: number;
@@ -27,5 +31,6 @@ export interface ICreateMessage{
     chat_id: number;
     sender_id: number;
     username: string;
-    avatar: string
+    avatar: string;
+    photos?: string[]
 }

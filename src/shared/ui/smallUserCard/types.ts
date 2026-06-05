@@ -5,5 +5,6 @@ export interface IProps{
     isPadding?: boolean;
     lastMessage?: string;
     time?: Date;
-    unreadCount?: number
+    unreadCount?: number;
+    isGroup?: boolean
 }

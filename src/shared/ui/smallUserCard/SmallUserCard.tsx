@@ -7,7 +7,7 @@ import { SERVER } from "@shared/constants/server";
 import { UnreadMessages } from "../unreadMessages/UndreadMessages";
 
 export function SmallUserCard(props: IProps){
-    const { avatar, pseudonym, signature, isPadding, lastMessage, time, unreadCount } = props
+    const { avatar, pseudonym, signature, isPadding, lastMessage, time, unreadCount, isGroup } = props
     return (
         <View style={[{ width: "100%",alignItems: "flex-start" }, isPadding && {paddingHorizontal: 16,paddingTop: 16 }]}>
             <View style = {{flex: 1, flexDirection: 'row', alignItems: "center", gap: 10}}>
@@ -17,7 +17,9 @@ export function SmallUserCard(props: IProps){
                         style={{ width: 46, height: 46, borderRadius: 123, backgroundColor: COLORS.lightestGray }}
                     />
                     <UnreadMessages count={unreadCount} top={0} right={0.5}/>
-                    <View style = {styles.contactStatus}/>
+                    { !isGroup && 
+                        <View style = {styles.contactStatus}/>
+                    }
                 </View>
                 <View style = {{flex: 1, justifyContent: "center"}}>
                     <View style = {{ flexDirection: "row",flex: 1, justifyContent: "space-between", alignItems: "center"}}>

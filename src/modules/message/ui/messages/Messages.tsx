@@ -11,9 +11,9 @@ export function Messages(props: IMessagesProps) {
     // const [ getUnreadMessageFromChat ] = useGetUnreadMessageFromChatQuery(chatId)
     return (
         <FlatList
-            contentContainerStyle={{gap:10, marginTop: 25}}
+            contentContainerStyle={{gap:10, paddingTop: 5, paddingBottom: 5}}
             data={gotMessages} 
-            // keyExtractor={(item) => (item.id)}
+            keyExtractor={(item) => String(item.id)}
             renderItem={(item)=>{
                 return (
                     <Message

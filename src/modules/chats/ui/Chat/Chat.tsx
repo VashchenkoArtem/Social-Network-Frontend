@@ -15,6 +15,7 @@ import { UserContext } from "@modules/auth/context/user-context"
 import { Messages } from "@modules/message/ui/messages/Messages"
 import { getAvatar } from "@shared/utils/avatar"
 import { useLazyMarkMessagesAsReadQuery } from "@modules/message/api/messageApi"
+import { launchImageLibraryAsync, requestMediaLibraryPermissionsAsync } from "expo-image-picker"
 
 export function Chat(props: { chatId: number | undefined}){
     const { chatId } = props
@@ -29,10 +30,33 @@ export function Chat(props: { chatId: number | undefined}){
     const [deleteGroupChat] = useDeleteGroupChatMutation()
     const [messageText, setMessageText] = useState<string>("")
     const { user } = useContext(UserContext)!
+    const [selectedImages, setSelectedImages] = useState<string[]>([]);
     if (!chat || !user || !chatId) return null
     const otherUser = chat.chat_app_chat_users.filter(
         (chatUser) => chatUser.user_id !== user.id
     )[0];
+    const pickImages = async () => {
+        const permission = await requestMediaLibraryPermissionsAsync();
+
+        if (!permission.granted) {
+            return;
+        }
+
+        const result = await launchImageLibraryAsync({
+            mediaTypes: ['images'],
+            allowsMultipleSelection: true,
+            selectionLimit: 7,
+            quality: 0.8,
+        });
+
+        if (!result.canceled) {
+            const assets = result.assets.slice(0, 7);
+
+            setSelectedImages(
+                assets.map(asset => asset.uri)
+            );
+        }
+    };
     return (
         <View style={styles.groupChatContainer}>
             <View style={styles.groupChatHeader}>
@@ -62,7 +86,7 @@ export function Chat(props: { chatId: number | undefined}){
                         </Text>
                         { chat.is_group ? (
                             <Text style={styles.chatOnlineStatus}>
-                                2 учасникa, 1 в мережі
+                                {chat.chat_app_chat_users.length} учасника, 1 в мережі
                             </Text>
                         ) : (
                             <Text style={styles.chatOnlineStatus}>
@@ -107,6 +131,63 @@ export function Chat(props: { chatId: number | undefined}){
             </View>
 
             <Messages chatId={chatId} />
+            {selectedImages.length > 0 && (
+                <View
+                    style={{
+                        flexDirection: "row",
+                        flexWrap: "wrap",
+                        gap: 8,
+                        marginBottom: 8,
+                    }}
+                >
+                    {selectedImages.map((uri) => (
+                        <View
+                            key={uri}
+                            style={{
+                                position: "relative",
+                            }}
+                        >
+                            <Image
+                                source={{ uri }}
+                                style={{
+                                    width: 60,
+                                    height: 60,
+                                    borderRadius: 8,
+                                }}
+                            />
+
+                            <TouchableOpacity
+                                onPress={() => {
+                                    setSelectedImages(prev =>
+                                        prev.filter(imageUri => imageUri !== uri)
+                                    );
+                                }}
+                                style={{
+                                    position: "absolute",
+                                    top: -6,
+                                    right: -6,
+                                    width: 20,
+                                    height: 20,
+                                    borderRadius: 10,
+                                    backgroundColor: "rgba(0,0,0,0.7)",
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                }}
+                            >
+                                <Text
+                                    style={{
+                                        color: "white",
+                                        fontSize: 12,
+                                        fontWeight: "bold",
+                                    }}
+                                >
+                                    ✕
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    ))}
+                </View>
+            )}
             <View style={styles.inputMessageContainer}>
                 <View style = {{ flex: 1, justifyContent: "center"}}>
                 <Input
@@ -119,9 +200,16 @@ export function Chat(props: { chatId: number | undefined}){
                 </View>
 
                 <View style={styles.messageBtnContainer}>
-                    <Button 
-                        variant="white" 
-                        iconLeft={<ICONS.MyPostsPageIcon  width={20} height={20} color = {COLORS.plum}/>}
+                    <Button
+                        variant="white"
+                        iconLeft={
+                            <ICONS.MyPostsPageIcon
+                                width={20}
+                                height={20}
+                                color={COLORS.plum}
+                            />
+                        }
+                        onPress={pickImages}
                     />
 
                     <Button 
@@ -133,8 +221,11 @@ export function Chat(props: { chatId: number | undefined}){
                                 chat_id: chatId,
                                 sender_id: user.id,
                                 avatar: user.profile_app_profile.avatar ? user.profile_app_profile.avatar : getAvatar(user.profile_app_profile.avatar),
-                                username: user.username || ""
+                                username: user.username || "",
+                                photos: selectedImages
+                                
                             })
+                            setSelectedImages([])
                             setMessageText("")
                         }}
                     />

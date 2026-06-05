@@ -14,13 +14,13 @@ import { View, Text, TouchableOpacity, Pressable, Image } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 
 export default function ChatScreen(){
-	const [chosenTab, setChosenTab] = useState<string>("Повідомлення");
     const params = useLocalSearchParams()
+    console.log(params)
+	const [chosenTab, setChosenTab] = useState<string>(params.is_group ? "Групові чати" : "Повідомлення");
     const chatId = 
         typeof params.chatId === 'string'
         ? Number(params.chatId)
         : undefined
-    console.log(params.count)
     const radioTabsArray = getRadioTabsArray(Number(params.count))
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }} edges={["left", "right"]}>

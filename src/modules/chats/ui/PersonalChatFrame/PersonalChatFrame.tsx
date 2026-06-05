@@ -8,11 +8,10 @@ import { styles } from "./styles";
 import { COLORS } from "@shared/constants/colors";
 import { SmallUserCard } from "@shared/ui/smallUserCard/SmallUserCard";
 
-export function PersonalChatFrame(props: {chat: IChat, unreadCount?: number, chatUnreadCount?: number}){
-    const { chat, unreadCount, chatUnreadCount } = props
+export function PersonalChatFrame(props: {chat: IChat, unreadCount?: number, chatUnreadCount?: number, isGroupChat?: boolean}){
+    const { chat, unreadCount, chatUnreadCount, isGroupChat } = props
     const router = useRouter()
     const participantUser = chat.chat_app_chat_users[0].user_app_user
-    console.log(chatUnreadCount)
     return (
         <TouchableOpacity
             style={[{ flexDirection: "row", gap: 12, paddingVertical: 6, paddingHorizontal: 4 }]}
@@ -20,18 +19,22 @@ export function PersonalChatFrame(props: {chat: IChat, unreadCount?: number, cha
                 socket.emit("joinChat", {
                     chatId: chat.id,
                 });
-                router.push(`(chats)/${chat.id}?count=${unreadCount}`);
+                router.push(`(chats)/${chat.id}?count=${unreadCount}&${chat.is_group === true ? `is_group=${chat.is_group}` : undefined}`);
             }}
         >
             <SmallUserCard 
-                pseudonym={participantUser.profile_app_profile.pseudonym} 
-                avatar={participantUser.profile_app_profile.avatar} 
+                pseudonym={isGroupChat ? chat.name : participantUser.profile_app_profile.pseudonym} 
+                avatar={isGroupChat ? chat.avatar : participantUser.profile_app_profile.avatar} 
+                isGroup={isGroupChat}
                 lastMessage={
+                    chat.chat_app_message &&
                     chat.chat_app_message.length !== 0
                         ? chat.chat_app_message[0].text
                         : undefined
                     }
-                time={chat.chat_app_message.length !== 0
+                time={
+                    chat.chat_app_message &&
+                    chat.chat_app_message.length !== 0
                         ? chat.chat_app_message[0].created_at
                         : undefined
                     }

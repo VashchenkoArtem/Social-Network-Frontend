@@ -14,7 +14,7 @@ import { UnreadMessages } from "../unreadMessages/UndreadMessages"
 import { useGetUnreadMessageFromChatQuery } from "@modules/message/api/messageApi"
 
 export function ChatsFrame(props: IChatProps) {
-    const { Icon, frameTitle, items, unreadMessagesCount } = props;
+    const { Icon, frameTitle, items, unreadMessagesCount, isGroups } = props;
     const { data } = useGetUnreadMessageFromChatQuery()
     const unreadMap: Record<number, number> = data ?? {};
     const [search, setSearch] = useState("");
@@ -46,7 +46,7 @@ export function ChatsFrame(props: IChatProps) {
                 keyExtractor={item => String(item.id)}
                 data = {filteredMessages}
                 renderItem={({ item }) => {
-                    return <PersonalChatFrame chat = {item} chatUnreadCount={unreadMap[item.id]}/>
+                    return <PersonalChatFrame isGroupChat={isGroups} chat = {item} chatUnreadCount={unreadMap[item.id]}/>
                 }}
             />
         </View>
