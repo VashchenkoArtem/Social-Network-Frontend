@@ -79,7 +79,6 @@ export function ConfirmGroupModal({
             .filter(Boolean)
             .filter(user => selectedUserIds.includes(user.id));
     }, [friendsRequests, selectedUserIds]);
-    console.log(chosenFriends)
     const pickGroupImage = async () => {
         const result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ['images'], 

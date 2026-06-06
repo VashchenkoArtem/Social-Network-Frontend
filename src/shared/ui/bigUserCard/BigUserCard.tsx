@@ -1,7 +1,27 @@
-import { View } from "react-native-reanimated/lib/typescript/Animated";
+import { View, Image, Text } from "react-native";
 import { IProps } from "./types";
+import { SERVER } from "@shared/constants/server";
+import { getAvatar } from "@shared/utils/avatar";
+import { styles } from "./styles";
 
 export function BigUserCard(props: IProps){
-    const { avatar } = props
-    return <View></View>
+    const { avatar, username, pseudonym } = props
+    return (
+        <View>
+            <View>
+                <Image
+                    source={{ uri: avatar 
+                        ? `http://${SERVER.host}:${SERVER.port}/media/thumb/${avatar}`
+                        : getAvatar(avatar)
+                    }}
+                    style = {styles.authorAvatar}
+                />
+                <View style = {styles.contactStatus}/>
+            </View>
+            <View style={styles.friendInfo}>
+                <Text style={styles.friendsFullName}>{ pseudonym }</Text>
+                <Text style={styles.friendsNickName}>@{ username }</Text>
+            </View>
+        </View>
+    ) 
 }

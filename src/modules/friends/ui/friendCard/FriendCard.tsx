@@ -10,6 +10,7 @@ import Modal from "react-native-modal";
 import { getAvatar } from "@shared/utils/avatar";
 import { useCreateChatMutation } from "@modules/chats/api/chatsApi";
 import { socket } from "@shared/socket/socket";
+import { BigUserCard } from "@shared/ui/bigUserCard/BigUserCard";
 
 export function FriendCard(props: IProps) {
     const router = useRouter();
@@ -28,13 +29,7 @@ export function FriendCard(props: IProps) {
         <>
             {isVisible && (
                 <View style={styles.card}>
-                    <View style={styles.cardContent}>
-                        <Image style={styles.authorAvatar} source={{ uri: getAvatar(user.profile_app_profile.avatar)}}/>
-                        <View style={styles.friendInfo}>
-                            <Text style={styles.friendsFullName}>{ user.first_name } { user.last_name }</Text>
-                            <Text style={styles.friendsNickName}>@{ user.username }</Text>
-                        </View>
-                    </View>
+                    <BigUserCard avatar={user.profile_app_profile.avatar} username={user.username} pseudonym={user.profile_app_profile.pseudonym}/>
                     <View style={styles.cardButtons}>
                         <Button variant="purple" text = {buttonText} onPress={async () => {
                             if (buttonText === "Підтвердити" || buttonText === "Додати"){

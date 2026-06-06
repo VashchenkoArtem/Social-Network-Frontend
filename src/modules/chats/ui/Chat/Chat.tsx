@@ -1,7 +1,7 @@
 import { useDeleteGroupChatMutation, useGetChatByIdQuery } from "@modules/chats/api/chatsApi"
 import { useRouter } from "expo-router"
 import { useContext, useEffect, useState } from "react"
-import { TouchableOpacity, View, Text, Image, Pressable } from "react-native"
+import { TouchableOpacity, View, Text, Image, Pressable, Platform, KeyboardAvoidingView } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { IChat } from "@modules/chats/api/api.types"
 import { ICONS } from "@shared/ui"
@@ -58,7 +58,11 @@ export function Chat(props: { chatId: number | undefined}){
         }
     };
     return (
-        <View style={styles.groupChatContainer}>
+        <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            style={styles.groupChatContainer}
+            keyboardVerticalOffset={80}
+        >
             <View style={styles.groupChatHeader}>
 
                 <TouchableOpacity onPress={() => {
@@ -80,7 +84,7 @@ export function Chat(props: { chatId: number | undefined}){
                         <Text style={styles.chatName}>
                             { chat.is_group 
                             ? chat.name
-                            : otherUser.user_app_user.profile_app_profile.pseudonym
+                            : otherUser.user_app_user.profile_app_profile.pseudonym || ""
                         }
                             
                         </Text>
@@ -232,6 +236,6 @@ export function Chat(props: { chatId: number | undefined}){
                 </View>
                 
             </View>
-        </View>
+        </KeyboardAvoidingView>
     )
 }

@@ -1,3 +1,5 @@
 export interface IProps{
-    avatar: string
+    avatar?: string;
+    pseudonym?: string;
+    username?: string
 }

@@ -11,6 +11,7 @@ import { COLORS } from '@shared/constants/colors';
 import { useCreateFriendRequestMutation, useDeleteFriendRequestMutation, useGetPostsByUserIdQuery, useGetUserByIdQuery, useUpdateFriendRequestMutation } from '../../api/friendsApi';
 import { useState } from 'react';
 import { PostCard } from '@modules/posts/ui/postCard/PostCard';
+import { BigUserCard } from '@shared/ui/bigUserCard/BigUserCard';
 
 interface IProps {
     userId: number;
@@ -45,15 +46,7 @@ export function FriendProfile({ userId, requestId }: IProps) {
                         <Text style={styles.close} ><ICONS.LeftArrowIcon color = {COLORS.gray}/></Text>
                     </TouchableOpacity>
                 </View>
-                <Image style={styles.authorAvatar} source={
-                    user.profile_app_profile.avatar
-                    ? { uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${user.profile_app_profile.avatar}` }
-                    : require("../../../../assets/defaultAvatar.png")
-                }/>
-                <View style={styles.friendInfo}>
-                    <Text style={styles.friendsFullName}>{ user.first_name } { user.last_name }</Text>
-                    <Text style={styles.friendsNickName}>@{ user.username }</Text>
-                </View>
+                <BigUserCard username={user.username} avatar = {user.profile_app_profile.avatar} pseudonym={user.profile_app_profile.pseudonym}/>
 
                 <View style={styles.friendFollowersInfo}>
                     <View style={styles.infoRow}>
@@ -130,11 +123,13 @@ export function FriendProfile({ userId, requestId }: IProps) {
                     </View>
                 ))
             }
-            { posts?.map((post) => {
-                return(
-                    <PostCard post = {post} key={post.id} isEditingPost={false}/>
-                )
-            }) }
+            <View style = {{paddingBottom: 20}}>
+                { posts?.map((post) => {
+                    return(
+                        <PostCard post = {post} key={post.id} isEditingPost={false}/>
+                    )
+                }) }
+            </View>
         </KeyboardAwareScrollView>
     )
 }

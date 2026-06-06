@@ -41,7 +41,8 @@ export const styles = StyleSheet.create({
         backgroundColor: COLORS.white,
         borderColor: COLORS.lightGray,
         borderWidth: 1,
-        borderRadius: 10
+        borderRadius: 10,
+        marginHorizontal: 6
     },
     cardContent: {
         gap: 24,

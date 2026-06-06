@@ -15,7 +15,6 @@ import { SafeAreaView } from "react-native-safe-area-context"
 
 export default function ChatScreen(){
     const params = useLocalSearchParams()
-    console.log(params)
 	const [chosenTab, setChosenTab] = useState<string>(params.is_group ? "Групові чати" : "Повідомлення");
     const chatId = 
         typeof params.chatId === 'string'
