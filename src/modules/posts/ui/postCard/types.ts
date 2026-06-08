@@ -6,7 +6,15 @@ export interface IPost {
     title: string;
     topic: string
     content: string;
-    user_app_user: IUser
+    user_app_user: {
+        id: number,
+        profile_app_profile: {
+            id: number,
+            avatar?: string,
+            pseudonym?: string,
+            signature?: string
+        }
+    }
     post_app_postimage?: PostPhoto[]
     post_app_post_tags?: Tag[]
     post_app_postlink?: Url[]

@@ -17,7 +17,7 @@ export const postApi = baseApi.injectEndpoints({
 
                 return {
                     url: `posts?${params.toString()}`,
-                };
+                };  
             },
 
             serializeQueryArgs: () => {
@@ -40,6 +40,7 @@ export const postApi = baseApi.injectEndpoints({
             forceRefetch({ currentArg, previousArg }) {
                 return currentArg?.cursor !== previousArg?.cursor;
             },
+            providesTags: ["Post"]
         }),
         myPosts: builder.query<IPost[], void>({
             query: () => ({
@@ -79,6 +80,7 @@ export const postApi = baseApi.injectEndpoints({
 })
 
 export const {
+    useLazyGetAllPostsQuery,
     useGetAllPostsQuery,
     useMyPostsQuery, 
     useCreatePostMutation,

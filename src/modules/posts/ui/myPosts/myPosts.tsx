@@ -26,7 +26,7 @@ export function MyPostsPage(){
         return <Redirect href={"/login"}></Redirect>;
     }
     if (!data) return null
-    if (data.length === 0) return <Text style = {{textAlign: "center", marginTop: 24, fontFamily: FONTS.regular, fontSize: 20, color: COLORS.gray}}>У вас поки що немає постів</Text>
+    if (data.length === 0) return <Text style = {{textAlign: "center", marginTop: 24, fontFamily: FONTS.regular, fontSize: 20, color: COLORS.gray}}>У вас поки немає постів</Text>
     if (isFetching)return <ActivityIndicator style={{marginTop: 24}} size = {20} />
     return (
         <KeyboardAwareScrollView

@@ -1,5 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useCreatePostMutation, useUpdatePostMutation } from "@modules/posts/api/postsApi";
+import { postApi, useCreatePostMutation, useGetAllPostsQuery, useLazyGetAllPostsQuery, useUpdatePostMutation } from "@modules/posts/api/postsApi";
 import { createPostValidator } from "@modules/posts/models/lib/create-post.validation";
 import { ICreatePostForm } from "@modules/posts/models/types/create-post.types";
 import { Controller, useForm } from "react-hook-form";
@@ -10,6 +10,7 @@ import {
 	Text,
 	Image,
 	TouchableOpacity,
+	ActivityIndicator,
 } from "react-native";
 import { Input } from "@shared/ui/input";
 import { Button } from "@shared/ui/button";
@@ -23,6 +24,8 @@ import { PostLinks } from "@modules/tabs/ui/postLinks/postLinks";
 import { SERVER } from "@shared/constants/server";
 import { useGetTagsQuery } from "@modules/tabs/api/tagsApi";
 import { IPost } from "../postCard/types";
+import { useDispatch } from "react-redux";
+import { useAppDispatch } from "@modules/posts/api/store";
 
 
 
@@ -50,6 +53,7 @@ export function CreatePostForm(props: {
 		resolver: yupResolver(createPostValidator),
 	});
 	const watchedTags = watch("tags");
+	const dispatch = useAppDispatch();
 	const tagsMap = allTags?.reduce((acc, tag) => {
 		acc[tag.id] = tag.name;
 		return acc;
@@ -73,8 +77,7 @@ export function CreatePostForm(props: {
 		}
 	}, [editData, reset]);
 
-	const [createPost, { isError }] = useCreatePostMutation();
-
+	const [isCreatingPost, setIsCreatingPost] = useState(false);
 	const [postImages, setPostImages] = useState<string[]>([]);
 
 	const [updatePost] = useUpdatePostMutation();
@@ -137,16 +140,29 @@ export function CreatePostForm(props: {
 			if (editData) {
 				await updatePost({ id: editData.id, formData }).unwrap();
 			} else {
-				xhr.open('POST', `http://${SERVER.host}:${SERVER.port}/posts`);
-
-				xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-
-				xhr.send(formData);
-					}
+					setIsCreatingPost(true);
+					xhr.open('POST', `http://${SERVER.host}:${SERVER.port}/posts`);
+					xhr.onload = () => {
+						const newPost = JSON.parse(xhr.responseText);
+						console.log(newPost)
+						dispatch(
+						postApi.util.updateQueryData(
+							"getAllPosts",
+							{ cursor: undefined, limit: 3 },
+							(draft) => {
+								draft.data.unshift(newPost);
+							}
+						)
+						);
+						setIsCreatingPost(false);
+						setIsCreatePostModalOpen(false);
+						reset();
+						setPostImages([]);
+					};
+					xhr.setRequestHeader('Authorization', `Bearer ${token}`);
 					
-					reset();
-					setPostImages([]);
-					setIsCreatePostModalOpen(false);
+					xhr.send(formData);
+				}
 				} catch (error) {
 					console.error("Помилка збереження:", error);
 				}
@@ -323,9 +339,9 @@ export function CreatePostForm(props: {
 						variant="purple"
 						text={editData ? "Зберегти" : "Публікація"}
 						iconRight={
-							<ICONS.ArrowIcon
-								color={COLORS.white}
-							/>
+							isCreatingPost
+								? <ActivityIndicator size="small" color="white" />
+								: <ICONS.ArrowIcon color={COLORS.white} />
 						}
 					/>
 				</View>

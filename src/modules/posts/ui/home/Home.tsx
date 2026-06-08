@@ -1,10 +1,13 @@
-import { ActivityIndicator, FlatList, RefreshControl } from "react-native";
+import { ActivityIndicator, FlatList, RefreshControl, Text } from "react-native";
 import { PostCard } from "../postCard/PostCard";
 import { WelcomeDetailsModal } from "@shared/ui/modalUIU";
 import { Redirect, useLocalSearchParams } from "expo-router";
 import { useContext, useEffect, useState } from "react";
 import { useGetAllPostsQuery } from "@modules/posts/api/postsApi";
 import { UserContext } from "@modules/auth/context/user-context";
+import { View } from "react-native";
+import { FONTS } from "@shared/constants/fonts";
+import { COLORS } from "@shared/constants/colors";
 
 export function HomePage() {
     const { isNewUser } = useLocalSearchParams<{
@@ -66,8 +69,14 @@ export function HomePage() {
                 isVisible={isWelcomeVisible}
                 onClose={() => setIsWelcomeVisible(false)}
             />
-
+            { data && 
+                data.data.length === 0 && 
+                <View style = {{ width: "100%", paddingVertical: 24}}>
+                    <Text style = {{ textAlign: "center",fontFamily: FONTS.regular, fontSize: 20, color: COLORS.gray}}>Поки немає постів</Text>
+                </View>
+                }
             <FlatList
+        
                 data={data?.data ?? []}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => (
