@@ -17,9 +17,8 @@ export function Contacts() {
     const onlineUsers = useOnlineUsers()
     const [searchQuery, setSearchQuery] = useState("")
     const filteredContacts = data?.filter((item) => {
-        if (!item?.user?.username) return false
-
-        const username = item.user.username.toLowerCase()
+        if (!item?.user?.profile_app_profile.pseudonym) return false
+        const username = item.user.profile_app_profile.pseudonym.toLowerCase()
         const search = searchQuery.toLowerCase()
 
         return username.includes(search)
@@ -44,12 +43,12 @@ export function Contacts() {
                 contentContainerStyle={{gap: 16}}
                 keyExtractor={(item) => String(item.user.id)}
                 renderItem={({ item }) => {
-                    const isOnline = onlineUsers.has(Number(item.user.id));
+                    // const isOnline = onlineUsers.has(Number(item.user.id));
 
                     return (
                         <ContactCard
                             friend={item.user}
-                            isOnline={isOnline}
+                            // isOnline={isOnline}
                         />
                     );
                 }}

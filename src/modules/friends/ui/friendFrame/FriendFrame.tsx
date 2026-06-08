@@ -1,4 +1,4 @@
-import { View, Text, FlatList } from "react-native";
+import { View, Text, FlatList, ActivityIndicator } from "react-native";
 import { FriendCard } from "../friendCard";
 import { styles } from "./friendFrame.styles";
 import { useContext } from "react";
@@ -17,6 +17,8 @@ export function FriendFrame({
     setChosenTab,
     messageIfNull,
     toDetailPage,
+    isFetching, 
+    isLoading
 }: IProps) {
     const { user } = useContext(UserContext)!;
 
@@ -37,41 +39,28 @@ export function FriendFrame({
                     </Text>
                 )}
             </View>
-
-            <View style={{gap: 10}}>
-                {!data?.length ? (
-                    <Text style={styles.nullMessage}>
-                        {messageIfNull}
-                    </Text>
-                    ): (
+            <View style={{ gap: 10 }}>
+                {(isLoading || isFetching) ? (
+                    <ActivityIndicator size="small" />
+                ) : data ? (
+                    data.length > 0 ? (
                         <FlatList
-                            style = {{gap: 10}}
-                            contentContainerStyle={{gap: 10}}
                             data={data}
-                            keyExtractor={(item) => {
-                                return String(item.user.id)
-                            }}
-                            renderItem={({ item }) => {
-                                return (
-                                    <FriendCard
-                                        buttonText={buttonText}
-                                        user={item.user}
-                                        requestId={item.id}
-                                    />
-                                )
-                            }}
+                            keyExtractor={(item) => String(item.user.id)}
+                            renderItem={({ item }) => (
+                                <FriendCard
+                                    buttonText={buttonText}
+                                    user={item.user}
+                                    requestId={item.id}
+                                />
+                            )}
                         />
-                    )}
-                    {/* : (data.map((friendRequest) => {
-                        return (
-                            <FriendCard
-                                key={friendRequest.id}
-                                buttonText={buttonText}
-                                user={friendRequest.user}
-                                requestId={friendRequest.id}
-                            />
-                        );
-                    }))} */}
+                    ) : (
+                        <Text style={styles.nullMessage}>
+                            {messageIfNull}
+                        </Text>
+                    )
+                ) : null}
             </View>
         </View>
     );

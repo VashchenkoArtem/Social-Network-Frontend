@@ -29,7 +29,7 @@ export function HomePage() {
         refetch,
     } = useGetAllPostsQuery({
         cursor,
-        limit: 3,
+        limit: 1,
     });
 
     const { user } = useContext(UserContext)!;
@@ -58,7 +58,7 @@ export function HomePage() {
         return (
             <ActivityIndicator
                 style={{ marginTop: 24, marginBottom: 24 }}
-                size={20}
+                size="small"
             />
         );
     }

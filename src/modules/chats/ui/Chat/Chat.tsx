@@ -225,7 +225,7 @@ export function Chat(props: { chatId: number | undefined}){
                                 chat_id: chatId,
                                 sender_id: user.id,
                                 avatar: user.profile_app_profile.avatar ? user.profile_app_profile.avatar : getAvatar(user.profile_app_profile.avatar),
-                                username: user.username || "",
+                                pseudonym: user.profile_app_profile.pseudonym || "",
                                 photos: selectedImages
                                 
                             })

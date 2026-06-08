@@ -8,7 +8,7 @@ export function BigUserCard(props: IProps){
     const { avatar, username, pseudonym } = props
     return (
         <View>
-            <View>
+            <View style = {{ alignItems: "center"}}>
                 <Image
                     source={{ uri: avatar 
                         ? `http://${SERVER.host}:${SERVER.port}/media/thumb/${avatar}`

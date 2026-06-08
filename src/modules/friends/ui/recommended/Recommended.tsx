@@ -5,8 +5,8 @@ import { View } from "react-native";
 
 export function Recommended(props: {setChosenTab: (title: string) => void, isMarginBottom?: boolean, toDetailPage?: boolean}){
     const {setChosenTab, isMarginBottom, toDetailPage} = props
-    const { data } = useGetRecommendedPeopleQuery(undefined, {
-        pollingInterval: 5000   
+    const { data, isFetching, isLoading } = useGetRecommendedPeopleQuery(undefined, {
+        pollingInterval: 5000
     })
     const userFromRequest = data?.map((user) => {
             return {
@@ -15,7 +15,7 @@ export function Recommended(props: {setChosenTab: (title: string) => void, isMar
         })
     return (
         <View style = {isMarginBottom && {marginBottom: 48}}>
-            <FriendFrame toDetailPage={toDetailPage} setChosenTab={setChosenTab} buttonText="Додати" frameName="Рекомендації" messageIfNull="У вас поки немає рекомендацій" data = {userFromRequest}/>
+            <FriendFrame isFetching={isFetching} isLoading={isLoading} toDetailPage={toDetailPage} setChosenTab={setChosenTab} buttonText="Додати" frameName="Рекомендації" messageIfNull="У вас поки немає рекомендацій" data = {userFromRequest}/>
         </View>
     )
 }

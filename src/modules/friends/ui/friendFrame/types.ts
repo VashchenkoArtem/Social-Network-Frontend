@@ -12,7 +12,9 @@ interface FriendFrameBaseProps {
     setChosenTab: (tab: string) => void;
     messageIfNull: string;
     data: FriendsProps[] | null | undefined;
-    toDetailPage?: boolean
+    toDetailPage?: boolean;
+    isFetching: boolean;
+    isLoading: boolean
 }
 
 

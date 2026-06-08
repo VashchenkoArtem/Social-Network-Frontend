@@ -1,11 +1,11 @@
 import { IUser } from "@shared/types/user.types";
-import { TouchableOpacity } from "react-native";
+import { TouchableOpacity, Text } from "react-native";
 import { useCreateChatMutation } from "@modules/chats/api/chatsApi";
 import { useRouter } from "expo-router";
 import { socket } from "@shared/socket/socket";
 import { SmallUserCard } from "@shared/ui/smallUserCard/SmallUserCard";
 
-export function ContactCard(props: {friend: IUser, isOnline: boolean}){
+export function ContactCard(props: {friend: IUser, isOnline?: boolean}){
     const [ createChat ] = useCreateChatMutation()
     const { friend } = props
     const router = useRouter()

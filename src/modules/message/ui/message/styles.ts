@@ -3,21 +3,24 @@ import { COLORS } from "@shared/constants/colors";
 
 export const styles = StyleSheet.create({
     messageContainer: {
-
         flexDirection: 'row',
         backgroundColor: COLORS.lightGray,
         alignItems: "flex-end",
         gap: 10
     },
     message: {
-        alignItems:"flex-end",
+        justifyContent:"flex-end",
+        flexWrap: "wrap",
+        flexDirection: 'row',
         gap: 10,
         backgroundColor: COLORS.lightGray,
         borderRadius: 6,
         paddingHorizontal: 10,
         paddingVertical: 10,
+        maxWidth: 220
     },
     text: {
+        // width: "100%",
         fontSize: 14,
         fontWeight: 400,
         textAlign: 'left',
@@ -44,7 +47,8 @@ export const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: COLORS.preWhite,
         padding: 10,
-        borderRadius: 6
+        borderRadius: 6,
+        gap: 4
     },
     username: {
         fontSize: 11,

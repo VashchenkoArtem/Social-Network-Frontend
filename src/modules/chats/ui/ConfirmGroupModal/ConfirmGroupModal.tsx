@@ -216,7 +216,7 @@ export function ConfirmGroupModal({
                                             </View>
                                         )}
                                         <Text style={[styles.friendName, { color: COLORS.black }]}>
-                                            {item.first_name} {item.last_name}
+                                            {item.profile_app_profile.pseudonym}
                                         </Text>
                                     </View>
                                     

@@ -9,6 +9,7 @@ import { COLORS } from "@shared/constants/colors";
 
 export function Message(props: IMessageProps) {
     const { data } = props
+    if (!data) return null
     const { user } = useUserContext()!
     const createdDate = new Date(data.created_at).toLocaleTimeString([], {
         hour: '2-digit',
@@ -18,32 +19,49 @@ export function Message(props: IMessageProps) {
     return (
         <View>
             { user.id === data.sender_id ? (
-                <View style = {{width: "100%", alignItems: "flex-end"}}>
+                <View style={{ width: "100%", alignItems: "flex-end" }}>
                     <View style={styles.message}>
-                        <View style={styles.messageContainer}>
-                            <Text style={styles.text}>{data.text}</Text>
-                            <View style={styles.messageInfoContainer}>
-                                <Text style={styles.sendTime}>{createdDate}</Text>
-                                <MessageStatusMarkIcon width={10} height={10} color = {COLORS.gray}/>             
-                            </View>
-                        </View>
+
+                        {data.text && (
+                            <Text style={styles.text}>
+                                {data.text}
+                            </Text>
+                        )}
+
                         {data.chat_app_messageimage &&
                             data.chat_app_messageimage.length > 0 && (
                                 <FlatList
-                                    style ={{gap: 10}}
                                     data={data.chat_app_messageimage}
-                                    keyExtractor={(item) => String(item.id)}
-                                    renderItem={(item)=>{
-                                        return <View>
-                                            <Image
-                                                source={{ uri: item.item.image.startsWith("file:///") ? item.item.image :  `http://${SERVER.host}:${SERVER.port}/media/thumb/${item.item.image}`}}
-                                                width = {200} height = {200} style = {{borderRadius: 5}}
-                                            ></Image>
-                                        </View>
-                                    }}
+                                    keyExtractor={(item, index) =>
+                                        `${item.id}-${index}`
+                                    }
+                                    renderItem={({ item }) => (
+                                        <Image
+                                            source={{
+                                                uri: item.image.startsWith("file:///")
+                                                    ? item.image
+                                                    : `http://${SERVER.host}:${SERVER.port}/media/thumb/${item.image}`
+                                            }}
+                                            width={200}
+                                            height={200}
+                                            style={{ borderRadius: 5 }}
+                                        />
+                                    )}
                                 />
                             )
                         }
+
+                        <View style={styles.messageInfoContainer}>
+                            <Text style={styles.sendTime}>
+                                {createdDate}
+                            </Text>
+
+                            <MessageStatusMarkIcon
+                                width={10}
+                                height={10}
+                                color={COLORS.gray}
+                            />
+                        </View>
                     </View>
                 </View>
             )
@@ -55,32 +73,36 @@ export function Message(props: IMessageProps) {
                     
                     <View style={styles.notMyMessageContainer}>
                         <Text style = {styles.username}>{data.user_app_user.profile_app_profile.pseudonym}</Text>
-                        <View style = {{flexDirection: "row", gap: 10}}>
-                            <Text style={styles.text}>{data.text}</Text>
-                            <View style={styles.messageInfoContainer}>
-                                <Text style={styles.sendTime}>{createdDate}</Text>
-                                <MessageStatusMarkIcon color={COLORS.gray} />    
+                        <View>
+                            <View style = {{flexDirection: "row",gap:10,maxWidth: 200, justifyContent: "flex-end", flexWrap: "wrap", alignItems: "flex-end"}}>
+                                {data.text && 
+                                    <Text style={styles.text}>{data.text}</Text>
+                                }
+                                {data.chat_app_messageimage &&
+                                    data.chat_app_messageimage.length > 0 && (
+                                        <FlatList
+                                            style ={{gap: 10, backgroundColor: "red"}}
+                                            data={data.chat_app_messageimage}
+                                            keyExtractor={(item, index) =>
+                                                    `${item.id}-${index}`
+                                                }
+                                            renderItem={(item)=>{
+                                                return <View>
+                                                    <Image
+                                                        source={{ uri: item.item.image.startsWith("file:///") ? item.item.image :  `http://${SERVER.host}:${SERVER.port}/media/thumb/${item.item.image}`}}
+                                                        width = {200} height = {200} style = {{borderRadius: 5}}
+                                                    ></Image>
+                                                </View>
+                                            }}
+                                        />
+                                    )
+                                }
+                                <View style={styles.messageInfoContainer}>
+                                    <Text style={styles.sendTime}>{createdDate}</Text>
+                                    <MessageStatusMarkIcon color={COLORS.gray} />    
+                                </View>
                             </View>
                         </View>
-                        {data.chat_app_messageimage &&
-                            data.chat_app_messageimage.length > 0 && (
-                                <FlatList
-                                    style ={{gap: 10}}
-                                    data={data.chat_app_messageimage}
-                                    keyExtractor={(item, index) =>
-                                            `${item.id}-${index}`
-                                        }
-                                    renderItem={(item)=>{
-                                        return <View>
-                                            <Image
-                                                source={{ uri: item.item.image.startsWith("file:///") ? item.item.image :  `http://${SERVER.host}:${SERVER.port}/media/thumb/${item.item.image}`}}
-                                                width = {200} height = {200} style = {{borderRadius: 5}}
-                                            ></Image>
-                                        </View>
-                                    }}
-                                />
-                            )
-                        }
                     </View>
                 </View>
             )
