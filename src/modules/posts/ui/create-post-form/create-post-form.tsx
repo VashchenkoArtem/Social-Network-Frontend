@@ -144,7 +144,6 @@ export function CreatePostForm(props: {
 					xhr.open('POST', `http://${SERVER.host}:${SERVER.port}/posts`);
 					xhr.onload = () => {
 						const newPost = JSON.parse(xhr.responseText);
-						console.log(newPost)
 						dispatch(
 						postApi.util.updateQueryData(
 							"getAllPosts",

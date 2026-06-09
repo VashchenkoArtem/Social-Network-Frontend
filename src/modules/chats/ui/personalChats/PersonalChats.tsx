@@ -10,7 +10,7 @@ export function PersonalChats(props: {count?: number}){
         pollingInterval: 3000
     })
     return (
-        <View style = {{flex: 1}}>
+        <View style = {{flex: 1, gap: 6}}>
             <ChatsFrame unreadMessagesCount = {count} items = {personalChats} frameTitle="Повідомлення" Icon = {<ICONS.ChatsPageIcon color = {COLORS.gray} height={20}/>}/>
         </View>
 

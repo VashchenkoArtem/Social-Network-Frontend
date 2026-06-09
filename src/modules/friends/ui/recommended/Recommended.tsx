@@ -15,7 +15,7 @@ export function Recommended(props: {setChosenTab: (title: string) => void, isMar
         })
     return (
         <View style = {isMarginBottom && {marginBottom: 48}}>
-            <FriendFrame isFetching={isFetching} isLoading={isLoading} toDetailPage={toDetailPage} setChosenTab={setChosenTab} buttonText="Додати" frameName="Рекомендації" messageIfNull="У вас поки немає рекомендацій" data = {userFromRequest}/>
+            <FriendFrame isLoading={isLoading} toDetailPage={toDetailPage} setChosenTab={setChosenTab} buttonText="Додати" frameName="Рекомендації" messageIfNull="У вас поки немає рекомендацій" data = {userFromRequest}/>
         </View>
     )
 }

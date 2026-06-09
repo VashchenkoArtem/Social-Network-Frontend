@@ -14,7 +14,7 @@ export function PersonalChatFrame(props: {chat: IChat, unreadCount?: number, cha
     const participantUser = chat.chat_app_chat_users[0].user_app_user
     return (
         <TouchableOpacity
-            style={[{ flexDirection: "row", gap: 12, paddingVertical: 6, paddingHorizontal: 4 }]}
+            style={[{ flexDirection: "row", gap: 12 }]}
             onPress={() => {
                 socket.emit("joinChat", {
                     chatId: chat.id,
@@ -26,6 +26,7 @@ export function PersonalChatFrame(props: {chat: IChat, unreadCount?: number, cha
                 pseudonym={isGroupChat ? chat.name : participantUser.profile_app_profile.pseudonym} 
                 avatar={isGroupChat ? chat.avatar : participantUser.profile_app_profile.avatar} 
                 isGroup={isGroupChat}
+                groupName={chat.name}
                 lastMessage={
                     chat.chat_app_message &&
                     chat.chat_app_message.length !== 0

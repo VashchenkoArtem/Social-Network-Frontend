@@ -7,8 +7,8 @@ import { styles } from "./styles";
 export function BigUserCard(props: IProps){
     const { avatar, username, pseudonym } = props
     return (
-        <View>
-            <View style = {{ alignItems: "center"}}>
+        <View style = {{alignItems: "center"}}>
+            <View style = {{ alignItems: "center", width: 96, height: 96}}>
                 <Image
                     source={{ uri: avatar 
                         ? `http://${SERVER.host}:${SERVER.port}/media/thumb/${avatar}`

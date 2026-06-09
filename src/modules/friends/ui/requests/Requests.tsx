@@ -10,7 +10,7 @@ export function Requests(props: {setChosenTab: (title: string) => void, isMargin
     })
     return (
         <View style = {[isMarginTop && {marginTop: 24}, isMarginBottom && {marginBottom: 24}]}>
-            <FriendFrame isFetching = {isFetching} isLoading={isLoading} toDetailPage={toDetailPage} setChosenTab = {setChosenTab} buttonText="Підтвердити" frameName="Запити" messageIfNull="У вас поки немає запитів" data={data}/>
+            <FriendFrame isLoading={isLoading} toDetailPage={toDetailPage} setChosenTab = {setChosenTab} buttonText="Підтвердити" frameName="Запити" messageIfNull="У вас поки немає запитів" data={data}/>
         </View>
     )
 }

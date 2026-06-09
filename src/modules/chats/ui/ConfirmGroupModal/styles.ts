@@ -112,12 +112,12 @@ export const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         flex: 1,
+        gap: 12
     },
     avatar: {
         width: 46,
         height: 46,
         borderRadius: 123,
-        marginRight: 12,
         backgroundColor: COLORS.preWhite
     },
     placeholderAvatar: {

@@ -6,5 +6,6 @@ export interface IProps{
     lastMessage?: string;
     time?: Date;
     unreadCount?: number;
-    isGroup?: boolean
+    isGroup?: boolean;
+    groupName?: string
 }

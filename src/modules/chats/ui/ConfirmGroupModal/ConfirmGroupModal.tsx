@@ -11,6 +11,7 @@ import { ICONS } from "@shared/ui";
 import { styles } from "./styles"; 
 import { Button } from "@shared/ui/button";
 import { IUser } from "@shared/types/user.types";
+import { useUserContext } from "@modules/auth/context/user-context";
 
 interface IUserProfile {
     avatar: string | null;
@@ -71,8 +72,7 @@ export function ConfirmGroupModal({
 }: IConfirmGroupModalProps) {
     const { data: friendsRequestsData } = useGetAllFriendsQuery(undefined);
     const friendsRequests = (friendsRequestsData || []) as unknown as IFriendRequest[];
-    const [createGroupChat, { isLoading: isCreating }] = useCreateChatMutation();
-
+    const { token } = useUserContext()!
     const chosenFriends = React.useMemo(() => {
         return (friendsRequests ?? [])
             .map(r => r.user)
@@ -99,6 +99,7 @@ export function ConfirmGroupModal({
         }
         try {
             const formData = new FormData();
+            const xhr = new XMLHttpRequest();
             formData.append("name", groupName.trim());
             formData.append("userIds", JSON.stringify(selectedUserIds));
 
@@ -112,8 +113,10 @@ export function ConfirmGroupModal({
             }
             formData.append("is_group", true as any)
 
-            await createGroupChat(formData as unknown as ICreateGroupChatDtoFake).unwrap();
+            xhr.open('POST', `http://${SERVER.host}:${SERVER.port}/chats`);
+            xhr.setRequestHeader('Authorization', `Bearer ${token}`);
             
+            xhr.send(formData);
             setGroupName("");
             onClose(); 
         } catch (error: unknown) {
@@ -243,23 +246,8 @@ export function ConfirmGroupModal({
                         variant="purple"
                         text="Створити групу"
                         onPress={handleCreateGroupSubmit}
-                        disabled={!groupName.trim() || selectedUserIds.length === 0 || isCreating}
-                    />
-                                                            
-                    {/* <TouchableOpacity 
-                        style={[
-                            styles.btn, 
-                            styles.btnNext, 
-                            { backgroundColor: COLORS.plum },
-                            (!groupName.trim() || selectedUserIds.length === 0 || isCreating) && { backgroundColor: COLORS.lightGray }
-                        ]} 
-                        onPress={handleCreateGroupSubmit}
-                        disabled={!groupName.trim() || selectedUserIds.length === 0 || isCreating}
-                    >
-                        <Text style={{ color: COLORS.white }}>
-                            {isCreating ? "..." : "Створити групу"}
-                        </Text>
-                    </TouchableOpacity> */}
+                        disabled={!groupName.trim() || selectedUserIds.length === 0}
+                    />                                                            
                 </View>
             </View>
         </Modal>

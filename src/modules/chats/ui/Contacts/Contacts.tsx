@@ -13,7 +13,9 @@ import { useOnlineUsers } from "@modules/chats/api/onlineUsers";
 import { socket } from "@shared/socket/socket";
 
 export function Contacts() {
-    const { data } = useGetAllFriendsQuery();
+    const { data } = useGetAllFriendsQuery(undefined, {
+        pollingInterval: 3000
+    });
     const onlineUsers = useOnlineUsers()
     const [searchQuery, setSearchQuery] = useState("")
     const filteredContacts = data?.filter((item) => {
@@ -40,7 +42,7 @@ export function Contacts() {
 
             <FlatList
                 data={filteredContacts}
-                contentContainerStyle={{gap: 16}}
+                contentContainerStyle={{gap: 10}}
                 keyExtractor={(item) => String(item.user.id)}
                 renderItem={({ item }) => {
                     // const isOnline = onlineUsers.has(Number(item.user.id));

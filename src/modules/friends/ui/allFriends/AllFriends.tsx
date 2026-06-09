@@ -9,7 +9,7 @@ export function AllFriends(props: {setChosenTab: (title: string) => void, isMarg
     })
     return (
         <View style = { isMarginBottom && {marginBottom: 24}}>
-            <FriendFrame isFetching={isFetching} isLoading={isLoading} toDetailPage={toDetailPage} setChosenTab={setChosenTab} buttonText="Повідомлення" frameName="Всі друзі" messageIfNull="У вас поки немає друзів" data={data}/>
+            <FriendFrame isLoading={isLoading} toDetailPage={toDetailPage} setChosenTab={setChosenTab} buttonText="Повідомлення" frameName="Всі друзі" messageIfNull="У вас поки немає друзів" data={data}/>
         </View>
     )
 }

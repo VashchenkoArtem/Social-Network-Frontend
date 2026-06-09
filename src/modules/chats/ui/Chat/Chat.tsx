@@ -16,13 +16,13 @@ import { Messages } from "@modules/message/ui/messages/Messages"
 import { getAvatar } from "@shared/utils/avatar"
 import { useLazyMarkMessagesAsReadQuery } from "@modules/message/api/messageApi"
 import { launchImageLibraryAsync, requestMediaLibraryPermissionsAsync } from "expo-image-picker"
+import { ChatAvatar } from "../ChatAvatar/ChatAvatar"
 
 export function Chat(props: { chatId: number | undefined}){
     const { chatId } = props
     const { data: chat} = useGetChatByIdQuery(Number(chatId))
     const router = useRouter()
     const [markMessagesAsRead] = useLazyMarkMessagesAsReadQuery();
-
     useEffect(() => {
         markMessagesAsRead(Number(chatId))
     },[])
@@ -74,11 +74,11 @@ export function Chat(props: { chatId: number | undefined}){
                     <Text style={styles.close} ><ICONS.LeftArrowIcon color = {COLORS.gray}/></Text>
                 </TouchableOpacity>
 
-                <View style={styles.infoHeaderContainer}>              
-                                        <Image
-                        source={{ uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${otherUser.user_app_user.profile_app_profile.avatar}` }}
-                        style={{ width: 46, height: 46, borderRadius: 123, backgroundColor: COLORS.lightestGray }}
-                    />
+                <View style={styles.infoHeaderContainer}>     
+                    { chat.is_group 
+                        ? <ChatAvatar avatar={chat.avatar} isGroup={chat.is_group} groupName={chat.name}/>
+                        : <ChatAvatar avatar={otherUser.user_app_user.profile_app_profile.avatar} isGroup={chat.is_group} groupName={chat.name}/>
+                    }         
 
                     <View style={styles.chatInfo}>                        
                         <Text style={styles.chatName}>
@@ -220,6 +220,7 @@ export function Chat(props: { chatId: number | undefined}){
                         variant="purple" 
                         iconLeft={<ICONS.ArrowIcon width={20} height={20} color = {COLORS.white}/>}
                         onPress={() => {
+                            
                             socket.emit("sendMessage", {
                                 text: messageText,
                                 chat_id: chatId,

@@ -5,6 +5,10 @@ export interface ClientEvents {
     leaveChat: (data: { chatId: number }) => void
     sendMessage: (data: ICreateMessage) => void
     getOnlineUsers: () => void;
+    messageSent: (data: {
+        chat_id: number;
+        tempId: string;
+    }) => void;
 }
 
 export interface ServerEvents {

@@ -13,7 +13,7 @@ interface FriendFrameBaseProps {
     messageIfNull: string;
     data: FriendsProps[] | null | undefined;
     toDetailPage?: boolean;
-    isFetching: boolean;
+    isFetching?: boolean;
     isLoading: boolean
 }
 

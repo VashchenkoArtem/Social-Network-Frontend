@@ -24,12 +24,13 @@ export interface IMessage{
     }[]
 }
 export interface ICreateMessage{
-    id?: number;
+    tempId?: string;
     created_at?: Date;
     text: string;
     chat_id: number;
     sender_id: number;
     pseudonym: string;
     avatar: string;
-    photos?: string[]
+    photos?: string[];
+    status?: string
 }
