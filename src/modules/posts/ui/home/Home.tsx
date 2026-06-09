@@ -3,22 +3,15 @@ import { PostCard } from "../postCard/PostCard";
 import { WelcomeDetailsModal } from "@shared/ui/modalUIU";
 import { Redirect, useLocalSearchParams } from "expo-router";
 import { useContext, useEffect, useState } from "react";
-import { useGetAllPostsQuery } from "@modules/posts/api/postsApi";
+import { postApi, useGetAllPostsQuery } from "@modules/posts/api/postsApi";
 import { UserContext } from "@modules/auth/context/user-context";
 import { View } from "react-native";
 import { FONTS } from "@shared/constants/fonts";
 import { COLORS } from "@shared/constants/colors";
 
 export function HomePage() {
-    const { isNewUser } = useLocalSearchParams<{
-        isNewUser?: string;
-    }>();
-
-    const [isWelcomeVisible, setIsWelcomeVisible] = useState(
-        isNewUser === "true"
-    );
-
-    const [cursor, setCursor] = useState<number | undefined>();
+    const { isNewUser } = useLocalSearchParams<{ isNewUser?: string }>();
+    const [isWelcomeVisible, setIsWelcomeVisible] = useState(false);
 
     const [refreshing, setRefreshing] = useState(false);
 
@@ -28,27 +21,44 @@ export function HomePage() {
         isFetching,
         refetch,
     } = useGetAllPostsQuery({
-        cursor,
-        limit: 1,
+        cursor: undefined,
+        limit: 3
     });
+    useEffect(() => {
+        if (!data?.meta?.nextCursor || !data?.meta?.hasMore) return;
 
+        prefetchPosts({
+            cursor: data.meta.nextCursor,
+            limit: 1,
+        });
+    }, [data?.meta?.nextCursor]);
     const { user } = useContext(UserContext)!;
+    const prefetchPosts = postApi.usePrefetch("getAllPosts");
 
+    useEffect(() => {
+        if (!user) return;
+
+        const hasNoUsername = !user.username || user.username.trim() === "";
+        const hasNoPseudonym = !user.profile_app_profile?.pseudonym || user.profile_app_profile.pseudonym.trim() === "";
+        
+        if (isNewUser === "true" || hasNoUsername || hasNoPseudonym) {
+            setIsWelcomeVisible(true);
+        }
+    }, [isNewUser, user?.username, user?.profile_app_profile?.pseudonym]);
     const onRefresh = async () => {
         setRefreshing(true);
         await refetch();
         setRefreshing(false);
     };
 
-    const loadMore = () => {
-        if (
-            !isFetching &&
-            data?.meta.hasMore &&
-            data?.meta.nextCursor
-        ) {
-            setCursor(data.meta.nextCursor);
-        }
-    };
+const loadMore = () => {
+    if (!data?.meta?.hasMore || isFetching) return;
+
+    prefetchPosts({
+        cursor: data.meta.nextCursor,
+        limit: 1,
+    });
+};
 
     if (!user) {
         return <Redirect href="/login" />;

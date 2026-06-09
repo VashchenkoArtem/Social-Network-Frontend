@@ -18,6 +18,11 @@ export interface IPost {
     post_app_postimage?: PostPhoto[]
     post_app_post_tags?: Tag[]
     post_app_postlink?: Url[]
+    _count?: {
+        post_app_postlike: number;
+        post_app_postheart: number;
+        post_app_postview: number;
+    }
 }
 
 export interface IProps {

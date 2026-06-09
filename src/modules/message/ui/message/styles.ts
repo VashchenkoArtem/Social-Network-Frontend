@@ -9,7 +9,7 @@ export const styles = StyleSheet.create({
         gap: 10
     },
     message: {
-        justifyContent:"flex-end",
+        alignItems:"flex-end",
         flexWrap: "wrap",
         flexDirection: 'row',
         gap: 10,
@@ -17,7 +17,7 @@ export const styles = StyleSheet.create({
         borderRadius: 6,
         paddingHorizontal: 10,
         paddingVertical: 10,
-        maxWidth: 220
+        maxWidth: 220,
     },
     text: {
         // width: "100%",

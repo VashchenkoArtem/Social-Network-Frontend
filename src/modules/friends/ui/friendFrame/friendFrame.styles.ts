@@ -4,14 +4,14 @@ import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
     friendCards: {
-            width: '100%',
-            backgroundColor: COLORS.white,
-            borderColor: COLORS.lightGray,
-            borderWidth: 1,
-            borderRadius: 10,
-            padding: 16,
-            gap: 16,
-        },
+        width: '100%',
+        backgroundColor: COLORS.white,
+        borderColor: COLORS.lightGray,
+        borderWidth: 1,
+        borderRadius: 10,
+        padding: 16,
+        gap: 16,
+    },
     cardHeader : {
         flexDirection: 'row',
         justifyContent: 'space-between',

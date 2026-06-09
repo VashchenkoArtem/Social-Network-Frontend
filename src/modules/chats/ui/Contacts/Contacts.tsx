@@ -1,21 +1,17 @@
 import { useGetAllFriendsQuery } from "@modules/friends/api/friendsApi";
 import { ContactCard } from "../Contact/Contact";
 import { FlatList, View, Image, Text } from "react-native";
-import { SERVER } from "@shared/constants/server";
-import { useContext, useEffect, useState } from "react";
-import { UserContext } from "@modules/auth/context/user-context";
+import { useState } from "react";
 import { ICONS } from "@shared/ui";
 import { COLORS } from "@shared/constants/colors";
 import { styles } from "@shared/ui/chatsFrame/styles";
 import { Input } from "@shared/ui/input";
 import { SearchIcon } from "@shared/ui/icons/inputs/Search";
 import { useOnlineUsers } from "@modules/chats/api/onlineUsers";
-import { socket } from "@shared/socket/socket";
+
 
 export function Contacts() {
-    const { data } = useGetAllFriendsQuery(undefined, {
-        pollingInterval: 3000
-    });
+    const { data } = useGetAllFriendsQuery();
     const onlineUsers = useOnlineUsers()
     const [searchQuery, setSearchQuery] = useState("")
     const filteredContacts = data?.filter((item) => {

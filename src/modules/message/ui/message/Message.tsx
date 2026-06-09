@@ -69,7 +69,7 @@ export function Message(props: IMessageProps) {
                 <View style = {{ width: "100%", justifyContent: "flex-start", flexDirection: "row", gap: 4}}>
                     <Image source={{
                         uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${data.user_app_user.profile_app_profile.avatar}`
-                    }} width={46} height = {46} style = {{ borderRadius: 123, marginTop: 8, backgroundColor: COLORS.gray}}/>
+                    }} width={46} height = {46} style = {{ borderRadius: 123, marginTop: 8, backgroundColor: COLORS.lightestGray}}/>
                     
                     <View style={styles.notMyMessageContainer}>
                         <Text style = {styles.username}>{data.user_app_user.profile_app_profile.pseudonym}</Text>

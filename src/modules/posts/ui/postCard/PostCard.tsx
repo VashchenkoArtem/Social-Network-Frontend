@@ -1,6 +1,6 @@
 import { View, Image, Text, TouchableOpacity, Pressable } from "react-native";
 import { getPhotoStyle, styles } from "./styles";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { UserContext } from "@modules/auth/context/user-context";
 import { COLORS } from "@shared/constants/colors";
 import { ICONS } from "@shared/ui";
@@ -11,7 +11,7 @@ import { colors } from "react-native-keyboard-controller/lib/typescript/componen
 import Modal from "react-native-modal"
 
 import { CreatePostForm } from "@modules/posts/ui/create-post-form";
-import { useDeletePostMutation } from "@modules/posts/api/postsApi";
+import { useDeletePostMutation, useViewPostMutation } from "@modules/posts/api/postsApi";
 import { getAvatar } from "@shared/utils/avatar";
 import { SmallUserCard } from "@shared/ui/smallUserCard/SmallUserCard";
 
@@ -21,14 +21,25 @@ export function PostCard(props: IProps){
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [deletePost] = useDeletePostMutation();
+    const [viewPost] = useViewPostMutation();
     const photos = post.post_app_postimage ?? [];
     const [isPostModalOpen, setisPostModalOpen] = useState(false)
+    useEffect(() => {
+        if (post?.id) {
+            viewPost(post.id)
+                .unwrap()
+                .catch((error) => console.error("Помилка реєстрації перегляду:", error));
+        }
+    }, [post?.id]);
+
     const handleEdit = () => {
         setIsMenuOpen(false);
         setTimeout(() => {
             setIsEditModalOpen(true);
         }, 500);
     };
+
+    
     const authorProfile = post.user_app_user.profile_app_profile
     const authorUser = post.user_app_user
     return (
@@ -68,7 +79,6 @@ export function PostCard(props: IProps){
                         })}
                     </View>
                 </View>
-
                 <View>
                     { post.post_app_postlink?.map((url) => {
                         return (
@@ -114,7 +124,7 @@ export function PostCard(props: IProps){
                     <View style={styles.postFooterContainer}>
                         <TouchableOpacity style={styles.postFooterBtn}>
                             <ICONS.PostViewsIcon width = {20} height={20} color = {COLORS.gray}/>
-                            <Text>Переглядів</Text>
+                            <Text>{post._count?.post_app_postview ?? 0} Переглядів</Text>
                         </TouchableOpacity>
                     </View>
 

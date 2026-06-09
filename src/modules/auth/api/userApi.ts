@@ -40,21 +40,20 @@ export const userApi = baseApi.injectEndpoints({
 				AsyncStorage.setItem("token", data.token);
 			},
 		}),
-		updateUserInfo: builder.mutation<void, ProfileData>({
-			query: (userData) => {
-			const formData = new FormData();
-			if (userData.first_name) formData.append("first_name", userData.first_name)
-			if (userData.last_name) formData.append("last_name", userData.last_name)
-			if (userData.email) formData.append("email", userData.email)
-
-			return {
-				url: 'update-user',
-				method: 'PATCH',
-				body: formData,
-			};
-			},
-			invalidatesTags: ["User", "Album"],
-		}),
+		updateUserInfo: builder.mutation<void, { 
+			first_name?: string; 
+			last_name?: string; 
+			email?: string; 
+			username?: string; 
+			pseudonym?: string 
+		}>({
+            query: (userData) => ({
+                url: 'update-user',
+                method: 'PATCH',
+                body: userData,
+            }),
+            invalidatesTags: ["User", "Album"],
+        }),
 		updatePassword: builder.mutation<IUser, ProfileData>({
 			query: (body) => {
 				return {
@@ -88,15 +87,15 @@ export const userApi = baseApi.injectEndpoints({
                 };
             },
             invalidatesTags: ["User"],
-        })
-		// updateUser: builder.mutation<User, { firstname?: string; nickname?: string; signature?: string }>({
-		//   query: (body) => ({
-		//     url: '/update-user',
-		//     method: 'POST',
-		//     body,
-		//   }),
-		//   invalidatesTags: ['User'],
-		// }),
+        }),
+		updateUser: builder.mutation<IUser, { firstname?: string; nickname?: string; signature?: string }>({
+		  query: (body) => ({
+		    url: '/update-user',
+		    method: 'POST',
+		    body,
+		  }),
+		  invalidatesTags: ['User'],
+		}),
 	}),
 	overrideExisting: true,
 });

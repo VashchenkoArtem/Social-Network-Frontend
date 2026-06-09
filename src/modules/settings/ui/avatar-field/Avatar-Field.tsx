@@ -12,7 +12,7 @@ import { getAvatar } from "@shared/utils/avatar";
 interface AvatarFieldProps {
     value?: string;
     onPress: () => void;
-    avatar: string | null;
+    avatar?: string;
 }
 
 export function AvatarField({ value, onPress, avatar }: AvatarFieldProps) {

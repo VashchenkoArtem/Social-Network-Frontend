@@ -227,8 +227,7 @@ export function Chat(props: { chatId: number | undefined}){
                                 sender_id: user.id,
                                 avatar: user.profile_app_profile.avatar ? user.profile_app_profile.avatar : getAvatar(user.profile_app_profile.avatar),
                                 pseudonym: user.profile_app_profile.pseudonym || "",
-                                photos: selectedImages
-                                
+                                photos: selectedImages  
                             })
                             setSelectedImages([])
                             setMessageText("")

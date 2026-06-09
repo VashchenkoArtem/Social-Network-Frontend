@@ -53,14 +53,28 @@ export interface CreatePostData {
     authorId: number
     photos?: Photo
 }
+
 export interface PostsPayload{
     cursor?: number | null;
     limit?: number;
 }
+
 export interface PostsResponse {
     data: IPost[];
     meta: {
         nextCursor: number | null;
         hasMore: boolean
     }
+}
+
+export interface PostLike {
+    id: number
+    user_id: number
+    post_id: number
+}
+
+export interface PostHeart {
+    id: number
+    user_id: number
+    post_id: number
 }

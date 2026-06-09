@@ -45,6 +45,7 @@ export function FriendFrame({
                 ) : data ? (
                     data.length > 0 ? (
                         <FlatList
+                            contentContainerStyle={{ gap: 10}}
                             data={data}
                             keyExtractor={(item) => String(item.user.id)}
                             renderItem={({ item }) => (

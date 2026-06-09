@@ -10,14 +10,16 @@ export const friendApi = baseApi.injectEndpoints({
             query: () => ({
                 url: 'friends',
                 method: 'GET'
-            })
+            }),
+            keepUnusedDataFor: 60
         }),
 
         getAllRequests: builder.query<FriendsProps[], void>({
             query: () => ({
                 url: 'requests',
                 method: 'GET'
-            })
+            }),
+            keepUnusedDataFor: 60
         }),
         
         createFriendRequest: builder.mutation<void, CreateFriendRequest>({
