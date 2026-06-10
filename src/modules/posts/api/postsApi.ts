@@ -91,12 +91,19 @@ export const postApi = baseApi.injectEndpoints({
             invalidatesTags: (result, error, postId) => [{ type: 'Post', id: postId }]
         }),
 
-        getAllLikes: builder.query<PostLike[], void> ({
-            query: () => ({
-                url: 'likes',
+        getAllLikes: builder.query<number, { postId: number }> ({
+            query: ({ postId }) => ({
+                url: `posts/${postId}/likes`,
                 method: 'GET'
             }),
             providesTags: ['Likes']
+        }),
+
+        getPostLikeStatus: builder.query<{isLiked: boolean}, { postId: number }>({
+            query: ({ postId }) => ({
+                url: `posts/${postId}/like-status`,
+                method: 'GET'
+            }),
         }),
 
         createLike: builder.mutation<PostLike, { postId: number }>({
@@ -115,12 +122,19 @@ export const postApi = baseApi.injectEndpoints({
             invalidatesTags: ['Likes', 'Post']
         }),
 
-        getAllHearts: builder.query<PostHeart[], void> ({
-            query: () => ({
-                url: 'hearts',
+        getAllHearts: builder.query<number, { postId: number }> ({
+            query: ({ postId }) => ({
+                url: `posts/${postId}/hearts`,
                 method: 'GET'
             }),
             providesTags: ['Hearts']
+        }),
+
+        getPostHeartStatus: builder.query<{isHearted: boolean}, { postId: number }>({
+            query: ({ postId }) => ({
+                url: `posts/${postId}/heart-status`,
+                method: 'GET'
+            }),
         }),
 
         createHeart: builder.mutation<PostHeart, { postId: number }>({
@@ -157,5 +171,8 @@ export const {
 
     useGetAllHeartsQuery,
     useCreateHeartMutation,
-    useDeleteHeartMutation
+    useDeleteHeartMutation,
+
+    useGetPostLikeStatusQuery,
+    useGetPostHeartStatusQuery
 } = postApi

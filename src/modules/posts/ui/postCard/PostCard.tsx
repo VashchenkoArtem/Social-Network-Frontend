@@ -1,6 +1,6 @@
 import { View, Image, Text, TouchableOpacity, Pressable } from "react-native";
 import { getPhotoStyle, styles } from "./styles";
-import { useContext, useEffect, useState } from "react";
+import { use, useContext, useEffect, useState } from "react";
 import { UserContext } from "@modules/auth/context/user-context";
 import { COLORS } from "@shared/constants/colors";
 import { ICONS } from "@shared/ui";
@@ -11,7 +11,7 @@ import { colors } from "react-native-keyboard-controller/lib/typescript/componen
 import Modal from "react-native-modal"
 
 import { CreatePostForm } from "@modules/posts/ui/create-post-form";
-import { useDeletePostMutation, useViewPostMutation } from "@modules/posts/api/postsApi";
+import { useCreateHeartMutation, useCreateLikeMutation, useDeleteHeartMutation, useDeleteLikeMutation, useDeletePostMutation, useGetAllHeartsQuery, useGetAllLikesQuery, useGetPostHeartStatusQuery, useGetPostLikeStatusQuery, useViewPostMutation } from "@modules/posts/api/postsApi";
 import { getAvatar } from "@shared/utils/avatar";
 import { SmallUserCard } from "@shared/ui/smallUserCard/SmallUserCard";
 
@@ -24,13 +24,40 @@ export function PostCard(props: IProps){
     const [viewPost] = useViewPostMutation();
     const photos = post.post_app_postimage ?? [];
     const [isPostModalOpen, setisPostModalOpen] = useState(false)
+    const [isPostLiked, setIsPostLiked] = useState(false)
+    const [isPostHearted, setIsPostHearted] = useState(false)
+
+    const { data: likesCount } = useGetAllLikesQuery({ postId: post.id })
+    const { data: heartsCount } = useGetAllHeartsQuery({ postId: post.id })
+
+    const { data: likeStatus } = useGetPostLikeStatusQuery({ postId: post.id })
+    const { data: heartStatus } = useGetPostHeartStatusQuery({ postId: post.id })
+
+    const [createLike] = useCreateLikeMutation()
+    const [deleteLike] = useDeleteLikeMutation()
+
+    const [createHeart] = useCreateHeartMutation()
+    const [deleteHeart] = useDeleteHeartMutation()
+
     useEffect(() => {
         if (post?.id) {
             viewPost(post.id)
                 .unwrap()
                 .catch((error) => console.error("Помилка реєстрації перегляду:", error));
         }
-    }, [post?.id]);
+    }, [post?.id])
+
+    useEffect(() => {
+        if (likeStatus?.isLiked !== undefined) {
+            setIsPostLiked(likeStatus.isLiked)
+        }
+    }, [likeStatus])
+
+    useEffect(() => {
+        if (heartStatus?.isHearted !== undefined) {
+            setIsPostHearted(heartStatus.isHearted)
+        }
+    }, [heartStatus])
 
     const handleEdit = () => {
         setIsMenuOpen(false);
@@ -38,6 +65,34 @@ export function PostCard(props: IProps){
             setIsEditModalOpen(true);
         }, 500);
     };
+
+    const handleLike = async () => {
+        try {
+            if (isPostLiked) {
+                await deleteLike({ postId: post.id }).unwrap()
+                setIsPostLiked(false)
+            } else {
+                await createLike({ postId: post.id }).unwrap()
+                setIsPostLiked(true)
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const handleHeart = async () => {
+        try {
+            if (isPostHearted) {
+                await deleteHeart({ postId: post.id }).unwrap()
+                setIsPostHearted(false)
+            } else {
+                await createHeart({ postId: post.id }).unwrap()
+                setIsPostHearted(true)
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     const authorProfile = post.user_app_user.profile_app_profile
     const authorUser = post.user_app_user
@@ -108,16 +163,22 @@ export function PostCard(props: IProps){
             )}
                 <View style={styles.postFooter}>
                     <View style={styles.postFooterContainer}>
-                        <TouchableOpacity style={styles.postFooterBtn}>
-                            <ICONS.PostLikeIcon width = {20} height={20} color = {COLORS.gray}/>
-                            <Text>Вподобань</Text>
+                        <TouchableOpacity 
+                            style={styles.postFooterBtn}
+                            onPress={handleLike}
+                        >
+                            <ICONS.PostLikeIcon width = {20} height={20} color = { isPostLiked ? COLORS.plum : COLORS.gray}/>
+                            <Text>{likesCount} Вподобань</Text>
                         </TouchableOpacity>
                     </View>
 
                     <View style={styles.postFooterContainer}>
-                        <TouchableOpacity style={styles.postFooterBtn}>
-                            <ICONS.PostThumbUpIcon width = {20} height={20} color = {COLORS.gray}/>
-                            <Text>Вподобань</Text>
+                        <TouchableOpacity 
+                            style={styles.postFooterBtn}
+                            onPress={handleHeart}
+                        >
+                            <ICONS.PostThumbUpIcon width = {20} height={20} color = { isPostHearted ? COLORS.plum : COLORS.gray}/>
+                            <Text>{heartsCount} Вподобань</Text>
                         </TouchableOpacity>
                     </View>
 
@@ -134,3 +195,4 @@ export function PostCard(props: IProps){
         </View>
     )
 }
+
