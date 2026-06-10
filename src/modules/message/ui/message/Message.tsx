@@ -81,7 +81,7 @@ export function Message(props: IMessageProps) {
                                 {data.chat_app_messageimage &&
                                     data.chat_app_messageimage.length > 0 && (
                                         <FlatList
-                                            style ={{gap: 10, backgroundColor: "red"}}
+                                            style ={{gap: 10}}
                                             data={data.chat_app_messageimage}
                                             keyExtractor={(item, index) =>
                                                     `${item.id}-${index}`

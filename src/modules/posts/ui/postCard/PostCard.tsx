@@ -39,9 +39,9 @@ export function PostCard(props: IProps){
         }, 500);
     };
 
-    
     const authorProfile = post.user_app_user.profile_app_profile
     const authorUser = post.user_app_user
+    if (!authorProfile) return null
     return (
         <View style={styles.postContainer}>
             <SmallUserCard pseudonym={authorProfile.pseudonym} avatar={authorProfile.avatar} signature={authorProfile.signature} isPadding={true}/>

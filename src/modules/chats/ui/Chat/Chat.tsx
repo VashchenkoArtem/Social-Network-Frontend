@@ -29,7 +29,7 @@ export function Chat(props: { chatId: number | undefined}){
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
     const [deleteGroupChat] = useDeleteGroupChatMutation()
     const [messageText, setMessageText] = useState<string>("")
-    const { user } = useContext(UserContext)!
+    const { user, token } = useContext(UserContext)!
     const [selectedImages, setSelectedImages] = useState<string[]>([]);
     if (!chat || !user || !chatId) return null
     const otherUser = chat.chat_app_chat_users.filter(
@@ -57,6 +57,36 @@ export function Chat(props: { chatId: number | undefined}){
             );
         }
     };
+    const sendMessage = async () => {
+        socket.emit("sendMessage", {
+            text: messageText,
+            chat_id: chatId,
+            sender_id: user.id,
+            avatar: user.profile_app_profile.avatar ? user.profile_app_profile.avatar : getAvatar(user.profile_app_profile.avatar),
+            pseudonym: user.profile_app_profile.pseudonym || "",
+            photos: selectedImages  
+        })
+
+        if (selectedImages.length > 0){
+            const xhr = new XMLHttpRequest()
+            const formData = new FormData()
+
+            xhr.open('POST', `http://${SERVER.host}:${SERVER.port}/messages/chat/${chat.id}`);
+            xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+
+            formData.append("text", messageText)
+            selectedImages.forEach((uri, index) => {
+                formData.append("images", {
+                    uri,
+                    type: "image/jpeg",
+                    name: `photo-${index}.jpg`,
+                } as any);
+            });
+            xhr.send(formData)
+        }
+        setSelectedImages([])
+        setMessageText("")
+    }
     return (
         <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -219,19 +249,7 @@ export function Chat(props: { chatId: number | undefined}){
                     <Button 
                         variant="purple" 
                         iconLeft={<ICONS.ArrowIcon width={20} height={20} color = {COLORS.white}/>}
-                        onPress={() => {
-                            
-                            socket.emit("sendMessage", {
-                                text: messageText,
-                                chat_id: chatId,
-                                sender_id: user.id,
-                                avatar: user.profile_app_profile.avatar ? user.profile_app_profile.avatar : getAvatar(user.profile_app_profile.avatar),
-                                pseudonym: user.profile_app_profile.pseudonym || "",
-                                photos: selectedImages  
-                            })
-                            setSelectedImages([])
-                            setMessageText("")
-                        }}
+                        onPress={() => {sendMessage()}}
                     />
                 </View>
                 

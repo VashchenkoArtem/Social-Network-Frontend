@@ -29,7 +29,7 @@ export function HomePage() {
 
         prefetchPosts({
             cursor: data.meta.nextCursor,
-            limit: 1,
+            limit: 3,
         });
     }, [data?.meta?.nextCursor]);
     const { user } = useContext(UserContext)!;
