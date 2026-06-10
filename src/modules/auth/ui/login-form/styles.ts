@@ -64,4 +64,19 @@ export const styles = StyleSheet.create({
 		color: COLORS.black,
 		textAlign: "center",
 	},
+
+	errorContainer: {		
+		justifyContent: 'center',
+		flexDirection: 'row',
+		alignItems: 'center',
+		gap: 6,
+		width: '100%'
+	},
+
+	errorMessage: {
+		color: COLORS.red,
+		textAlign: 'center',
+		marginTop: 5,
+		fontSize: 13
+	}
 });

@@ -177,7 +177,7 @@ export function PostCard(props: IProps){
                             style={styles.postFooterBtn}
                             onPress={handleHeart}
                         >
-                            <ICONS.PostThumbUpIcon width = {20} height={20} color = { isPostHearted ? COLORS.plum : COLORS.gray}/>
+                            <ICONS.PostThumbUpIcon width = {20} height={20} color = { isPostHearted ? COLORS.plum : COLORS.gray} />
                             <Text>{heartsCount} Вподобань</Text>
                         </TouchableOpacity>
                     </View>

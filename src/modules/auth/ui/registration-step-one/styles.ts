@@ -25,4 +25,19 @@ export const styles = StyleSheet.create({
 		justifyContent: "center",
 		gap: 6,
 	},
+
+	errorContainer: {		
+		justifyContent: 'center',
+		flexDirection: 'row',
+		alignItems: 'center',
+		gap: 6,
+		width: '100%'
+	},
+
+	errorMessage: {
+		color: COLORS.red,
+		textAlign: 'center',
+		marginTop: 5,
+		fontSize: 16
+	}
 });

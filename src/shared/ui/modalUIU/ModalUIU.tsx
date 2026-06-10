@@ -26,6 +26,7 @@ export function WelcomeDetailsModal({ isVisible, onClose }: Props) {
         
         if (cleanUsername?.startsWith("@")) {
             cleanUsername = cleanUsername.slice(1);
+        }
         
         if (!cleanUsername || !cleanPseudonym) {
             return;
@@ -70,7 +71,7 @@ export function WelcomeDetailsModal({ isVisible, onClose }: Props) {
                                         onChangeText={field.onChange}
                                         value={field.value}
                                     />
-                                )}
+                                )}  
                             />
 
                             <Controller
@@ -109,4 +110,4 @@ export function WelcomeDetailsModal({ isVisible, onClose }: Props) {
             </View>
         </Modal>
     );
-}}
+}

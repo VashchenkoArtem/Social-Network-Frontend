@@ -12,24 +12,36 @@ import { ILoginForm } from "@modules/auth/models/types/login.types";
 import { useContext } from "react";
 import { useLoginMutation } from "@modules/auth/api/userApi";
 import { UserContext } from "@modules/auth/context/user-context";
+import { ErrorIcon } from "@shared/ui/icons/urls/ErrorIcon";
+import { COLORS } from "@shared/constants/colors";
+import { ActivityIndicator } from "react-native-paper";
 
 export function LoginForm() {
 	const { user } = useContext(UserContext)!;
 	const {
 		handleSubmit,
 		control,
+		setError,
 		formState: { errors },
 	} = useForm<ILoginForm>({
 		resolver: yupResolver(loginValidator),
 	});
 	const { setUpdatedToken } = useContext(UserContext)!;
-	const [login] = useLoginMutation();
+	const [login, { isLoading }] = useLoginMutation();
 	const router = useRouter();
 	async function onSubmit(formData: ILoginForm) {
-		const { data } = await login(formData);
-		if (data && data.token) {
-			setUpdatedToken(data.token);
-			router.push({ pathname: "/(tabs)/home" });
+		try {
+			// const { data } = await login(formData);
+			const data = await login(formData).unwrap()
+			if (data && data.token) {
+				setUpdatedToken(data.token);
+				router.push({ pathname: "/(tabs)/home" });
+			}
+		} catch (error: any) {
+			setError('root', {
+				type: 'server',
+				message: error?.data?.message || 'Невірна пошта або пароль. Спробуйте ще раз.'
+			})
 		}
 	}
 	if (user) {
@@ -83,10 +95,19 @@ export function LoginForm() {
 
 				<Button
 					variant={"purple"}
-					text="Увійти"
+					text={isLoading ? '' : "Увійти"}
 					style={[styles.button, styles.purple]}
 					onPress={handleSubmit(onSubmit)}
+					disabled={isLoading}
+					iconLeft={ isLoading && <ActivityIndicator animating={true} color={COLORS.foggy}/> }
 				/>
+
+				{errors.root && (
+					<View style={styles.errorContainer}>
+						<ErrorIcon color={COLORS.red} width={16} height={16}/>
+						<Text style={styles.errorMessage}>{errors.root.message}</Text>
+					</View>
+				)}
 			</Modal>
 		</KeyboardAwareScrollView>
 	);

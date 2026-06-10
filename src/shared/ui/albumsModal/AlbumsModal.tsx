@@ -2,12 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Modal, View, Text, TouchableOpacity, ScrollView, ActivityIndicator } from "react-native";
 import { Input } from "@shared/ui/input";
 import { Button } from "@shared/ui/button";
-import { IAlbumData } from "./types";
 import { styles } from "./styles";
 import {
 	useCreateAlbumMutation,
-	useGetTopicsQuery,
-	useGetYearsQuery,
 	useUpdateAlbumMutation,
 } from "@modules/settings/api/albumApi";
 import { Controller, useForm } from "react-hook-form";
@@ -45,6 +42,7 @@ export const AlbumsModal = ({
 		control,
 		handleSubmit,
 		reset,
+		setError,
 		formState: { isValid },
 	} = useForm<Form>({
 		defaultValues: {
@@ -56,7 +54,7 @@ export const AlbumsModal = ({
 	});
 
 	useEffect(() => {
-		if (!visible) return;
+		if (!visible) reset({ name: "", theme: "", year: "" });
 
 		reset({
 			name: initialData?.name ?? "",
@@ -70,16 +68,20 @@ export const AlbumsModal = ({
 			theme: data.theme!,
 			year: data.year!,
 		};
-		if (initialData) {
-			console.log();
-			await updateAlbum({
-				id: initialData.id,
-				data: payload,
-			});
-		} else {
-			await createAlbum(payload);
+		try {
+			if (initialData) {
+				console.log();
+				await updateAlbum({
+					id: initialData.id,
+					data: payload,
+				});
+			} else {
+				await createAlbum(payload);
+			}
+			onClose();
+		} catch (error) {
+			console.error(error);
 		}
-		onClose();
 	};
 
 	return (
@@ -106,15 +108,14 @@ export const AlbumsModal = ({
 							name="name"
 							rules={{ required: true }}
 							render={({ field: { onChange, value } }) => (
-								<Input
+								<Input 
 									label="Назва альбому"
-									defaultValue={value}
+									value={value}
 									onChangeText={onChange}
 									placeholder="Настрій"
 								/>
 							)}
 						/>
-
 						<Controller
 							control={control}
 							name="theme"
@@ -129,7 +130,6 @@ export const AlbumsModal = ({
 								/>
 							)}
 						/>
-
 						<Controller
 							control={control}
 							name="year"
@@ -145,7 +145,6 @@ export const AlbumsModal = ({
 								/>
 							)}
 						/>
-
 						<View style={styles.modalFooter}>
 							<Button
 								variant="white"

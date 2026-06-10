@@ -12,6 +12,9 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { useContext } from "react";
 import { useSendCodeMutation } from "@modules/auth/api/userApi";
 import { UserContext } from "@modules/auth/context/user-context";
+import { COLORS } from "@shared/constants/colors";
+import { ErrorIcon } from "@shared/ui/icons/urls/ErrorIcon";
+import { ActivityIndicator } from "react-native-paper";
 
 export function RegistrationStepOne() {
 
@@ -21,13 +24,14 @@ export function RegistrationStepOne() {
 	const {
 		handleSubmit,
 		control,
+		setError,
 		formState: { errors },
 	} = useForm<RegForm>({
 		resolver: yupResolver(regValidator),
 	});
 
 	const onSubmit = async (data: RegForm) => {
-	
+		try {
 			await sendCode({
 				email: data.email,
 				message: "Код підтвердження",
@@ -36,6 +40,12 @@ export function RegistrationStepOne() {
 				pathname: "/verify",
 				params: { email: data.email, password: data.password },
 			});
+		} catch (error: any) {
+			setError('root', {
+				type: 'server',
+				message: error?.data?.message || 'Не вдалося надіслати код. Спробуйте ще раз.'
+			})
+		}
 	};
 	if (user) {
 		return <Redirect href="/(tabs)/home" />;
@@ -94,10 +104,18 @@ export function RegistrationStepOne() {
 
 					<Button
 						variant={"purple"}
-						text={"Створити акаунт"}
+						text={ isLoading ? '' : "Створити акаунт"}
 						style={[styles.button, styles.purple]}
 						onPress={handleSubmit(onSubmit)}
+						iconLeft={ isLoading && <ActivityIndicator animating={true} color={COLORS.foggy}/> }
 					/>
+
+					{errors.root && (
+						<View style={styles.errorContainer}>
+							<ErrorIcon color={COLORS.red} width={16} height={16}/>
+							<Text style={styles.errorMessage}>{errors.root.message}</Text>
+						</View>
+					)}
 				</Modal>
 			</View>
 		</KeyboardAwareScrollView>
