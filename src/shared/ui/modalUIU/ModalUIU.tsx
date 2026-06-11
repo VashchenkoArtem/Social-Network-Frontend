@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import { View, Text, Modal } from "react-native";
+import { ActivityIndicator } from "react-native-paper";
 import { Input } from "@shared/ui/input";
 import { Button } from "@shared/ui/button";
 import { useUpdateUserInfoMutation } from "@modules/auth/api/userApi";
@@ -8,6 +9,7 @@ import { styles } from "./styles";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { Controller, useForm } from "react-hook-form";
 import { UserContext } from "@modules/auth/context/user-context";
+import { COLORS } from "@shared/constants/colors";
 
 
 interface detailsFormData {
@@ -17,7 +19,12 @@ interface detailsFormData {
 
 export function WelcomeDetailsModal({ isVisible, onClose }: Props) {
     const { user } = useContext(UserContext)!;
-    const { handleSubmit, control } = useForm<detailsFormData>();
+    const { 
+        handleSubmit, 
+        control, 
+        setError, 
+        formState: { errors } 
+    } = useForm<detailsFormData>();
     const [updateUser, { isLoading }] = useUpdateUserInfoMutation();
 
     const handleConfirm = async (data: detailsFormData) => {
@@ -38,9 +45,13 @@ export function WelcomeDetailsModal({ isVisible, onClose }: Props) {
             }).unwrap();
             
             onClose();
-        } catch (error) {
-            console.error("Не вдалося оновити дані:", error);
-        }
+        } catch (error: any) {
+			setError("root", {
+				type: "server",
+				message:
+					error?.data?.message || "Не вдалося зберегти дані. Спробуйте ще раз.",
+			})
+		}
     };
 
     return (
@@ -69,6 +80,7 @@ export function WelcomeDetailsModal({ isVisible, onClose }: Props) {
                                         placeholder="Введіть Псевдонім автора"
                                         onChangeText={field.onChange}
                                         value={field.value}
+                                        error={errors.pseudonym?.message}
                                     />
                                 )}
                             />
@@ -83,6 +95,7 @@ export function WelcomeDetailsModal({ isVisible, onClose }: Props) {
                                         placeholder="@"
                                         onChangeText={field.onChange}
                                         value={field.value}
+                                        error={errors.username?.message}
                                     />
                                 )}
                             />
@@ -98,11 +111,19 @@ export function WelcomeDetailsModal({ isVisible, onClose }: Props) {
                         <View style={styles.footer}>
                             <Button
                                 variant="purple"
-                                text={isLoading ? "..." : "Продовжити"}
+                                text={isLoading ? "" : "Продовжити"}
                                 onPress={handleSubmit(handleConfirm)}
                                 disabled={isLoading}
                                 style={styles.button}
+                                iconLeft={isLoading ? <ActivityIndicator animating={true} color={COLORS.foggy}/> : null}                                
                             />
+                            
+                            {errors.root && (
+                                <View style={styles.errorContainer}>
+                                    <ErrorIcon color={COLORS.red} width={16} height={16}/>
+                                    <Text style={styles.errorMessage}>{errors.root.message}</Text>
+                                </View>
+                            )}
                         </View>
                     </View>
                 </KeyboardAwareScrollView>
