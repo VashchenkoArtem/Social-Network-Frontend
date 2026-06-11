@@ -51,14 +51,14 @@ export function HomePage() {
         setRefreshing(false);
     };
 
-const loadMore = () => {
-    if (!data?.meta?.hasMore || isFetching) return;
+    const loadMore = () => {
+        if (!data?.meta?.hasMore || isFetching) return;
 
-    prefetchPosts({
-        cursor: data.meta.nextCursor,
-        limit: 1,
-    });
-};
+        prefetchPosts({
+            cursor: data.meta.nextCursor,
+            limit: 3,
+        });
+    };
 
     if (!user) {
         return <Redirect href="/login" />;
