@@ -1,5 +1,5 @@
 import { baseApi } from "@shared/api/baseApi";
-import { CreatePostData, PostHeart, PostLike, PostsPayload, PostsResponse } from "./api.types";
+import { CreatePostData, PostHeart, PostLike, PostsPayload, PostsResponse, UserPostsPayload } from "./api.types";
 import { CreateAlbumDto } from "@modules/settings/api/albumApi";
 import { IPost } from "../ui/postCard/types";
 
@@ -49,12 +49,52 @@ export const postApi = baseApi.injectEndpoints({
                     : [{ type: 'Post', id: 'LIST' }],
         }),
 
-        myPosts: builder.query<IPost[], void>({
-            query: () => ({
-                url: 'posts/my',
-                method: 'GET'
-            }),
-            providesTags: ['Post']
+        myPosts: builder.query<PostsResponse, UserPostsPayload>({
+            query: ({ userId, cursor, limit = 3}) => {
+                const params = new URLSearchParams({
+                    limit: String(limit)
+                })
+
+                if (cursor) {
+                    params.set("cursor", String(cursor))
+                }
+
+                return {
+                    url: `posts/my?userId=${userId}&${params.toString()}`
+                }
+            },
+
+            serializeQueryArgs: ({ queryArgs }) => {
+                return `posts-my-${queryArgs.userId}`;
+            },
+            
+            merge: (currentCache, newItems) => {
+                const existingIds = new Set(
+                    currentCache.data.map(post => post.id)
+                )
+                const uniquePosts = newItems.data.filter(
+                    post => !existingIds.has(post.id)
+                )
+                currentCache.data.push(...uniquePosts)
+                currentCache.meta = newItems.meta
+            },
+
+            forceRefetch({ currentArg, previousArg }) {
+                return currentArg?.cursor !== previousArg?.cursor
+            },
+
+            providesTags: (result) =>
+                result
+                    ? [
+                        ...result.data.map(({ id }) => ({ type: 'Post' as const, id })),
+                        { type: 'Post', id: 'MY_LIST' },
+                    ]
+                    : [{ type: 'Post', id: 'MY_LIST' }],                
+            // ({
+            //     url: 'posts/my',
+            //     method: 'GET'
+            // }),
+            // providesTags: ['Post']
         }),
         
         createPost: builder.mutation<IPost, FormData>({
@@ -159,6 +199,7 @@ export const postApi = baseApi.injectEndpoints({
 export const {
     useLazyGetAllPostsQuery,
     useGetAllPostsQuery,
+    useLazyMyPostsQuery,
     useMyPostsQuery, 
     useCreatePostMutation,
     useDeletePostMutation,

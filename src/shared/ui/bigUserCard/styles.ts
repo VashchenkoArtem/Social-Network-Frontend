@@ -3,8 +3,7 @@ import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
     contactStatus: {
-        borderRadius: 123, 
-        backgroundColor: COLORS.lightestGray, 
+        borderRadius: 123,  
         width: 20, 
         height: 20, 
         position: "absolute",
@@ -36,4 +35,10 @@ export const styles = StyleSheet.create({
         height: 96,
         borderRadius: 123
     },
+    online: {
+        backgroundColor: COLORS.green
+    },
+    offline: {
+        backgroundColor: COLORS.lightestGray,
+    }
 })

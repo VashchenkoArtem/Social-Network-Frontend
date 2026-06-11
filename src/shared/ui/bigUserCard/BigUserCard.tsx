@@ -5,7 +5,7 @@ import { getAvatar } from "@shared/utils/avatar";
 import { styles } from "./styles";
 
 export function BigUserCard(props: IProps){
-    const { avatar, username, pseudonym } = props
+    const { avatar, username, pseudonym, isOnline } = props
     return (
         <View style = {{alignItems: "center"}}>
             <View style = {{ alignItems: "center", width: 96, height: 96}}>
@@ -16,7 +16,7 @@ export function BigUserCard(props: IProps){
                     }}
                     style = {styles.authorAvatar}
                 />
-                <View style = {styles.contactStatus}/>
+                <View style = {[styles.contactStatus, isOnline ? styles.online : styles.offline]}/>
             </View>
             <View style={styles.friendInfo}>
                 <Text style={styles.friendsFullName}>{ pseudonym }</Text>

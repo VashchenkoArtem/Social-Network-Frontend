@@ -40,11 +40,11 @@ export const userApi = baseApi.injectEndpoints({
 				AsyncStorage.setItem("token", data.token);
 			},
 		}),
-		updateUserInfo: builder.mutation<void, FormData>({
-			query: (formData) => ({
+		updateUserInfo: builder.mutation<void, ProfileData>({
+			query: (ProfileData) => ({
 				url: 'update-user',
 				method: 'PATCH',
-				body: formData,
+				body: ProfileData,
 			}),
 			invalidatesTags: ["User", "Album"],
 		}),

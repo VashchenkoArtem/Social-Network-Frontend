@@ -280,14 +280,14 @@ export function CreatePostForm(props: {
 						)}
 					/>
                     <Controller
-                    name="links"
-                    control={control}
-                    render={({ field }) => (
-                        <PostLinks
-                        links={field.value || []}
-                        setLinks={field.onChange}
-                        />
-                    )}
+						name="links"
+						control={control}
+						render={({ field }) => (
+							<PostLinks
+							links={field.value || []}
+							setLinks={field.onChange}
+							/>
+						)}
                     />
 				</View>
 

@@ -8,7 +8,7 @@ import { UnreadMessages } from "../unreadMessages/UndreadMessages";
 import { ChatAvatar } from "@modules/chats/ui/ChatAvatar/ChatAvatar";
 
 export function SmallUserCard(props: IProps){
-    const { avatar, pseudonym, signature, isPadding, lastMessage, time, unreadCount, isGroup, groupName } = props
+    const { avatar, pseudonym, signature, isPadding, lastMessage, time, unreadCount, isGroup, groupName, isOnline } = props
 
     return (
         <View style={[{ width: "100%",alignItems: "flex-start" }, isPadding && {paddingHorizontal: 16,paddingTop: 16 }]}>
@@ -23,8 +23,8 @@ export function SmallUserCard(props: IProps){
                     }
                     
                     <UnreadMessages count={unreadCount} top={0} right={0.5}/>
-                    { !isGroup && 
-                        <View style = {styles.contactStatus}/>
+                    { !isGroup &&
+                        <View style = {[styles.contactStatus, isOnline ? styles.online : styles.offline]}/>
                     }
                 </View>
                 <View style = {{flex: 1, justifyContent: "center"}}>

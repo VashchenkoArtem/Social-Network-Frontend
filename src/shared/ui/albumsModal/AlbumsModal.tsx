@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Modal, View, Text, TouchableOpacity, ScrollView, ActivityIndicator } from "react-native";
+import { Modal, View, Text, TouchableOpacity, ScrollView } from "react-native";
+import { ActivityIndicator } from 'react-native-paper'
 import { Input } from "@shared/ui/input";
 import { Button } from "@shared/ui/button";
 import { styles } from "./styles";
@@ -8,6 +9,8 @@ import {
 	useUpdateAlbumMutation,
 } from "@modules/settings/api/albumApi";
 import { Controller, useForm } from "react-hook-form";
+import { ErrorIcon } from "../icons/urls/ErrorIcon";
+import { COLORS } from "@shared/constants/colors";
 
 interface AlbumsModalProps {
 	visible: boolean;
@@ -37,13 +40,13 @@ export const AlbumsModal = ({
 	initialData,
 }: AlbumsModalProps) => {
 	const [createAlbum] = useCreateAlbumMutation();
-	const [updateAlbum] = useUpdateAlbumMutation();
+	const [updateAlbum, {isLoading}] = useUpdateAlbumMutation();
 	const {
 		control,
 		handleSubmit,
 		reset,
 		setError,
-		formState: { isValid },
+		formState: { isValid, errors },
 	} = useForm<Form>({
 		defaultValues: {
 			name: "",
@@ -79,8 +82,11 @@ export const AlbumsModal = ({
 				await createAlbum(payload);
 			}
 			onClose();
-		} catch (error) {
-			console.error(error);
+		} catch (error: any) {
+			setError('root', {
+				type: 'server',
+				message: error?.data?.message || 'Не вдалося оновити альбом. Спробуйте ще раз.'
+			})
 		}
 	};
 
@@ -113,6 +119,7 @@ export const AlbumsModal = ({
 									value={value}
 									onChangeText={onChange}
 									placeholder="Настрій"
+									error={errors.name?.message}
 								/>
 							)}
 						/>
@@ -127,6 +134,7 @@ export const AlbumsModal = ({
 									defaultValue={value}
 									onChangeText={onChange}
 									placeholder="Природа"
+									error={errors.theme?.message}
 								/>
 							)}
 						/>
@@ -142,6 +150,7 @@ export const AlbumsModal = ({
 									onChangeText={onChange}
 									placeholder="2026"
 									keyboardType="numeric"
+									error={errors.year?.message}
 								/>
 							)}
 						/>
@@ -154,7 +163,7 @@ export const AlbumsModal = ({
 							/>
 							<Button
 								variant="purple"
-								text="Зберегти"
+								text={isLoading ? '' : "Зберегти"}
 								onPress={handleSubmit(handleFormSubmit)}
 								disabled={!isValid}
 								style={[
@@ -162,7 +171,15 @@ export const AlbumsModal = ({
 									styles.purple,
 									{ opacity: isValid ? 1 : 0.5 },
 								]}
+								iconLeft={ isLoading && <ActivityIndicator animating={true} color={COLORS.foggy}/> }
 							/>
+
+							{errors.root && (
+								<View style={styles.errorContainer}>
+									<ErrorIcon color={COLORS.red} width={16} height={16}/>
+									<Text style={styles.errorMessage}>{errors.root.message}</Text>
+								</View>
+							)}
 						</View>
 					</ScrollView>
 				</View>

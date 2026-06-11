@@ -18,7 +18,8 @@ export function FriendFrame({
     messageIfNull,
     toDetailPage,
     isFetching, 
-    isLoading
+    isLoading,
+    onlineUserIds
 }: IProps) {
     const { user } = useContext(UserContext)!;
 
@@ -45,11 +46,12 @@ export function FriendFrame({
                 ) : data ? (
                     data.length > 0 ? (
                         <FlatList
-                            contentContainerStyle={{ gap: 10}}
+                            ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
                             data={data}
                             keyExtractor={(item) => String(item.user.id)}
                             renderItem={({ item }) => (
                                 <FriendCard
+                                    isOnline={onlineUserIds?.includes(item.user.id)}
                                     buttonText={buttonText}
                                     user={item.user}
                                     requestId={item.id}

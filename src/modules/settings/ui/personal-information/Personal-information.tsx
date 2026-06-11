@@ -46,7 +46,12 @@ const formatDateForInput = (dateString?: string | null) => {
     if (!dateString) return "";
     const date = new Date(dateString);
     if (isNaN(date.getTime())) return "";
-    return date.toLocaleDateString("ua-UA");
+    
+    const day = String(date.getUTCDate()).padStart(2, '0');
+    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+    const year = date.getUTCFullYear();
+    
+    return `${day}.${month}.${year}`;
 };
 
 export function PersonalInformation() {
@@ -102,18 +107,18 @@ export function PersonalInformation() {
 
 	const onSubmit = async (data: FormData) => {
 		try {
-			const formData = new FormData();
+			const bodyFormData = new FormData();
 			
-			if (data.first_name) formData.append("first_name", data.first_name);
-			if (data.last_name) formData.append("last_name", data.last_name);
-			if (data.nickname) formData.append("username", data.nickname);
-			if (data.birthDate) formData.append("birth_date", data.birthDate);
-			if (data.email) formData.append("email", data.email);
+			if (data.first_name) bodyFormData.append("first_name", data.first_name);
+			if (data.last_name) bodyFormData.append("last_name", data.last_name);
+			if (data.nickname) bodyFormData.append("username", data.nickname);
+			if (data.birthDate) bodyFormData.append("birth_date", data.birthDate);
+			if (data.email) bodyFormData.append("email", data.email);
 
 			if (data.avatar) {
 				const isLocalUri = data.avatar.startsWith('file') || data.avatar.startsWith('ph');
 				if (isLocalUri) {
-					formData.append('avatars', {
+					bodyFormData.append('avatars', {
 						uri: data.avatar,
 						name: 'avatar.jpg',
 						type: 'image/jpeg',
@@ -121,17 +126,39 @@ export function PersonalInformation() {
 				}
 			}
 
-			await updateUserInfo(formData).unwrap();
+			await new Promise((resolve, reject) => {
+				const xhr = new XMLHttpRequest();
+				
+				xhr.open('PATCH', `http://${SERVER.host}:${SERVER.port}/update-user`);
+				xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+				xhr.onload = () => {
+					if (xhr.status >= 200 && xhr.status < 300) {
+						resolve(xhr.response);
+					} else {
+						try {
+							const errorData = JSON.parse(xhr.responseText);
+							reject(errorData);
+						} catch {
+							reject({ message: 'Помилка сервера' });
+						}
+					}
+				};
+
+				xhr.onerror = () => reject({ message: 'Мережева помилка' });
+				
+				xhr.send(bodyFormData);
+			});
 
 			reset(data); 
 			setIsEditingProfile(false);
 			setIsEditingPersonalInfo(false);
 			console.log("Дані успішно збережено");
+
 		} catch (error: any) {
 			setError('root', {
 				type: 'server',
-				message: error?.data?.message || 'Не вдалося зберегти дані. Спробуйте ще раз.'
-			})
+				message: error?.message || 'Не вдалося зберегти дані. Спробуйте ще раз.'
+			});
 		}
 	};
 
@@ -165,11 +192,6 @@ export function PersonalInformation() {
 			setIsEditingPersonalInfo(true);
 		}
 	};
-	socket.emit("getUsersOnline", {
-		userIds: [1, 2, 3, 4]
-	}, (response) => {
-		console.log(response.onlineUserIds)
-	})
 	const pickImage = async (onChange: (uri: string) => void) => {
 		const result = await ImagePicker.launchImageLibraryAsync({
 			mediaTypes: "images", 
@@ -341,6 +363,12 @@ export function PersonalInformation() {
 								<Controller
 									name="birthDate"
 									control={control}
+									rules={{
+										pattern: {
+											value: /^\d{2}\.\d{2}\.\d{4}$/,
+											message: "Введіть дату у форматі ДД.ММ.РРРР"
+										}
+									}}
 									render={({ field }) => (
 										<Input
 											inputType="date"

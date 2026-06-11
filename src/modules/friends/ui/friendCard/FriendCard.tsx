@@ -14,7 +14,7 @@ import { BigUserCard } from "@shared/ui/bigUserCard/BigUserCard";
 
 export function FriendCard(props: IProps) {
     const router = useRouter();
-    const { user, requestId, buttonText } = props;
+    const { user, requestId, buttonText, isOnline } = props;
     
     if (!user) return null
     
@@ -29,7 +29,7 @@ export function FriendCard(props: IProps) {
         <>
             {isVisible && (
                 <View style={styles.card}>
-                    <BigUserCard avatar={user.profile_app_profile.avatar} username={user.username} pseudonym={user.profile_app_profile.pseudonym}/>
+                    <BigUserCard isOnline={isOnline} avatar={user.profile_app_profile.avatar} username={user.username} pseudonym={user.profile_app_profile.pseudonym}/>
                     <View style={styles.cardButtons}>
                         <Button variant="purple" text = {buttonText} onPress={async () => {
                             if (buttonText === "Підтвердити" || buttonText === "Додати"){
