@@ -1,8 +1,22 @@
-export interface IMessageResponse {
-    data: IMessage[]
-    meta: {
+// export interface IMessageResponse {
+//     data: IMessage[]
+//     meta: {
 
+//     }
+// }
+
+export interface PaginatedMessageResponse {
+    messages: IMessage[]
+    meta: {
+        nextCursor: number | null;
+        hasMore: boolean
     }
+}
+
+export interface MessagePayload {
+    chatId: number;
+    cursor?: number | null;
+    limit?: number;
 }
 export interface IMessage{
     id: number;

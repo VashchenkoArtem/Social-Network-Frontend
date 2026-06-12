@@ -6,14 +6,14 @@ export function ErrorIcon(props: IIconProps) {
 	const { color } = props
     return (
         <Svg
-            width={13}
-            height={13}
-            viewBox="0 0 13 13"
+            width={14}
+            height={14}
+            viewBox="0 0 14 14"
             fill="none"
             {...props}
         >
         <Path
-            d="M7.2 11.2a.8.8 0 111.6 0 .8.8 0 01-1.6 0zm0-6.4a.8.8 0 111.6 0V8a.8.8 0 11-1.6 0V4.8zM8 0C3.576 0 0 3.6 0 8a8 8 0 108-8zm0 14.4A6.4 6.4 0 118 1.6a6.4 6.4 0 010 12.8z"
+            d="M6.075 9.45a.675.675 0 111.35 0 .675.675 0 01-1.35 0zm0-5.4a.675.675 0 011.35 0v2.7a.675.675 0 01-1.35 0v-2.7zM6.75 0C3.017 0 0 3.038 0 6.75A6.75 6.75 0 106.75 0zm0 12.15a5.4 5.4 0 110-10.8 5.4 5.4 0 010 10.8z"
             fill={color}
         />
         </Svg>

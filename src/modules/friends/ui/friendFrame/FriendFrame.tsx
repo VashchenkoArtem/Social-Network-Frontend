@@ -1,4 +1,4 @@
-import { View, Text, FlatList, ActivityIndicator } from "react-native";
+import { View, Text, FlatList, RefreshControl } from "react-native";
 import { FriendCard } from "../friendCard";
 import { styles } from "./friendFrame.styles";
 import { useContext } from "react";
@@ -6,9 +6,8 @@ import { UserContext } from "@modules/auth/context/user-context";
 import { FriendRequest } from "@modules/friends/api/api.types";
 import { IProps } from "./types";
 import { IUser } from "@shared/types/user.types";
-import { getOtherUser } from "@shared/utils/friends";
-
-
+import { COLORS } from "@shared/constants/colors";
+import { ActivityIndicator } from "react-native-paper";
 
 export function FriendFrame({
     frameName,
@@ -19,7 +18,10 @@ export function FriendFrame({
     toDetailPage,
     isFetching, 
     isLoading,
-    onlineUserIds
+    onlineUserIds,
+    refreshing,
+    onEndReached,
+    onRefresh
 }: IProps) {
     const { user } = useContext(UserContext)!;
 
@@ -42,13 +44,13 @@ export function FriendFrame({
             </View>
             <View style={{ gap: 10 }}>
                 {(isLoading || isFetching) ? (
-                    <ActivityIndicator size="small" />
+                    <ActivityIndicator animating={true} color={COLORS.gray} style={{ marginTop: 20 }}/>
                 ) : data ? (
                     data.length > 0 ? (
                         <FlatList
-                            ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
                             data={data}
                             keyExtractor={(item) => String(item.user.id)}
+                            ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
                             renderItem={({ item }) => (
                                 <FriendCard
                                     isOnline={onlineUserIds?.includes(item.user.id)}
@@ -57,6 +59,14 @@ export function FriendFrame({
                                     requestId={item.id}
                                 />
                             )}
+                            onEndReached={onEndReached}
+                            onEndReachedThreshold={0.5}
+                            refreshControl={
+                                <RefreshControl
+                                    refreshing={refreshing ?? false}
+                                    onRefresh={onRefresh}
+                                />
+                            }
                         />
                     ) : (
                         <Text style={styles.nullMessage}>

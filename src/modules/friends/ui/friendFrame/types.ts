@@ -16,6 +16,10 @@ interface FriendFrameBaseProps {
     isFetching?: boolean;
     isLoading: boolean;
     onlineUserIds?: number[]
+
+    refreshing?: boolean
+    onEndReached?: () => void
+    onRefresh?: () => void
 }
 
 

@@ -117,7 +117,7 @@ export function WelcomeDetailsModal({ isVisible, onClose }: Props) {
 
                         {errors.root && (
                             <View style={styles.errorContainer}>
-                                <ErrorIcon color={COLORS.red} width={16} height={16}/>
+                                <ErrorIcon color={COLORS.red} width={14} height={14}/>
                                 <Text style={styles.errorMessage}>{errors.root.message}</Text>
                             </View>
                         )}

@@ -16,6 +16,17 @@ export function Message(props: IMessageProps) {
         minute: '2-digit',
         hour12: false
     })
+    const images = data.chat_app_messageimage ?? []
+    const neededImages = images.slice(0, 7)
+
+    const imageMessageRows = [
+        neededImages.slice(0, 2),
+        neededImages.slice(2, 5),
+        neededImages.slice(5, 7)
+    ].filter((row) => {
+        return row.length > 0
+    })
+
     return (
         <View>
             { user.id === data.sender_id ? (
@@ -29,23 +40,32 @@ export function Message(props: IMessageProps) {
                         )}
 
                         {data.chat_app_messageimage &&
-                            data.chat_app_messageimage.length > 0 && (
+                            neededImages.length > 0 && (
                                 <FlatList
-                                    data={data.chat_app_messageimage}
+                                    data={imageMessageRows}
                                     keyExtractor={(item, index) =>
-                                        `${item.id}-${index}`
+                                        String(index)
                                     }
                                     renderItem={({ item }) => (
-                                        <Image
-                                            source={{
-                                                uri: item.image.startsWith("file:///")
-                                                    ? item.image
-                                                    : `http://${SERVER.host}:${SERVER.port}/media/thumb/${item.image}`
-                                            }}
-                                            width={200}
-                                            height={200}
-                                            style={{ borderRadius: 5 }}
-                                        />
+                                        <View style={styles.imageContainer}>
+                                            {item.map((imageItem, index) => (
+                                                <Image
+                                                    key={index}
+                                                    source={{
+                                                        uri: imageItem.image.startsWith("file:///")
+                                                            ? imageItem.image
+                                                            : `http://${SERVER.host}:${SERVER.port}/media/thumb/${imageItem.image}`
+                                                    }}
+                                                    // width={200}
+                                                    // height={200}
+                                                    style={{
+                                                        width: 100,
+                                                        height: 100,
+                                                        borderRadius: 6,
+                                                    }}
+                                                />
+                                            ))}
+                                        </View>
                                     )}
                                 />
                             )

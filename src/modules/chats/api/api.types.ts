@@ -25,3 +25,16 @@ export interface IChat {
         sender_id: number
     }[]
 }
+
+export interface IPaginatedChatResponse {
+    chats: IChat[];
+    meta: {
+        nextCursor: number | null;
+        hasMore: boolean
+    }
+}
+
+export interface IChatPayload {
+    cursor?: number | null;
+    limit?: number;
+}

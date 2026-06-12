@@ -8,4 +8,5 @@ export interface IChatProps {
     items: IChat[] | null | undefined;
     unreadMessagesCount?: number;
     isGroups?: boolean
+    onEndReached?: () => void;
 }
