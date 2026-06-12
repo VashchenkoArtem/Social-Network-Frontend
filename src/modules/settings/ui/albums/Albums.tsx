@@ -226,7 +226,7 @@ return (
                                             </View>
                                         </View>
                                     ))}
-                                    <AddAlbumPhoto albumId={album.id} />
+                                    <AddAlbumPhoto albumId={album.id} userId={user.id} />
                                 </View>
                             )}
                         </View>

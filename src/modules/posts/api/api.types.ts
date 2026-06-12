@@ -59,6 +59,12 @@ export interface PostsPayload{
     limit?: number;
 }
 
+export interface UserPostsPayload {
+    userId: number;
+    cursor?: number | null;
+    limit?: number;
+}
+
 export interface PostsResponse {
     data: IPost[];
     meta: {

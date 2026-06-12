@@ -7,5 +7,6 @@ export interface IProps{
     time?: Date;
     unreadCount?: number;
     isGroup?: boolean;
-    groupName?: string
+    groupName?: string;
+    isOnline?: boolean
 }

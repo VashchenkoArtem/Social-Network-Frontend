@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Modal, View, Text, TouchableOpacity, ScrollView } from "react-native";
+import { ActivityIndicator } from 'react-native-paper'
 import { Input } from "@shared/ui/input";
 import { Button } from "@shared/ui/button";
-import { ActivityIndicator } from "react-native-paper";
-import { IAlbumData } from "./types";
 import { styles } from "./styles";
 import {
 	useCreateAlbumMutation,
-	useGetTopicsQuery,
-	useGetYearsQuery,
 	useUpdateAlbumMutation,
 } from "@modules/settings/api/albumApi";
 import { Controller, useForm } from "react-hook-form";
+import { ErrorIcon } from "../icons/urls/ErrorIcon";
 import { COLORS } from "@shared/constants/colors";
 
 interface AlbumsModalProps {
@@ -42,7 +40,7 @@ export const AlbumsModal = ({
 	initialData,
 }: AlbumsModalProps) => {
 	const [createAlbum] = useCreateAlbumMutation();
-	const [updateAlbum, { isLoading }] = useUpdateAlbumMutation();
+	const [updateAlbum, {isLoading}] = useUpdateAlbumMutation();
 	const {
 		control,
 		handleSubmit,
@@ -59,7 +57,7 @@ export const AlbumsModal = ({
 	});
 
 	useEffect(() => {
-		if (!visible) return;
+		if (!visible) reset({ name: "", theme: "", year: "" });
 
 		reset({
 			name: initialData?.name ?? "",
@@ -73,33 +71,21 @@ export const AlbumsModal = ({
 			theme: data.theme!,
 			year: data.year!,
 		};
-		// if (initialData) {
-		// 	console.log();
-		// 	await updateAlbum({
-		// 		id: initialData.id,
-		// 		data: payload,
-		// 	});
-		// } else {
-		// 	await createAlbum(payload);
-		// }
-		// onClose();
-
 		try {
 			if (initialData) {
+				console.log();
 				await updateAlbum({
 					id: initialData.id,
 					data: payload,
-				}).unwrap()
+				});
 			} else {
-				await createAlbum(payload).unwrap()
+				await createAlbum(payload);
 			}
-
-			onClose()
+			onClose();
 		} catch (error: any) {
-			setError("root", {
-				type: "server",
-				message:
-					error?.data?.message || "Не вдалося зберегти альбом. Спробуйте ще раз.",
+			setError('root', {
+				type: 'server',
+				message: error?.data?.message || 'Не вдалося оновити альбом. Спробуйте ще раз.'
 			})
 		}
 	};
@@ -128,16 +114,15 @@ export const AlbumsModal = ({
 							name="name"
 							rules={{ required: true }}
 							render={({ field: { onChange, value } }) => (
-								<Input
+								<Input 
 									label="Назва альбому"
-									defaultValue={value}
+									value={value}
 									onChangeText={onChange}
 									placeholder="Настрій"
 									error={errors.name?.message}
 								/>
 							)}
 						/>
-
 						<Controller
 							control={control}
 							name="theme"
@@ -153,7 +138,6 @@ export const AlbumsModal = ({
 								/>
 							)}
 						/>
-
 						<Controller
 							control={control}
 							name="year"
@@ -170,7 +154,6 @@ export const AlbumsModal = ({
 								/>
 							)}
 						/>
-
 						<View style={styles.modalFooter}>
 							<Button
 								variant="white"
@@ -188,7 +171,7 @@ export const AlbumsModal = ({
 									styles.purple,
 									{ opacity: isValid ? 1 : 0.5 },
 								]}
-								iconLeft={isLoading ? <ActivityIndicator animating={true} color={COLORS.foggy}/> : null}
+								iconLeft={ isLoading && <ActivityIndicator animating={true} color={COLORS.foggy}/> }
 							/>
 
 							{errors.root && (

@@ -26,8 +26,7 @@ import { useGetTagsQuery } from "@modules/tabs/api/tagsApi";
 import { IPost } from "../postCard/types";
 import { useDispatch } from "react-redux";
 import { useAppDispatch } from "@modules/posts/api/store";
-
-
+import { ErrorIcon } from "@shared/ui/icons/urls/ErrorIcon";
 
 export function CreatePostForm(props: {
 	setIsCreatePostModalOpen: (type: boolean) => void;
@@ -41,6 +40,7 @@ export function CreatePostForm(props: {
 		control,
 		reset,
 		watch,
+		setError,
 		formState: { errors },
 	} = useForm<ICreatePostForm>({
 		defaultValues: {
@@ -80,7 +80,7 @@ export function CreatePostForm(props: {
 	const [isCreatingPost, setIsCreatingPost] = useState(false);
 	const [postImages, setPostImages] = useState<string[]>([]);
 
-	const [updatePost] = useUpdatePostMutation();
+	const [updatePost, {isLoading}] = useUpdatePostMutation();
 
 	const { user } = useContext(UserContext)!;
 
@@ -140,33 +140,35 @@ export function CreatePostForm(props: {
 			if (editData) {
 				await updatePost({ id: editData.id, formData }).unwrap();
 			} else {
-					setIsCreatingPost(true);
-					xhr.open('POST', `http://${SERVER.host}:${SERVER.port}/posts`);
-					xhr.onload = () => {
-						const newPost = JSON.parse(xhr.responseText);
-						dispatch(
-						postApi.util.updateQueryData(
-							"getAllPosts",
-							{ cursor: undefined, limit: 3 },
-							(draft) => {
-								draft.data.unshift(newPost);
-							}
-						)
-						);
-						setIsCreatingPost(false);
-						setIsCreatePostModalOpen(false);
-						reset();
-						setPostImages([]);
-					};
-					xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-					
-					xhr.send(formData);
-				}
-				} catch (error) {
-					console.error("Помилка збереження:", error);
-				}
+				setIsCreatingPost(true);
+				xhr.open('POST', `http://${SERVER.host}:${SERVER.port}/posts`);
+				xhr.onload = () => {
+					const newPost = JSON.parse(xhr.responseText);
+					dispatch(
+					postApi.util.updateQueryData(
+						"getAllPosts",
+						{ cursor: undefined, limit: 3 },
+						(draft) => {
+							draft.data.unshift(newPost);
+						}
+					)
+					);
+					setIsCreatingPost(false);
+					setIsCreatePostModalOpen(false);
+					reset();
+					setPostImages([]);
+				};
+				xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+				
+				xhr.send(formData);
+			}
+		} catch (error: any) {
+			setError('root', {
+				type: 'server',
+				message: error?.data?.message || 'Не вдалося зберегти зображення. Спробуйте ще раз.'
+			})
+		}
 	};
-
 
 	return (
 		<KeyboardAwareScrollView
@@ -278,14 +280,14 @@ export function CreatePostForm(props: {
 						)}
 					/>
                     <Controller
-                    name="links"
-                    control={control}
-                    render={({ field }) => (
-                        <PostLinks
-                        links={field.value || []}
-                        setLinks={field.onChange}
-                        />
-                    )}
+						name="links"
+						control={control}
+						render={({ field }) => (
+							<PostLinks
+							links={field.value || []}
+							setLinks={field.onChange}
+							/>
+						)}
                     />
 				</View>
 
@@ -336,13 +338,23 @@ export function CreatePostForm(props: {
 					<Button
 						onPress={handleSubmit(handleSave)}
 						variant="purple"
-						text={editData ? "Зберегти" : "Публікація"}
+
+						text={isLoading ? '' : editData ? "Зберегти" : "Публікація"}
 						iconRight={
-							isCreatingPost
-								? <ActivityIndicator size="small" color="white" />
-								: <ICONS.ArrowIcon color={COLORS.white} />
+							isCreatingPost || isLoading ? (
+								<ActivityIndicator animating={true} color={COLORS.foggy}/>
+							) : (
+								<ICONS.ArrowIcon color={COLORS.white} />
+							)
 						}
 					/>
+
+					{errors.root && (
+						<View style={styles.errorContainer}>
+							<ErrorIcon color={COLORS.red} width={16} height={16}/>
+							<Text style={styles.errorMessage}>{errors.root.message}</Text>
+						</View>
+					)}
 				</View>
 			</View>
 		</KeyboardAwareScrollView>

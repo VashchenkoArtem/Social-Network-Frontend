@@ -27,5 +27,6 @@ export interface IPost {
 
 export interface IProps {
     post: IPost;
-    isEditingPost: boolean
+    isEditingPost: boolean;
+    isOnlineUser?: boolean
 }

@@ -10,7 +10,7 @@ export function PostLikeIcon(props: IIconProps) {
             width={17}
             height={16}
             viewBox="0 0 17 16"
-            fill="none"
+            fill={color}
             {...props}
         >
             <Path

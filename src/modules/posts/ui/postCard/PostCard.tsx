@@ -1,23 +1,20 @@
-import { View, Image, Text, TouchableOpacity, Pressable } from "react-native";
+import { View, Image, Text, TouchableOpacity } from "react-native";
 import { getPhotoStyle, styles } from "./styles";
-import { use, useContext, useEffect, useState } from "react";
-import { UserContext } from "@modules/auth/context/user-context";
+import { useEffect, useState } from "react";
 import { COLORS } from "@shared/constants/colors";
 import { ICONS } from "@shared/ui";
-import { Link, Redirect } from "expo-router";
+import { Link } from "expo-router";
 import { IProps } from "./types";
 import { SERVER } from "@shared/constants/server";
-import { colors } from "react-native-keyboard-controller/lib/typescript/components/KeyboardToolbar/colors";
 import Modal from "react-native-modal"
 
 import { CreatePostForm } from "@modules/posts/ui/create-post-form";
 import { useCreateHeartMutation, useCreateLikeMutation, useDeleteHeartMutation, useDeleteLikeMutation, useDeletePostMutation, useGetAllHeartsQuery, useGetAllLikesQuery, useGetPostHeartStatusQuery, useGetPostLikeStatusQuery, useViewPostMutation } from "@modules/posts/api/postsApi";
-import { getAvatar } from "@shared/utils/avatar";
 import { SmallUserCard } from "@shared/ui/smallUserCard/SmallUserCard";
 
 
 export function PostCard(props: IProps){
-    const { post, isEditingPost } = props
+    const { post, isOnlineUser } = props
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [deletePost] = useDeletePostMutation();
@@ -99,7 +96,7 @@ export function PostCard(props: IProps){
     if (!authorProfile) return null
     return (
         <View style={styles.postContainer}>
-            <SmallUserCard pseudonym={authorProfile.pseudonym} avatar={authorProfile.avatar} signature={authorProfile.signature} isPadding={true}/>
+            <SmallUserCard isOnline={isOnlineUser} pseudonym={authorProfile.pseudonym} avatar={authorProfile.avatar} signature={authorProfile.signature} isPadding={true}/>
             <Modal
                 isVisible={isEditModalOpen}
                 onBackdropPress={() => setIsEditModalOpen(false)}
@@ -177,7 +174,7 @@ export function PostCard(props: IProps){
                             style={styles.postFooterBtn}
                             onPress={handleHeart}
                         >
-                            <ICONS.PostThumbUpIcon width = {20} height={20} color = { isPostHearted ? COLORS.plum : COLORS.gray}/>
+                            <ICONS.PostThumbUpIcon width = {20} height={20} color = { isPostHearted ? COLORS.plum : COLORS.gray} />
                             <Text>{heartsCount} Вподобань</Text>
                         </TouchableOpacity>
                     </View>

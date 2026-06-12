@@ -10,7 +10,7 @@ export function PostThumbUpIcon(props: IIconProps) {
             width={19}
             height={17}
             viewBox="0 0 19 17"
-            fill="none"
+            fill={color}
             {...props}
         >
             <Path

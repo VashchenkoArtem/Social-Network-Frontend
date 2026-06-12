@@ -29,9 +29,9 @@ export const AlbumItem = ({
     onMenuToggle
 }: AlbumItemProps) => {
     const isAvatar = variant === 'avatar';
-
+    
     const photosToRender = isAvatar 
-        ? (album.photos?.length > 0 ? [album.photos[album.photos.length - 1]] : [])
+        ? (album.photos ? album.photos?.length > 0 ? [album.photos[album.photos.length - 1]] : [] : [])
         : (album.photos || []);
 
     return (
@@ -93,7 +93,7 @@ export const AlbumItem = ({
                 ))}
                 {!isAvatar && (
                     <View style={styles.plusBtn}>
-                        <AddAlbumPhoto albumId={album.id} />
+                        <AddAlbumPhoto userId={album.authorId} albumId={album.id} />
                     </View>
                 )}
             </View>

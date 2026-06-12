@@ -1,6 +1,5 @@
 import React, { useContext } from "react";
 import { View, Text, Modal } from "react-native";
-import { ActivityIndicator } from "react-native-paper";
 import { Input } from "@shared/ui/input";
 import { Button } from "@shared/ui/button";
 import { useUpdateUserInfoMutation } from "@modules/auth/api/userApi";
@@ -10,6 +9,8 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { Controller, useForm } from "react-hook-form";
 import { UserContext } from "@modules/auth/context/user-context";
 import { COLORS } from "@shared/constants/colors";
+import { ActivityIndicator } from "react-native-paper";
+import { ErrorIcon } from "../icons/urls/ErrorIcon";
 
 
 interface detailsFormData {
@@ -19,12 +20,7 @@ interface detailsFormData {
 
 export function WelcomeDetailsModal({ isVisible, onClose }: Props) {
     const { user } = useContext(UserContext)!;
-    const { 
-        handleSubmit, 
-        control, 
-        setError, 
-        formState: { errors } 
-    } = useForm<detailsFormData>();
+    const { handleSubmit, control, setError, formState: { errors } } = useForm<detailsFormData>();
     const [updateUser, { isLoading }] = useUpdateUserInfoMutation();
 
     const handleConfirm = async (data: detailsFormData) => {
@@ -33,6 +29,7 @@ export function WelcomeDetailsModal({ isVisible, onClose }: Props) {
         
         if (cleanUsername?.startsWith("@")) {
             cleanUsername = cleanUsername.slice(1);
+        }
         
         if (!cleanUsername || !cleanPseudonym) {
             return;
@@ -42,14 +39,13 @@ export function WelcomeDetailsModal({ isVisible, onClose }: Props) {
             await updateUser({
                 pseudonym: cleanPseudonym,
                 username: cleanUsername,
-            }).unwrap();
+            }).unwrap()
             
-            onClose();
+            onClose()
         } catch (error: any) {
-			setError("root", {
-				type: "server",
-				message:
-					error?.data?.message || "Не вдалося зберегти дані. Спробуйте ще раз.",
+			setError('root', {
+				type: 'server',
+				message: error?.data?.message || 'Не вдалося оновити дані. Спробуйте ще раз.'
 			})
 		}
     };
@@ -82,7 +78,7 @@ export function WelcomeDetailsModal({ isVisible, onClose }: Props) {
                                         value={field.value}
                                         error={errors.pseudonym?.message}
                                     />
-                                )}
+                                )}  
                             />
 
                             <Controller
@@ -115,19 +111,19 @@ export function WelcomeDetailsModal({ isVisible, onClose }: Props) {
                                 onPress={handleSubmit(handleConfirm)}
                                 disabled={isLoading}
                                 style={styles.button}
-                                iconLeft={isLoading ? <ActivityIndicator animating={true} color={COLORS.foggy}/> : null}                                
+                                iconLeft={ isLoading && <ActivityIndicator animating={true} color={COLORS.foggy}/> }
                             />
-                            
-                            {errors.root && (
-                                <View style={styles.errorContainer}>
-                                    <ErrorIcon color={COLORS.red} width={16} height={16}/>
-                                    <Text style={styles.errorMessage}>{errors.root.message}</Text>
-                                </View>
-                            )}
                         </View>
+
+                        {errors.root && (
+                            <View style={styles.errorContainer}>
+                                <ErrorIcon color={COLORS.red} width={16} height={16}/>
+                                <Text style={styles.errorMessage}>{errors.root.message}</Text>
+                            </View>
+                        )}
                     </View>
                 </KeyboardAwareScrollView>
             </View>
         </Modal>
     );
-}}
+}

@@ -8,13 +8,13 @@ import { UserContext } from "@modules/auth/context/user-context";
 import { View } from "react-native";
 import { FONTS } from "@shared/constants/fonts";
 import { COLORS } from "@shared/constants/colors";
+import { socket } from "@shared/socket/socket";
 
 export function HomePage() {
     const { isNewUser } = useLocalSearchParams<{ isNewUser?: string }>();
     const [isWelcomeVisible, setIsWelcomeVisible] = useState(false);
 
     const [refreshing, setRefreshing] = useState(false);
-
     const {
         data,
         isLoading,
@@ -24,6 +24,8 @@ export function HomePage() {
         cursor: undefined,
         limit: 3
     });
+    const [ onlineUserIds, setOnlineUserIds ] = useState<number[]>([])
+    const userIds = data?.data.map((user) => user.user_app_user.id)
     useEffect(() => {
         if (!data?.meta?.nextCursor || !data?.meta?.hasMore) return;
 
@@ -32,9 +34,20 @@ export function HomePage() {
             limit: 3,
         });
     }, [data?.meta?.nextCursor]);
-    const { user } = useContext(UserContext)!;
+    const { user, getOnlineUsers } = useContext(UserContext)!;
     const prefetchPosts = postApi.usePrefetch("getAllPosts");
+    useEffect(() => {
+        async function loadOnlineUsers() {
+            if (!userIds?.length) return
 
+            const online = await getOnlineUsers(userIds)
+
+            setOnlineUserIds(online)
+        }
+
+        loadOnlineUsers()
+    }, [userIds])
+    
     useEffect(() => {
         if (!user) return;
 
@@ -91,6 +104,7 @@ export function HomePage() {
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => (
                     <PostCard
+                        isOnlineUser={onlineUserIds.includes(item.user_app_user.id) }
                         post={item}
                         isEditingPost={false}
                     />

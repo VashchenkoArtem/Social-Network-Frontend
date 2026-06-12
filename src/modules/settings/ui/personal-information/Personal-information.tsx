@@ -26,6 +26,8 @@ import { SERVER } from "@shared/constants/server";
 import * as ImagePicker from "expo-image-picker";
 import { ProfileData, ReactNativeFile } from "@modules/auth/api/api.types"; 
 import { FONTS } from "@shared/constants/fonts";
+import { ErrorIcon } from "@shared/ui/icons/urls/ErrorIcon";
+import { socket } from "@shared/socket/socket";
 
 
 type FormData = {
@@ -38,6 +40,18 @@ type FormData = {
 	newPassword?: string;
 	confirmPassword?: string;
 	avatar?: string;
+};
+
+const formatDateForInput = (dateString?: string | null) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return "";
+    
+    const day = String(date.getUTCDate()).padStart(2, '0');
+    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+    const year = date.getUTCFullYear();
+    
+    return `${day}.${month}.${year}`;
 };
 
 export function PersonalInformation() {
@@ -59,14 +73,16 @@ export function PersonalInformation() {
 		handleSubmit,
 		reset,
 		watch,
-
-		formState: { isDirty },
+		setError,
+		formState: { isDirty, errors },
 	} = useForm<FormData>({
-		// defaultValues: {
-		// 	birthDate: user?.birthDate
-		// 	? formatDate(user.birthDate)
-		// 	: "",
-		// },
+		defaultValues: {
+			first_name: user?.first_name || "",
+			last_name: user?.last_name || "",
+			nickname: user?.username || "",
+			email: user?.email || "",
+			birthDate: formatDateForInput(user?.profile_app_profile?.birth_date),
+		},
 	});
 	if (!user) {
 		return <Redirect href={"/login"}></Redirect>;
@@ -90,40 +106,61 @@ export function PersonalInformation() {
 	};
 
 	const onSubmit = async (data: FormData) => {
-			try {
-				const payload: ProfileData = {
-					first_name: data.first_name,
-					last_name: data.last_name,
-					username: data.nickname,
-					birth_date: data.birthDate,
-				};
-				if (data.avatar) {
-					const isLocalUri = data.avatar.startsWith('file') || data.avatar.startsWith('ph');
-					
-					if (isLocalUri) {
-						const xhr = new XMLHttpRequest();
-						const formData = new FormData();
+		try {
+			const bodyFormData = new FormData();
+			
+			if (data.first_name) bodyFormData.append("first_name", data.first_name);
+			if (data.last_name) bodyFormData.append("last_name", data.last_name);
+			if (data.nickname) bodyFormData.append("username", data.nickname);
+			if (data.birthDate) bodyFormData.append("birth_date", data.birthDate);
+			if (data.email) bodyFormData.append("email", data.email);
 
-						formData.append('avatars', {
-							uri: data.avatar,
-							name: 'avatar.jpg',
-							type: 'image/jpeg',
-						} as any);
-
-						xhr.open('PATCH', `http://${SERVER.host}:${SERVER.port}/update-user`);
-						xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-						xhr.send(formData);
-					}
+			if (data.avatar) {
+				const isLocalUri = data.avatar.startsWith('file') || data.avatar.startsWith('ph');
+				if (isLocalUri) {
+					bodyFormData.append('avatars', {
+						uri: data.avatar,
+						name: 'avatar.jpg',
+						type: 'image/jpeg',
+					} as any);
 				}
-				reset(data); 
-				setIsEditingProfile(false);
-				setIsEditingPersonalInfo(false);
-				
-				console.log("Дані успішно збережено");
-			} catch (error) {
-				console.error("Помилка оновлення:", error);
 			}
-		};
+
+			await new Promise((resolve, reject) => {
+				const xhr = new XMLHttpRequest();
+				
+				xhr.open('PATCH', `http://${SERVER.host}:${SERVER.port}/update-user`);
+				xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+				xhr.onload = () => {
+					if (xhr.status >= 200 && xhr.status < 300) {
+						resolve(xhr.response);
+					} else {
+						try {
+							const errorData = JSON.parse(xhr.responseText);
+							reject(errorData);
+						} catch {
+							reject({ message: 'Помилка сервера' });
+						}
+					}
+				};
+
+				xhr.onerror = () => reject({ message: 'Мережева помилка' });
+				
+				xhr.send(bodyFormData);
+			});
+
+			reset(data); 
+			setIsEditingProfile(false);
+			setIsEditingPersonalInfo(false);
+			console.log("Дані успішно збережено");
+
+		} catch (error: any) {
+			setError('root', {
+				type: 'server',
+				message: error?.message || 'Не вдалося зберегти дані. Спробуйте ще раз.'
+			});
+		}
+	};
 
 	const handleEditProfilePress = () => {
 		if (isEditingProfile) {
@@ -155,7 +192,6 @@ export function PersonalInformation() {
 			setIsEditingPersonalInfo(true);
 		}
 	};
-
 	const pickImage = async (onChange: (uri: string) => void) => {
 		const result = await ImagePicker.launchImageLibraryAsync({
 			mediaTypes: "images", 
@@ -189,8 +225,11 @@ export function PersonalInformation() {
 
 							<Button
 								variant={"white"}
-								iconLeft={<EditIcon color={COLORS.plum} />}
-								text={isEditingProfile ? "Зберегти" : ""}
+								iconLeft={isLoading 
+									? <ActivityIndicator animating={true} color={COLORS.foggy}/> 
+									: <EditIcon color={COLORS.plum} />
+								}
+								text={isLoading ? '' : isEditingProfile ? "Зберегти" : ""}
 								onPress={handleEditProfilePress}
 								isSettings={true}
 							/>
@@ -211,7 +250,7 @@ export function PersonalInformation() {
 												<AvatarField
 													value={value}
 													onPress={() => pickImage(onChange)}
-													avatar={user.profile_app_profile.avatar}
+													avatar={user.profile_app_profile.avatar}													
 												/>
 											</View>
 
@@ -240,8 +279,6 @@ export function PersonalInformation() {
 									)}
 								/>
 							</View>
-
-
 							<Text style={styles.name}>{user.profile_app_profile.pseudonym}</Text>
 
 							{!isEditingProfile && (
@@ -258,9 +295,17 @@ export function PersonalInformation() {
 											placeholder=""
 											defaultValue={user.username ? user.username : ""}
 											onChangeText={field.onChange}
+											error={errors.nickname?.message}
 										/>
 									)}
 								/>
+							)}
+
+							{errors.root && (
+								<View style={styles.errorContainer}>
+									<ErrorIcon color={COLORS.red} width={16} height={16}/>
+									<Text style={styles.errorMessage}>{errors.root.message}</Text>
+								</View>
 							)}
 						</View>
 					</View>
@@ -271,8 +316,11 @@ export function PersonalInformation() {
 
 							<Button
 								variant={"white"}
-								iconLeft={<EditIcon color={COLORS.plum} />}
-								text={isEditingPersonalInfo ? "Зберегти" : ""}
+								iconLeft={ isLoading 
+									? <ActivityIndicator animating={true} color={COLORS.foggy}/>
+									: <EditIcon color={COLORS.plum} />
+								}
+								text={isLoading ? '' : isEditingPersonalInfo ? "Зберегти" : ""}
 								onPress={handleEditPersonalInfoPress}
 								isSettings={true}
 							/>
@@ -294,6 +342,7 @@ export function PersonalInformation() {
 											editable={isEditingPersonalInfo}
 											defaultValue={user.first_name ? user.first_name : ""}
 											onChangeText={field.onChange}
+											error={errors.first_name?.message}
 										/>
 									)}
 								/>
@@ -307,23 +356,24 @@ export function PersonalInformation() {
 											editable={isEditingPersonalInfo}
 											defaultValue={user.last_name ? user.last_name : ""}
 											onChangeText={field.onChange}
+											error={errors.last_name?.message}
 										/>
 									)}
 								/>
 								<Controller
 									name="birthDate"
 									control={control}
+									rules={{
+										pattern: {
+											value: /^\d{2}\.\d{2}\.\d{4}$/,
+											message: "Введіть дату у форматі ДД.ММ.РРРР"
+										}
+									}}
 									render={({ field }) => (
 										<Input
 											inputType="date"
 											label="Дата народження"
-											placeholder=""
-											defaultValue={
-												user.profile_app_profile.birth_date
-													? new Date(user.profile_app_profile.birth_date).toLocaleDateString("ua-UA")
-													: ""
-											}
-											value={field.value || ""}
+											value={field.value}
 											editable={isEditingPersonalInfo}
 											onChangeText={(text) => {
 												const cleaned = text.replace(/\D/g, "");
@@ -337,6 +387,7 @@ export function PersonalInformation() {
 											}}
 											keyboardType="numeric"
 											maxLength={10}
+											error={errors.birthDate?.message}
 										/>
 									)}
 								/>
@@ -352,17 +403,29 @@ export function PersonalInformation() {
 											editable={isEditingPersonalInfo}
 											defaultValue={user.email}
 											onChangeText={field.onChange}
+											error={errors.email?.message}
 										/>
 									)}
 								/>
 							</View>
+
+							{errors.root && (
+								<View style={styles.errorContainer}>
+									<ErrorIcon color={COLORS.red} width={16} height={16}/>
+									<Text style={styles.errorMessage}>{errors.root.message}</Text>
+								</View>
+							)}
 						</View>
+
 						<View style={styles.inputButtons}>
 							<Text style={styles.headerBlockText}>Пароль</Text>
 							<Button
 								variant={"white"}
-								iconLeft={<EditIcon color={COLORS.plum} />}
-								text={isEditingPassword ? "Зберегти" : ""}
+								iconLeft={ isLoading 
+									? <ActivityIndicator animating={true} color={COLORS.foggy}/>
+									: <EditIcon color={COLORS.plum} />
+								}
+								text={isLoading ? '' : isEditingPassword ? "Зберегти" : ""}
 								onPress={() => {
 									if (isEditingPassword) {
 										handleEditPasswordPress();
@@ -387,11 +450,19 @@ export function PersonalInformation() {
 											isPassword={true}
 											editable={isEditingPassword}
 											onChangeText={field.onChange}
+											error={errors.password?.message}
 										/>
 									</View>
 								)}
 							/>
 						</View>
+
+						{errors.root && (
+							<View style={styles.errorContainer}>
+								<ErrorIcon color={COLORS.red} width={16} height={16}/>
+								<Text style={styles.errorMessage}>{errors.root.message}</Text>
+							</View>
+						)}
 					</View>
 
 					<View style={styles.signatureBlock}>
@@ -400,9 +471,12 @@ export function PersonalInformation() {
 
 							<Button
 								variant="white"
-								iconLeft={<EditIcon color={COLORS.plum} />}
+								iconLeft={ isLoading 
+									? <ActivityIndicator animating={true} color={COLORS.foggy}/>
+									: <EditIcon color={COLORS.plum} />
+								}
 								isSettings={true}
-								text={isEditingSignature ? "Зберегти" : ""}
+								text={isLoading ? '' : isEditingSignature ? "Зберегти" : ""}
 								onPress={() => {
 									if (isEditingSignature) {
 										setIsEditingSignature(false);
@@ -465,7 +539,11 @@ export function PersonalInformation() {
 									/>
 								</View>
 							) : (
-								<Text style={{ marginLeft: 34 }}>Підпис не додано</Text>
+								<View style={styles.errorContainer}>
+									{/* <Text style={{ marginLeft: 34 }}></Text> */}
+									<ErrorIcon color={COLORS.red} width={16} height={16}/>
+									<Text style={styles.errorMessage}>Не вдалося додати підпис. Спробуйте ще раз</Text>
+								</View>
 							))}
 						{isEditingSignature && (
 							<View style={{ width: "100%" }}>

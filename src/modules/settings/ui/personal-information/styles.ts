@@ -240,6 +240,22 @@ export const styles = StyleSheet.create({
 		gap: 6,
 	},
 
+	errorContainer: {		
+		justifyContent: 'center',
+		flexDirection: 'row',
+		alignItems: 'center',
+		gap: 6,
+		width: '100%',
+		marginLeft: 34
+	},
+
+	errorMessage: {
+		color: COLORS.red,
+		textAlign: 'center',
+		marginTop: 5,
+		fontSize: 16
+	}
+
 	// userAvatarContainer: {
 	//      alignItems: 'center',
 	//      justifyContent: 'center',

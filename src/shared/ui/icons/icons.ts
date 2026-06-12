@@ -3,6 +3,7 @@ import { MyPostsPageIcon } from "./urls/MyPostsPageIcon";
 import { FriendsPageIcon } from "./urls/FriendsPageIcon";
 import { ChatsPageIcon } from "./urls/ChatsPageIcon";
 import { MessageStatusMarkIcon } from "./urls/MessageStatusMark";
+import { ErrorIcon } from './urls/ErrorIcon'
 
 import {
 	ArrowIcon,
@@ -48,5 +49,6 @@ export const ICONS = {
 	LeftArrowIcon,
 	MessageStatusMarkIcon,
 	CloseModalIcon,
-	SearchIcon
+	SearchIcon,
+	ErrorIcon
 };

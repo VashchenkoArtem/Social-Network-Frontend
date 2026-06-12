@@ -10,8 +10,7 @@ export const styles = StyleSheet.create({
         fontFamily: FONTS.medium
     },
     contactStatus: {
-        borderRadius: 123, 
-        backgroundColor: COLORS.lightestGray, 
+        borderRadius: 123,  
         width: 15, 
         height: 15, 
         position: "absolute",
@@ -29,4 +28,10 @@ export const styles = StyleSheet.create({
         fontWeight: 400,
         color: COLORS.black
     },
+    online: {
+        backgroundColor: COLORS.green
+    },
+    offline: {
+        backgroundColor: COLORS.lightestGray,
+    }
 })
