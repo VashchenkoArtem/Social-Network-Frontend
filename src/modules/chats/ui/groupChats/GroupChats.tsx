@@ -20,7 +20,6 @@ export function GroupChats(){
     }, {
         pollingInterval: 3000
     })
-
     const groupChats = data?.chats ?? []
     const hasMore = data?.meta.hasMore
     const loadMore = () => {
