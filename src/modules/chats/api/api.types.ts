@@ -3,7 +3,7 @@ export interface IChat {
     name: string;
     is_group: boolean;
     avatar: string;
-    adminId: number;
+    admin_id: number;
     chat_app_chat_users: {
         id: number;
         chat_id: number;

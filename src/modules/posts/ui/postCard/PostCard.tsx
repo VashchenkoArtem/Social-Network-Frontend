@@ -123,7 +123,7 @@ export function PostCard(props: IProps){
                 
                 <View>
                     <Text style={styles.postDescription}>{ post.content }</Text>
-                    <View style = {{flexDirection: "row", gap: 5}}>
+                    <View style = {{flexDirection: "row", gap: 5, flexWrap: "wrap"}}>
                         { post.post_app_post_tags?.map((tag) => {
                             return (
                                 <Text style = {styles.tag} key = {tag.post_app_tag.id}>#{tag.post_app_tag.name}</Text>

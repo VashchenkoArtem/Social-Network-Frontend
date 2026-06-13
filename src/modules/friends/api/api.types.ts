@@ -20,14 +20,14 @@ export interface UpdateFriendRequest {
     
 }
 
-export interface UserWithoutPassword {
-    id: number;
-    firstname: string | null;
-    lastname: string | null;
-    nickname: string | null;
-    alias: string | null;
-    email: string;
-    signature: string | null;
-    birthDate: Date | null;
-    avatars: { id: number; filename: string }[];
+export interface RecommendedResponse{
+    data: IUser[],
+    meta: {
+        nextCursor: number,
+        hasMore: boolean
+    }
+}
+export interface RecommendedPayload{
+    cursor?: number;
+    limit: number
 }

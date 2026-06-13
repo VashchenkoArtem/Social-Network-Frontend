@@ -6,40 +6,52 @@ import { socket } from "@shared/socket/socket";
 export const messageApi = baseApi.injectEndpoints({
     endpoints: ( builder ) => ({
         getMessages: builder.query<IMessage[], IMessageQuery>({
-            query: ({chatId, cursorId, take}) => ({
-                url: `messages/chats/${chatId}?cursorId=${cursorId}&take=${take}`
-            }),
-            async onCacheEntryAdded(
-            arg,
-            { updateCachedData, cacheDataLoaded, cacheEntryRemoved },
-            ) {
-            await cacheDataLoaded;
-
-            const listener = (message: IMessage) => {
-                updateCachedData((draft) => {
-                const exists = draft.some(m => m.id === message.id);
-                if (!exists) {
-                    draft.unshift(message);
+            query: ({ chatId, cursorId, take }) => ({
+                url: `messages/chats/${chatId}`,
+                params: {
+                    take,
+                    cursorId: cursorId ? cursorId : undefined
                 }
-                });
-            };
+            }),
+            
+            async onCacheEntryAdded(
+                arg,
+                { updateCachedData, cacheDataLoaded, cacheEntryRemoved },
+            ) {
+                await cacheDataLoaded;
 
-            socket.on("newMessage", listener);
+                const listener = (message: IMessage) => {
+                    if (message.chat_id !== arg.chatId) return;
 
-            await cacheEntryRemoved;
+                    updateCachedData((draft) => {
+                        const exists = draft.some(m => m.id === message.id);
+                        if (!exists) {
+                            draft.unshift(message);
+                        }
+                    });
+                };
 
-            socket.off("newMessage", listener);
+                socket.on("newMessage", listener);
+                await cacheEntryRemoved;
+                socket.off("newMessage", listener);
             },
-            merge (
-                currentCache, newItems
-            ){
-                const filteredItems = newItems.filter((item) => {
-                    return !currentCache.includes(item)
-                })
-                currentCache.push(...filteredItems)
+
+            merge(currentCache, newItems, { arg }) {
+                if (!arg.cursorId) {
+                    return newItems;
+                }
+                
+                const existingIds = new Set(currentCache.map(item => item.id));
+                const uniqueNewItems = newItems.filter(item => !existingIds.has(item.id));
+                
+                currentCache.push(...uniqueNewItems);
             },
-            forceRefetch: ({ currentArg, previousArg }) => {
-                return currentArg !== previousArg
+
+            forceRefetch({ currentArg, previousArg }) {
+                return (
+                    currentArg?.chatId !== previousArg?.chatId ||
+                    currentArg?.cursorId !== previousArg?.cursorId
+                );
             }
         }),
         getAllUnreadMessage: builder.query<number, void>({

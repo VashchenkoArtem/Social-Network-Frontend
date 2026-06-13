@@ -20,7 +20,11 @@ export function BigUserCard(props: IProps){
             </View>
             <View style={styles.friendInfo}>
                 <Text style={styles.friendsFullName}>{ pseudonym }</Text>
-                <Text style={styles.friendsNickName}>@{ username }</Text>
+                { username?.startsWith("@") 
+                    ? <Text style={styles.friendsNickName}>{ username }</Text>
+                    : <Text style={styles.friendsNickName}>@{ username }</Text>
+                }
+                
             </View>
         </View>
     ) 

@@ -1,21 +1,19 @@
 import { PostCard } from "../postCard/PostCard";
 import { Redirect } from "expo-router";
-import { useContext, useState } from "react";
-import { useMyPostsQuery } from "@modules/posts/api/postsApi";
-import { UserContext } from "@modules/auth/context/user-context";
-import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
+import { useContext, useEffect, useState } from "react";
+import { postApi, useMyPostsQuery } from "@modules/posts/api/postsApi";
+import { UserContext, useUserContext } from "@modules/auth/context/user-context";
 import { ActivityIndicator, FlatList, RefreshControl, Text } from "react-native";
 import { COLORS } from "@shared/constants/colors";
 import { FONTS } from "@shared/constants/fonts";
 
-export function MyPostsPage(){
+export function MyPostsPage() {
     const { user } = useContext(UserContext)!;
 
-    const [cursor, setCursor] = useState<number | null>(null);
     const [refreshing, setRefreshing] = useState(false);
-    
+
     if (!user) {
-        return <Redirect href={"/login"}></Redirect>;
+        return <Redirect href="/login" />;
     }
 
     const {
@@ -26,92 +24,103 @@ export function MyPostsPage(){
     } = useMyPostsQuery({
         userId: user.id,
         cursor: undefined,
-        limit: 3
+        limit: 3,
     });
+    const [ onlineUserIds, setOnlineUserIds ] = useState<number[]>([])
+    const userIds =
+        data?.data
+            ?.filter(item => item?.user_app_user)
+            .map(item => item.user_app_user.id) ?? [];
+    const { getOnlineUsers } = useUserContext()!;
+    useEffect(() => {
+        async function loadOnlineUsers() {
+            if (!userIds?.length) return
 
-    const posts = data?.data ?? []
-    const hasMore = data?.meta.hasMore
+            const online = await getOnlineUsers(userIds)
 
-    const loadMore = () => {
-        if (!hasMore || isFetching) {
-            return
+            setOnlineUserIds(online)
         }
 
-        setCursor(data?.meta.nextCursor)
-    }
+        loadOnlineUsers()
+    }, [userIds])
+    const prefetchMyPosts = postApi.usePrefetch("myPosts");
+
+    useEffect(() => {
+        if (!data?.meta?.hasMore || !data?.meta?.nextCursor) {
+            return;
+        }
+
+        prefetchMyPosts({
+            userId: user.id,
+            cursor: data.meta.nextCursor,
+            limit: 3,
+        });
+    }, [data?.meta?.nextCursor]);
+
+    const loadMore = () => {
+        if (!data?.meta?.hasMore || isFetching) {
+            return;
+        }
+
+        prefetchMyPosts({
+            userId: user.id,
+            cursor: data.meta.nextCursor,
+            limit: 3,
+        });
+    };
 
     const onRefresh = async () => {
         setRefreshing(true);
-        setCursor(null)
         await refetch();
         setRefreshing(false);
     };
 
+    const posts = data?.data ?? [];
+
     if (isLoading) {
-        return <ActivityIndicator animating={true} color={COLORS.foggy} style={{ marginTop: 20 }}/>
+        return (
+            <ActivityIndicator
+                style={{ marginTop: 24, marginBottom: 24 }}
+                size="small"
+            />
+        );  
     }
 
     if (posts.length === 0) {
         return (
-            <Text 
-                style = {{
-                    textAlign: "center", 
-                    marginTop: 24, 
-                    fontFamily: FONTS.regular, 
-                    fontSize: 20, 
-                    color: COLORS.gray
-                }}>
-                    У вас поки немає постів
-                </Text>
-        )
+            <Text
+                style={{
+                    textAlign: "center",
+                    marginTop: 24,
+                    fontFamily: FONTS.regular,
+                    fontSize: 20,
+                    color: COLORS.gray,
+                }}
+            >
+                У вас поки немає постів
+            </Text>
+        );
     }
-    
-    // if (!data) return null
-    // if (data.length === 0) return <Text style = {{textAlign: "center", marginTop: 24, fontFamily: FONTS.regular, fontSize: 20, color: COLORS.gray}}>У вас поки немає постів</Text>
-    // if (isFetching)return <ActivityIndicator style={{marginTop: 24}} size = {20} />
-    return (
-        // <KeyboardAwareScrollView
-        //     keyboardShouldPersistTaps="handled"
-        //     contentContainerStyle={{
-        //         flexGrow: 1,
-        //         paddingBottom: 8
-        //     }}
-        //     refreshControl={
-        //         <RefreshControl
-        //             refreshing={refreshing}
-        //             onRefresh={onRefresh}
-        //         />
-        //     }
-        // >
-        //     {data.map((post) => (
-        //         <PostCard
-        //             post={post}
-        //             key={post.id}
-        //             isEditingPost={true}
-        //         />
-        //     ))}
-        // </KeyboardAwareScrollView>
 
-        <FlatList 
+    return (
+        <FlatList
             data={posts}
             keyExtractor={(item) => String(item.id)}
             renderItem={({ item }) => (
                 <PostCard
+                    isOnlineUser={onlineUserIds.includes(item.user_app_user.id)}
                     post={item}
                     isEditingPost={true}
                 />
             )}
-
             onEndReached={loadMore}
             onEndReachedThreshold={0.5}
-            
             refreshControl={
-                <RefreshControl 
+                <RefreshControl
                     refreshing={refreshing}
                     onRefresh={onRefresh}
                 />
             }
-
             ListFooterComponent={
                 isFetching ? (
                     <ActivityIndicator
@@ -120,5 +129,5 @@ export function MyPostsPage(){
                 ) : null
             }
         />
-    )
-}
+    );
+}       

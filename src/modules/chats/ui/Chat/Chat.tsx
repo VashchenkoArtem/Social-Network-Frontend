@@ -1,9 +1,7 @@
 import { useDeleteGroupChatMutation, useGetChatByIdQuery } from "@modules/chats/api/chatsApi"
 import { useRouter } from "expo-router"
 import { useContext, useEffect, useState } from "react"
-import { TouchableOpacity, View, Text, Image, Pressable, Platform, KeyboardAvoidingView } from "react-native"
-import { SafeAreaView } from "react-native-safe-area-context"
-import { IChat } from "@modules/chats/api/api.types"
+import { TouchableOpacity, View, Text, Image, Pressable, Platform, KeyboardAvoidingView, ActivityIndicator } from "react-native"
 import { ICONS } from "@shared/ui"
 import { COLORS } from "@shared/constants/colors"
 import { Input } from "@shared/ui/input"
@@ -17,29 +15,79 @@ import { getAvatar } from "@shared/utils/avatar"
 import { useLazyMarkMessagesAsReadQuery } from "@modules/message/api/messageApi"
 import { launchImageLibraryAsync, requestMediaLibraryPermissionsAsync } from "expo-image-picker"
 import { ChatAvatar } from "../ChatAvatar/ChatAvatar"
+import { ConfirmGroupModal } from "../ConfirmGroupModal/ConfirmGroupModal"
 
-export function Chat(props: { chatId: number | undefined}){
+
+export function Chat(props: { chatId: number | undefined }) {
     const { chatId } = props
-    const { data: chat} = useGetChatByIdQuery(Number(chatId))
     const router = useRouter()
-    const [markMessagesAsRead] = useLazyMarkMessagesAsReadQuery();
-    useEffect(() => {
-        markMessagesAsRead(Number(chatId))
-    },[])
+
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
-    const [deleteGroupChat] = useDeleteGroupChatMutation()
     const [messageText, setMessageText] = useState<string>("")
-    const { user, token } = useContext(UserContext)!
-    const [selectedImages, setSelectedImages] = useState<string[]>([]);
-    if (!chat || !user || !chatId) return null
-    const otherUser = chat.chat_app_chat_users.filter(
+    const [selectedImages, setSelectedImages] = useState<string[]>([])
+
+    const { data: chat, isLoading: isChatLoading } = useGetChatByIdQuery(Number(chatId), {
+        skip: !chatId,
+    })
+
+    const [isEditModalVisible, setIsEditModalVisible] = useState(false)
+
+    const [groupName, setGroupName] = useState("")
+    const [avatarUri, setAvatarUri] = useState<string | null>(null)
+    const [selectedUserIds, setSelectedUserIds] = useState<number[]>([])
+    const [markMessagesAsRead] = useLazyMarkMessagesAsReadQuery()
+    const [deleteGroupChat] = useDeleteGroupChatMutation()
+    
+    const userContext = useContext(UserContext)
+    const user = userContext?.user
+    const token = userContext?.token
+    useEffect(() => {
+        if (!user) {
+            router.replace("/login")
+        }
+    }, [user])
+    useEffect(() => {
+        if (!chat) return
+
+        setGroupName(chat.name)
+
+        setAvatarUri(
+            chat.avatar
+                ? `http://${SERVER.host}:${SERVER.port}/media/${chat.avatar}`
+                : null
+        )
+
+        setSelectedUserIds(
+            chat.chat_app_chat_users.map(user => user.id)
+        )
+    }, [chat])
+    useEffect(() => {
+        if (chatId) {
+            markMessagesAsRead(Number(chatId))
+        }
+    }, [chatId])
+
+    if (!user || !chatId) {
+        return null
+    }
+
+    if (isChatLoading || !chat) {
+        return (
+            <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: COLORS.white }}>
+                <ActivityIndicator size="large" color={COLORS.plum} />
+            </View>
+        )
+    }
+
+    const otherUser = chat.chat_app_chat_users.find(
         (chatUser) => chatUser.user_id !== user.id
-    )[0];
+    )
+
     const pickImages = async () => {
-        const permission = await requestMediaLibraryPermissionsAsync();
+        const permission = await requestMediaLibraryPermissionsAsync()
 
         if (!permission.granted) {
-            return;
+            return
         }
 
         const result = await launchImageLibraryAsync({
@@ -47,17 +95,17 @@ export function Chat(props: { chatId: number | undefined}){
             allowsMultipleSelection: true,
             selectionLimit: 7,
             quality: 0.8,
-        });
+        })
 
         if (!result.canceled) {
-            const assets = result.assets.slice(0, 7);
-
-            setSelectedImages(
-                assets.map(asset => asset.uri)
-            );
+            const assets = result.assets.slice(0, 7)
+            setSelectedImages(assets.map(asset => asset.uri))
         }
-    };
+    }
+
     const sendMessage = async () => {
+        if (!messageText.trim() && selectedImages.length === 0) return
+
         socket.emit("sendMessage", {
             text: messageText,
             chat_id: chatId,
@@ -67,12 +115,12 @@ export function Chat(props: { chatId: number | undefined}){
             photos: selectedImages  
         })
 
-        if (selectedImages.length > 0){
+        if (selectedImages.length > 0) {
             const xhr = new XMLHttpRequest()
             const formData = new FormData()
 
-            xhr.open('POST', `http://${SERVER.host}:${SERVER.port}/messages/chat/${chat.id}`);
-            xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+            xhr.open('POST', `http://${SERVER.host}:${SERVER.port}/messages/chat/${chat.id}`)
+            xhr.setRequestHeader('Authorization', `Bearer ${token}`)
 
             formData.append("text", messageText)
             selectedImages.forEach((uri, index) => {
@@ -80,62 +128,52 @@ export function Chat(props: { chatId: number | undefined}){
                     uri,
                     type: "image/jpeg",
                     name: `photo-${index}.jpg`,
-                } as any);
-            });
+                } as any)
+            })
             xhr.send(formData)
         }
+        
         setSelectedImages([])
         setMessageText("")
     }
+
     return (
         <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : "height"}
             style={styles.groupChatContainer}
-            keyboardVerticalOffset={80}
+            keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 80}
         >
             <View style={styles.groupChatHeader}>
-
                 <TouchableOpacity onPress={() => {
                     router.replace("/chats")
-                    socket.emit("leaveChat", {
-                        chatId: chat.id
-                    })
-                    }}>
-                    <Text style={styles.close} ><ICONS.LeftArrowIcon color = {COLORS.gray}/></Text>
+                    socket.emit("leaveChat", { chatId: chat.id })
+                }}>
+                    <Text style={styles.close}><ICONS.LeftArrowIcon color={COLORS.gray}/></Text>
                 </TouchableOpacity>
 
                 <View style={styles.infoHeaderContainer}>     
-                    { chat.is_group 
+                    {chat.is_group 
                         ? <ChatAvatar avatar={chat.avatar} isGroup={chat.is_group} groupName={chat.name}/>
-                        : <ChatAvatar avatar={otherUser.user_app_user.profile_app_profile.avatar} isGroup={chat.is_group} groupName={chat.name}/>
+                        : <ChatAvatar avatar={otherUser?.user_app_user?.profile_app_profile?.avatar} isGroup={chat.is_group} groupName={chat.name}/>
                     }         
 
                     <View style={styles.chatInfo}>                        
                         <Text style={styles.chatName}>
-                            { chat.is_group 
-                            ? chat.name
-                            : otherUser.user_app_user.profile_app_profile.pseudonym || ""
-                        }
-                            
+                            {chat.is_group 
+                                ? chat.name
+                                : otherUser?.user_app_user?.profile_app_profile?.pseudonym || ""
+                            }
                         </Text>
-                        { chat.is_group ? (
+                        {chat.is_group && (
                             <Text style={styles.chatOnlineStatus}>
                                 {chat.chat_app_chat_users.length} учасника, 1 в мережі
-                            </Text>
-                        ) : (
-                            <Text style={styles.chatOnlineStatus}>
-                                Був(-ла) в мережі о 20:45                   
                             </Text>
                         )}
                     </View>
                 </View>
 
                 <View style={{ position: "relative" }}>
-                    <TouchableOpacity
-                        onPress={() => {
-                            setIsMenuOpen(!isMenuOpen)
-                        }}
-                    >
+                    <TouchableOpacity onPress={() => setIsMenuOpen(!isMenuOpen)}>
                         <ICONS.DotsIcon color={COLORS.gray} />
                     </TouchableOpacity>
 
@@ -147,113 +185,108 @@ export function Chat(props: { chatId: number | undefined}){
                             </TouchableOpacity>
 
                             <View style={styles.divider} />
-
+                           {chat.is_group && (
+                                <TouchableOpacity
+                                    style={styles.menuBtn}
+                                    onPress={() => {
+                                        setIsEditModalVisible(true)
+                                    }}
+                                >
+                                    <ICONS.EditIcon color={COLORS.black} />
+                                    <Text style={styles.menuBtnText}>
+                                        Редагувати групу
+                                    </Text>
+                                </TouchableOpacity>
+                            )}
                             <TouchableOpacity 
                                 style={styles.menuBtn}
                                 onPress={() => {
                                     deleteGroupChat(chat.id)
+                                    router.replace("/chats")
                                 }}
                             >
                                 <ICONS.ExitIcon color={COLORS.black} />
-                                <Text style={styles.menuBtnText}>{ chat.is_group 
-                                                                    ? "Покинути групу"
-                                                                    : "Видалити чат"}</Text>
+                                <Text style={styles.menuBtnText}>
+                                    {chat.is_group ? 
+                                        chat.admin_id === user.id ? "Видалити групу" :
+                                        "Покинути групу" : "Видалити чат"}
+                                </Text>
                             </TouchableOpacity>
+ 
                         </Pressable>
                     )}
                 </View>
             </View>
 
             <Messages chatId={chatId} />
-            {selectedImages.length > 0 && (
-                <View
-                    style={{
-                        flexDirection: "row",
-                        flexWrap: "wrap",
-                        gap: 8,
-                        marginBottom: 8,
+                <ConfirmGroupModal
+                    visible={isEditModalVisible}
+                    onClose={() => setIsEditModalVisible(false)}
+                    onBackStep={() => setIsEditModalVisible(false)}
+    
+                    mode="edit"
+                    chatId={chat.id}
+    
+                    groupName={groupName}
+                    setGroupName={setGroupName}
+    
+                    avatarUri={avatarUri}
+                    onChangeAvatar={setAvatarUri}
+    
+                    selectedUserIds={selectedUserIds}
+    
+                    onRemoveParticipant={(userId: number) => {
+                        setSelectedUserIds(prev =>
+                            prev.filter(id => id !== userId)
+                        )
                     }}
-                >
+                />
+            
+            {selectedImages.length > 0 && (
+                <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8, marginBottom: 8, paddingHorizontal: 10 }}>
                     {selectedImages.map((uri) => (
-                        <View
-                            key={uri}
-                            style={{
-                                position: "relative",
-                            }}
-                        >
-                            <Image
-                                source={{ uri }}
-                                style={{
-                                    width: 60,
-                                    height: 60,
-                                    borderRadius: 8,
-                                }}
-                            />
-
+                        <View key={uri} style={{ position: "relative" }}>
+                            <Image source={{ uri }} style={{ width: 60, height: 60, borderRadius: 8 }} />
                             <TouchableOpacity
-                                onPress={() => {
-                                    setSelectedImages(prev =>
-                                        prev.filter(imageUri => imageUri !== uri)
-                                    );
-                                }}
+                                onPress={() => setSelectedImages(prev => prev.filter(imageUri => imageUri !== uri))}
                                 style={{
-                                    position: "absolute",
-                                    top: -6,
-                                    right: -6,
-                                    width: 20,
-                                    height: 20,
-                                    borderRadius: 10,
-                                    backgroundColor: "rgba(0,0,0,0.7)",
-                                    justifyContent: "center",
-                                    alignItems: "center",
+                                    position: "absolute", top: -6, right: -6, width: 20, height: 20,
+                                    borderRadius: 10, backgroundColor: "rgba(0,0,0,0.7)",
+                                    justifyContent: "center", alignItems: "center",
                                 }}
                             >
-                                <Text
-                                    style={{
-                                        color: "white",
-                                        fontSize: 12,
-                                        fontWeight: "bold",
-                                    }}
-                                >
-                                    ✕
-                                </Text>
+                                <Text style={{ color: "white", fontSize: 12, fontWeight: "bold" }}>✕</Text>
                             </TouchableOpacity>
                         </View>
                     ))}
                 </View>
             )}
+
             <View style={styles.inputMessageContainer}>
-                <View style = {{ flex: 1, justifyContent: "center"}}>
-                <Input
-                    inputType="text"
-                    placeholder="Повідомлення"
-                    notMarginBottom={true}
-                    value={messageText} 
-                    onChangeText={(text) => setMessageText(text)}
-                />
+                <View style={{ flex: 1, justifyContent: "center" }}>
+                    <Input
+                        inputType="text"
+                        placeholder="Повідомлення"
+                        notMarginBottom={true}
+                        value={messageText} 
+                        onChangeText={(text) => setMessageText(text)}
+                    />
                 </View>
 
                 <View style={styles.messageBtnContainer}>
                     <Button
                         variant="white"
-                        iconLeft={
-                            <ICONS.MyPostsPageIcon
-                                width={20}
-                                height={20}
-                                color={COLORS.plum}
-                            />
-                        }
+                        iconLeft={<ICONS.MyPostsPageIcon width={20} height={20} color={COLORS.plum} />}
                         onPress={pickImages}
                     />
-
                     <Button 
                         variant="purple" 
-                        iconLeft={<ICONS.ArrowIcon width={20} height={20} color = {COLORS.white}/>}
-                        onPress={() => {sendMessage()}}
+                        iconLeft={<ICONS.ArrowIcon width={20} height={20} color={COLORS.white}/>}
+                        onPress={sendMessage}
                     />
                 </View>
-                
             </View>
+            
         </KeyboardAvoidingView>
     )
 }

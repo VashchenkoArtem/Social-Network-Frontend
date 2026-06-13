@@ -50,5 +50,7 @@ export const {
     useGetPersonalChatsQuery,
     useCreateChatMutation,
     useDeleteGroupChatMutation,
-    useGetChatByIdQuery
+    useGetChatByIdQuery,
+    useLazyGetPersonalChatsQuery,
+    useLazyGetGroupChatsQuery
 } = chatApi

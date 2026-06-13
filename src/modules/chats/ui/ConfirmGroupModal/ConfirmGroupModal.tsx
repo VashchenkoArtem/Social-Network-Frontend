@@ -51,12 +51,8 @@ interface IConfirmGroupModalProps {
     onRemoveParticipant: (userId: number) => void;
     avatarUri: string | null;
     onChangeAvatar: (uri: string | null) => void;
-}
-
-interface ICreateGroupChatDtoFake {
-    name: string;
-    is_group: boolean;
-    userIds: number[];
+    mode: "create" | "edit";
+    chatId?: number;
 }
 
 export function ConfirmGroupModal({
@@ -68,7 +64,9 @@ export function ConfirmGroupModal({
     selectedUserIds,
     onRemoveParticipant,
     avatarUri,
-    onChangeAvatar
+    onChangeAvatar,
+    mode,
+    chatId
 }: IConfirmGroupModalProps) {
     const { data: friendsRequestsData } = useGetAllFriendsQuery(undefined);
     const friendsRequests = (friendsRequestsData || []) as unknown as IFriendRequest[];
@@ -92,36 +90,71 @@ export function ConfirmGroupModal({
         }
     };
 
-    const handleCreateGroupSubmit = async () => {
+    const handleSubmit = async () => {
         if (!groupName.trim()) {
             Alert.alert("Помилка", "Будь ласка, введіть назву групи");
             return;
         }
+
         try {
             const formData = new FormData();
             const xhr = new XMLHttpRequest();
+
             formData.append("name", groupName.trim());
             formData.append("userIds", JSON.stringify(selectedUserIds));
-
+            console.log(avatarUri, "avatarUri");
             if (avatarUri) {
-                const fileToUpload = {
-                    uri: avatarUri,
-                    name: `group_${Date.now()}.jpg`,
-                    type: "image/jpeg"
-                };
-                formData.append("avatar", fileToUpload as unknown as Blob); 
+                formData.append(
+                    "avatar",
+                    {
+                        uri: avatarUri,
+                        name: `group_${Date.now()}.jpg`,
+                        type: "image/jpeg"
+                    } as any
+                );
             }
-            formData.append("is_group", true as any)
 
-            xhr.open('POST', `http://${SERVER.host}:${SERVER.port}/chats`);
-            xhr.setRequestHeader('Authorization', `Bearer ${token}`);
-            
+            if (mode === "create") {
+                formData.append("is_group", "true");
+
+                xhr.open(
+                    "POST",
+                    `http://${SERVER.host}:${SERVER.port}/chat`
+                );
+            } else {
+                xhr.open(
+                    "PATCH",
+                    `http://${SERVER.host}:${SERVER.port}/chat/${chatId}`
+                );
+            }
+
+            xhr.setRequestHeader(
+                "Authorization",
+                `Bearer ${token}`
+            );
+
+
+
+            xhr.onerror = () => {
+                console.log(xhr.responseText, "error");
+                Alert.alert(
+                    "Помилка",
+                    mode === "create"
+                        ? "Не вдалося створити групу"
+                        : "Не вдалося оновити групу"
+                );
+            };
+
             xhr.send(formData);
-            setGroupName("");
-            onClose(); 
-        } catch (error: unknown) {
-            console.log(error)
-            Alert.alert("Помилка", "Не вдалося створити групу");
+        } catch (error) {
+            console.log(error);
+
+            Alert.alert(
+                "Помилка",
+                mode === "create"
+                    ? "Не вдалося створити групу"
+                    : "Не вдалося оновити групу"
+            );
         }
     };
 
@@ -142,7 +175,11 @@ export function ConfirmGroupModal({
                     <ICONS.CloseModalIcon color={COLORS.black} width={12} height={12} />
                 </TouchableOpacity>
 
-                <Text style={styles.title}>Нова група</Text>
+                <Text style={styles.title}>
+                    {mode === "create"
+                        ? "Нова група"
+                        : "Редагування групи"}
+                </Text>
 
                 <View style={styles.groupNameInputContainer}>
                     <Text style={{ fontSize: 16, color: COLORS.black }}>Назва</Text>
@@ -233,21 +270,24 @@ export function ConfirmGroupModal({
                 </View>
 
                 <View style={styles.footerRow}>
-                    {/* <TouchableOpacity style={[styles.btn, styles.btnCancel, { backgroundColor: COLORS.lightestGray }]} onPress={onBackStep}>
-                        <Text style={{ color: COLORS.gray }}>Назад</Text>
-                    </TouchableOpacity> */}
                     <Button 
                         variant="white"
                         text="Назад"
                         onPress={onBackStep}
                     />
-
-                    <Button 
-                        variant="purple"
-                        text="Створити групу"
-                        onPress={handleCreateGroupSubmit}
-                        disabled={!groupName.trim() || selectedUserIds.length === 0}
-                    />                                                            
+                <Button
+                    variant="purple"
+                    text={
+                        mode === "create"
+                            ? "Створити групу"
+                            : "Зберегти"
+                    }
+                    onPress={handleSubmit}
+                    disabled={
+                        !groupName.trim() ||
+                        selectedUserIds.length === 0
+                    }
+                />                                                           
                 </View>
             </View>
         </Modal>

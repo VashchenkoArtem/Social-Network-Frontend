@@ -8,6 +8,8 @@ import { styles } from "@shared/ui/chatsFrame/styles";
 import { Input } from "@shared/ui/input";
 import { SearchIcon } from "@shared/ui/icons/inputs/Search";
 import { useOnlineUsers } from "@modules/chats/api/onlineUsers";
+import { Redirect } from "expo-router";
+import { useUserContext } from "@modules/auth/context/user-context";
 
 
 export function Contacts() {
@@ -21,6 +23,10 @@ export function Contacts() {
 
         return username.includes(search)
     }) ?? []
+    const { user } = useUserContext()!
+    if (!user) {
+        return <Redirect href={"/login"}/>
+    }
     return (
         <View style={styles.mainContainer}>
             <View style={styles.mainContainerHeader}>

@@ -20,9 +20,9 @@ interface IUserContextProvider {
 }
 export function useUserContext() {
 	const { user, token, getOnlineUsers } = useContext(UserContext)!
-	if (user) {
+	// if (user) {
 		return {user, token, getOnlineUsers}
-	}
+	
 	return
 }
 

@@ -205,15 +205,12 @@ export const {
     useDeletePostMutation,
     useUpdatePostMutation,
     useViewPostMutation,
-
     useGetAllLikesQuery,
     useCreateLikeMutation,
     useDeleteLikeMutation,
-
     useGetAllHeartsQuery,
     useCreateHeartMutation,
     useDeleteHeartMutation,
-
     useGetPostLikeStatusQuery,
-    useGetPostHeartStatusQuery
+    useGetPostHeartStatusQuery,
 } = postApi

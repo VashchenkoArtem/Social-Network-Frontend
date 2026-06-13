@@ -3,17 +3,18 @@ import { PostCard } from "../postCard/PostCard";
 import { WelcomeDetailsModal } from "@shared/ui/modalUIU";
 import { Redirect, useLocalSearchParams } from "expo-router";
 import { useContext, useEffect, useState } from "react";
-import { postApi, useGetAllPostsQuery } from "@modules/posts/api/postsApi";
-import { UserContext } from "@modules/auth/context/user-context";
+import { postApi, useGetAllPostsQuery, useLazyMyPostsQuery } from "@modules/posts/api/postsApi";
+import { UserContext, useUserContext } from "@modules/auth/context/user-context";
 import { View } from "react-native";
 import { FONTS } from "@shared/constants/fonts";
 import { COLORS } from "@shared/constants/colors";
 import { socket } from "@shared/socket/socket";
+import { useGetAllFriendsQuery, useGetRecommendedPeopleQuery, useLazyGetAllFriendsQuery, useLazyGetAllRequestsQuery, useLazyGetRecommendedPeopleQuery } from "@modules/friends/api/friendsApi";
+import { useLazyGetGroupChatsQuery, useLazyGetPersonalChatsQuery } from "@modules/chats/api/chatsApi";
 
 export function HomePage() {
     const { isNewUser } = useLocalSearchParams<{ isNewUser?: string }>();
     const [isWelcomeVisible, setIsWelcomeVisible] = useState(false);
-
     const [refreshing, setRefreshing] = useState(false);
     const {
         data,
@@ -24,8 +25,18 @@ export function HomePage() {
         cursor: undefined,
         limit: 3
     });
+    const [ getAllFriends ] = useLazyGetAllFriendsQuery()
+    const [ getAllRequests ] = useLazyGetAllRequestsQuery()
+    const [ getAllRecommendedPeople ] = useLazyGetRecommendedPeopleQuery()
+    const [ getGroupChats ] = useLazyGetGroupChatsQuery()
+    const [ getPersonalChats ] = useLazyGetPersonalChatsQuery()
+    const [ getMyPosts ] = useLazyMyPostsQuery()
     const [ onlineUserIds, setOnlineUserIds ] = useState<number[]>([])
-    const userIds = data?.data.map((user) => user.user_app_user.id)
+    const userIds =
+        data?.data
+            ?.filter(item => item?.user_app_user)
+            .map(item => item.user_app_user.id) ?? [];
+    const { user, getOnlineUsers } = useUserContext()!;
     useEffect(() => {
         if (!data?.meta?.nextCursor || !data?.meta?.hasMore) return;
 
@@ -33,8 +44,15 @@ export function HomePage() {
             cursor: data.meta.nextCursor,
             limit: 3,
         });
+        if (user){
+            getMyPosts({userId: user.id})
+            getAllRequests()
+            getAllRecommendedPeople({limit: 4})
+            getAllFriends() 
+            getPersonalChats()
+            getGroupChats()
+        }
     }, [data?.meta?.nextCursor]);
-    const { user, getOnlineUsers } = useContext(UserContext)!;
     const prefetchPosts = postApi.usePrefetch("getAllPosts");
     useEffect(() => {
         async function loadOnlineUsers() {
@@ -102,13 +120,17 @@ const loadMore = () => {
         
                 data={data?.data ?? []}
                 keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item }) => (
-                    <PostCard
-                        isOnlineUser={onlineUserIds.includes(item.user_app_user.id) }
-                        post={item}
-                        isEditingPost={false}
-                    />
-                )}
+                renderItem={({ item }) => {
+                    if (!item?.user_app_user) return null;
+
+                    return (
+                        <PostCard
+                            isOnlineUser={onlineUserIds.includes(item.user_app_user.id)}
+                            post={item}
+                            isEditingPost={false}
+                        />
+                    );
+                }}
                 contentContainerStyle={{
                     paddingBottom: 8,
                 }}

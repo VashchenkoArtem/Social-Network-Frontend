@@ -44,7 +44,7 @@ export function ChatsFrame(props: IChatProps) {
 
             <FlatList
                 keyExtractor={item => String(item.id)}
-                contentContainerStyle={{gap: 10}}
+                contentContainerStyle={{gap: 10, paddingTop: 10}}
                 data = {filteredMessages}
                 renderItem={({ item }) => {
                     return <PersonalChatFrame isGroupChat={isGroups} chat = {item} chatUnreadCount={unreadMap[item.id]}/>

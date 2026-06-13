@@ -77,7 +77,7 @@ export function WelcomeDetailsModal({ isVisible, onClose }: Props) {
                                         onChangeText={field.onChange}
                                         value={field.value}
                                         error={errors.pseudonym?.message}
-                                    />
+                                    /> 
                                 )}  
                             />
 

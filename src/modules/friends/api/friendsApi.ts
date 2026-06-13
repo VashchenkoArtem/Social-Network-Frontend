@@ -1,5 +1,5 @@
 import { baseApi } from "@shared/api/baseApi";
-import { FriendRequest, CreateFriendRequest, UpdateFriendRequest } from './api.types'
+import { FriendRequest, CreateFriendRequest, UpdateFriendRequest, RecommendedResponse, RecommendedPayload } from './api.types'
 import { IUser } from "@shared/types/user.types";
 import { IPost } from "@modules/posts/ui/postCard/types";
 import { FriendsProps } from "../ui/friendFrame/types";
@@ -45,12 +45,34 @@ export const friendApi = baseApi.injectEndpoints({
             })
         }),
 
-        getRecommendedPeople: builder.query<IUser[], void>({
-            query: () => ({
-                url: 'recommended',
-                method: 'GET'
-            })
+    getRecommendedPeople: builder.query<
+        RecommendedResponse,
+        RecommendedPayload
+    >({
+        query: ({ cursor, limit = 2 }) => ({
+            url: `recommended?limit=2${cursor ? `&cursor=${cursor}` : ""}`,
+            method: "GET",
         }),
+
+        serializeQueryArgs: ({ endpointName }) => {
+            return endpointName;
+        },
+
+    merge: (currentCache, newData, { arg }) => {
+        if (!arg.cursor) {
+            currentCache.data = newData.data;
+            currentCache.meta = newData.meta;
+            return;
+        }
+
+        currentCache.data.push(...newData.data);
+        currentCache.meta = newData.meta;
+    },
+
+        forceRefetch({ currentArg, previousArg }) {
+            return currentArg?.cursor !== previousArg?.cursor;
+        },
+    }),
         getUserById: builder.query<IUser, number>({
                     query: (id) => ({
                         url: `users/${id}`,
@@ -64,6 +86,7 @@ export const friendApi = baseApi.injectEndpoints({
             })
         })
             }),
+            overrideExisting: true
 })
 
 export const {
@@ -74,5 +97,8 @@ export const {
     useUpdateFriendRequestMutation,
     useGetRecommendedPeopleQuery,
     useGetUserByIdQuery,
-    useGetPostsByUserIdQuery
+    useGetPostsByUserIdQuery,
+    useLazyGetAllFriendsQuery,
+    useLazyGetAllRequestsQuery,
+    useLazyGetRecommendedPeopleQuery
 } = friendApi

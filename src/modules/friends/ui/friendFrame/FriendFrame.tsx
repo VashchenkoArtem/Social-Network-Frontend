@@ -7,6 +7,7 @@ import { FriendRequest } from "@modules/friends/api/api.types";
 import { IProps } from "./types";
 import { IUser } from "@shared/types/user.types";
 import { getOtherUser } from "@shared/utils/friends";
+import { Redirect } from "expo-router";
 
 
 
@@ -19,11 +20,13 @@ export function FriendFrame({
     toDetailPage,
     isFetching, 
     isLoading,
-    onlineUserIds
+    onlineUserIds,
+    onEndReached,
+    isPaginate  
 }: IProps) {
     const { user } = useContext(UserContext)!;
 
-    if (!user) return null;
+    if (!user) return <Redirect href={"/login"}/>;
 
     return (
         <View style={styles.friendCards}>
@@ -40,23 +43,38 @@ export function FriendFrame({
                     </Text>
                 )}
             </View>
-            <View style={{ gap: 10 }}>
+            <View>
                 {(isLoading || isFetching) ? (
                     <ActivityIndicator size="small" />
                 ) : data ? (
                     data.length > 0 ? (
                         <FlatList
-                            ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
+                            ItemSeparatorComponent={() => (
+                                <View style={{ height: 10 }} />
+                            )}
+                            // contentContainerStyle={{gap: 10}}
                             data={data}
                             keyExtractor={(item) => String(item.user.id)}
-                            renderItem={({ item }) => (
-                                <FriendCard
-                                    isOnline={onlineUserIds?.includes(item.user.id)}
-                                    buttonText={buttonText}
-                                    user={item.user}
-                                    requestId={item.id}
-                                />
-                            )}
+                            renderItem={({ item }) => {
+                                if (item.user){
+                                    return <FriendCard
+                                        isOnline={onlineUserIds?.includes(item.user.id)}
+                                        buttonText={buttonText}
+                                        user={item.user}
+                                        requestId={item.id}
+                                    />
+                                }
+                                return null
+                            }}
+                            onEndReached={isPaginate ? onEndReached : undefined}
+                            onEndReachedThreshold={0.5}
+                            ListFooterComponent={
+                                isFetching ? (
+                                    <ActivityIndicator
+                                        style={{ marginVertical: 12 }}
+                                    />
+                                ) : null
+                            }
                         />
                     ) : (
                         <Text style={styles.nullMessage}>
