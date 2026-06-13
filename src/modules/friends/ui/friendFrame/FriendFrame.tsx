@@ -1,4 +1,4 @@
-import { View, Text, FlatList, ActivityIndicator } from "react-native";
+import { View, Text, FlatList, RefreshControl } from "react-native";
 import { FriendCard } from "../friendCard";
 import { styles } from "./friendFrame.styles";
 import { useContext } from "react";
@@ -6,10 +6,9 @@ import { UserContext } from "@modules/auth/context/user-context";
 import { FriendRequest } from "@modules/friends/api/api.types";
 import { IProps } from "./types";
 import { IUser } from "@shared/types/user.types";
-import { getOtherUser } from "@shared/utils/friends";
+import { COLORS } from "@shared/constants/colors";
+import { ActivityIndicator } from "react-native-paper";
 import { Redirect } from "expo-router";
-
-
 
 export function FriendFrame({
     frameName,
@@ -21,8 +20,9 @@ export function FriendFrame({
     isFetching, 
     isLoading,
     onlineUserIds,
+    refreshing,
     onEndReached,
-    isPaginate  
+    onRefresh
 }: IProps) {
     const { user } = useContext(UserContext)!;
 
@@ -45,35 +45,28 @@ export function FriendFrame({
             </View>
             <View>
                 {(isLoading || isFetching) ? (
-                    <ActivityIndicator size="small" />
+                    <ActivityIndicator animating={true} color={COLORS.gray} style={{ marginTop: 20 }}/>
                 ) : data ? (
                     data.length > 0 ? (
                         <FlatList
-                            ItemSeparatorComponent={() => (
-                                <View style={{ height: 10 }} />
-                            )}
-                            // contentContainerStyle={{gap: 10}}
                             data={data}
                             keyExtractor={(item) => String(item.user.id)}
-                            renderItem={({ item }) => {
-                                if (item.user){
-                                    return <FriendCard
-                                        isOnline={onlineUserIds?.includes(item.user.id)}
-                                        buttonText={buttonText}
-                                        user={item.user}
-                                        requestId={item.id}
-                                    />
-                                }
-                                return null
-                            }}
-                            onEndReached={isPaginate ? onEndReached : undefined}
+                            ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
+                            renderItem={({ item }) => (
+                                <FriendCard
+                                    isOnline={onlineUserIds?.includes(item.user.id)}
+                                    buttonText={buttonText}
+                                    user={item.user}
+                                    requestId={item.id}
+                                />
+                            )}
+                            onEndReached={onEndReached}
                             onEndReachedThreshold={0.5}
-                            ListFooterComponent={
-                                isFetching ? (
-                                    <ActivityIndicator
-                                        style={{ marginVertical: 12 }}
-                                    />
-                                ) : null
+                            refreshControl={
+                                <RefreshControl
+                                    refreshing={refreshing ?? false}
+                                    onRefresh={onRefresh}
+                                />
                             }
                         />
                     ) : (

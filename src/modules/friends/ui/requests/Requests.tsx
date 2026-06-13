@@ -9,24 +9,59 @@ export function Requests(props: {setChosenTab: (title: string) => void, isMargin
     const { setChosenTab, isMarginTop, isMarginBottom, toDetailPage } = props
     const { getOnlineUsers } = useUserContext()!
     const [ onlineUserIds, setOnlineUserIds ] = useState<number[]>([]) 
-    const { data, isFetching, isLoading } = useGetAllRequestsQuery(undefined, {
-        pollingInterval: 5000
+
+    const [cursor, setCursor] = useState<number | undefined>(undefined);
+    const [refreshing, setRefreshing] = useState(false);
+
+    const { 
+        data, 
+        isFetching, 
+        refetch,
+        isLoading 
+    } = useGetAllRequestsQuery({
+        cursor,
+        limit: 3
     })
-    const userIds = data?.map((user) => user.user.id)
+
+    const hasMore = data?.meta.hasMore
+    const loadMore = () => {
+        if (!hasMore || isFetching) return
+        setCursor(data?.meta?.nextCursor ?? undefined)
+    }
+    
+    const users = data?.data ?? []
+    const userIds = users.map((user) => user.user.id)
+
+    const onRefresh = async () => {
+        setRefreshing(true);
+        setCursor(undefined)
+        await refetch();
+        setRefreshing(false);
+    };
+
     useEffect(() => {
         async function loadOnlineUsers() {
             if (!userIds?.length) return
-
             const online = await getOnlineUsers(userIds)
-
             setOnlineUserIds(online)
         }
-
         loadOnlineUsers()
     }, [userIds])
     return (
         <View style = {[isMarginTop && {marginTop: 24}, isMarginBottom && {marginBottom: 24}]}>
-            <FriendFrame isLoading={isLoading} toDetailPage={toDetailPage} setChosenTab = {setChosenTab} buttonText="Підтвердити" frameName="Запити" messageIfNull="У вас поки немає запитів" data={data}/>
+            <FriendFrame 
+                data={users}
+                isLoading={isLoading} 
+                toDetailPage={toDetailPage} 
+                setChosenTab = {setChosenTab} 
+                buttonText="Підтвердити" 
+                frameName="Запити" 
+                messageIfNull="У вас поки немає запитів" 
+                isFetching={isFetching}
+                refreshing={refreshing}
+                onEndReached={loadMore}
+                onRefresh={onRefresh}
+            />
         </View>
     )
 }

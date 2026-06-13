@@ -1,5 +1,5 @@
 import { IUser } from "@shared/types/user.types"
-
+import { FriendsProps } from "../ui/friendFrame/types"
 export interface FriendRequest {
     id: number
     status: string | null
@@ -20,14 +20,30 @@ export interface UpdateFriendRequest {
     
 }
 
-export interface RecommendedResponse{
-    data: IUser[],
-    meta: {
-        nextCursor: number,
-        hasMore: boolean
-    }
+export interface UserWithoutPassword {
+    id: number;
+    firstname: string | null;
+    lastname: string | null;
+    nickname: string | null;
+    alias: string | null;
+    email: string;
+    signature: string | null;
+    birthDate: Date | null;
+    avatars: { id: number; filename: string }[];
 }
-export interface RecommendedPayload{
-    cursor?: number;
-    limit: number
+
+export interface PaginatedUsersResponse {
+    data: IUser[];
+    meta: {
+        nextCursor: number | null;
+        hasMore: boolean;
+    };
+}
+
+export interface PaginatedFriendsProps {
+    data: FriendsProps[];
+    meta: {
+        nextCursor: number | null;
+        hasMore: boolean;
+    };
 }

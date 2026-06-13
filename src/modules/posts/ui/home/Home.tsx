@@ -46,11 +46,11 @@ export function HomePage() {
         });
         if (user){
             getMyPosts({userId: user.id})
-            getAllRequests()
+            getAllRequests({cursor: undefined, limit: 2})
             getAllRecommendedPeople({limit: 4})
             getAllFriends() 
-            getPersonalChats()
-            getGroupChats()
+            getPersonalChats({cursor: undefined, limit: 2})
+            getGroupChats({cursor: undefined, limit: 2})
         }
     }, [data?.meta?.nextCursor]);
     const prefetchPosts = postApi.usePrefetch("getAllPosts");
@@ -82,14 +82,14 @@ export function HomePage() {
         setRefreshing(false);
     };
 
-const loadMore = () => {
-    if (!data?.meta?.hasMore || isFetching) return;
+    const loadMore = () => {
+        if (!data?.meta?.hasMore || isFetching) return;
 
-    prefetchPosts({
-        cursor: data.meta.nextCursor,
-        limit: 1,
-    });
-};
+        prefetchPosts({
+            cursor: data.meta.nextCursor,
+            limit: 3,
+        });
+    };
 
     if (!user) {
         return <Redirect href="/login" />;

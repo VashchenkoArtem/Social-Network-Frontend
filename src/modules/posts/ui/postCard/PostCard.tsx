@@ -164,7 +164,11 @@ export function PostCard(props: IProps){
                             style={styles.postFooterBtn}
                             onPress={handleLike}
                         >
-                            <ICONS.PostLikeIcon width = {20} height={20} color = { isPostLiked ? COLORS.plum : COLORS.gray}/>
+                            { isPostLiked ? (
+                                <ICONS.PostLikeFilledIcon width = {20} height={20} color = {COLORS.plum} />
+                            ) : (
+                                <ICONS.PostLikeIcon width = {20} height={20} color = {COLORS.gray} />
+                            ) }
                             <Text>{likesCount} Вподобань</Text>
                         </TouchableOpacity>
                     </View>
@@ -174,7 +178,11 @@ export function PostCard(props: IProps){
                             style={styles.postFooterBtn}
                             onPress={handleHeart}
                         >
-                            <ICONS.PostThumbUpIcon width = {20} height={20} color = { isPostHearted ? COLORS.plum : COLORS.gray} />
+                            { isPostHearted ? (
+                                <ICONS.PostThumbUpFilledIcon width = {20} height={20} color = {COLORS.plum} />
+                            ) : (
+                                <ICONS.PostThumbUpIcon width = {20} height={20} color = {COLORS.gray} />
+                            ) }
                             <Text>{heartsCount} Вподобань</Text>
                         </TouchableOpacity>
                     </View>

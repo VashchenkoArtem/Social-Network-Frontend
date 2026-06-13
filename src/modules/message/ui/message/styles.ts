@@ -53,5 +53,10 @@ export const styles = StyleSheet.create({
     username: {
         fontSize: 11,
         color: COLORS.plum
+    },
+
+    imageContainer: {
+        flexDirection: "row", 
+        gap: 5
     }
 })
