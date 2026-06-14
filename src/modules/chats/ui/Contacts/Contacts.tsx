@@ -44,7 +44,7 @@ export function Contacts() {
 
             <FlatList
                 data={filteredContacts}
-                contentContainerStyle={{gap: 10}}
+                contentContainerStyle={{gap: 10,paddingTop: 10}}
                 keyExtractor={(item) => String(item.user.id)}
                 renderItem={({ item }) => {
                     // const isOnline = onlineUsers.has(Number(item.user.id));

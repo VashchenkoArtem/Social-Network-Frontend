@@ -28,16 +28,22 @@ export const chatApi = baseApi.injectEndpoints({
             },
             
             merge: (currentCache, newItems) => {
+                const currentChats = currentCache?.chats ?? []
+                const incomingChats = newItems?.chats ?? []
+
                 const existingIds = new Set(
-                    currentCache.chats.map((chat) => chat.id)
+                    currentChats.map((chat) => chat.id)
                 )
-                const uniqueChats = newItems.chats.filter (
+
+                const uniqueChats = incomingChats.filter(
                     (chat) => !existingIds.has(chat.id)
                 )
+
                 if (uniqueChats.length > 0) {
-					currentCache.chats.push(...uniqueChats)
-				}
-                currentCache.meta = newItems.meta
+                    currentCache.chats.push(...uniqueChats)
+                }
+
+                currentCache.meta = newItems?.meta
             },
 
             forceRefetch({ currentArg, previousArg }) {
@@ -78,18 +84,16 @@ export const chatApi = baseApi.injectEndpoints({
             serializeQueryArgs: ({ queryArgs }) => {
                 return 'personalChat'
             },
-            
             merge: (currentCache, newItems) => {
-                const existingIds = new Set(
-                    currentCache.chats.map((chat) => chat.id)
-                )
-                const uniqueChats = newItems.chats.filter (
-                    (chat) => !existingIds.has(chat.id)
-                )
-                if (uniqueChats.length > 0) {
-					currentCache.chats.push(...uniqueChats)
-				}
-                currentCache.meta = newItems.meta
+                const current = currentCache?.chats ?? []
+                const incoming = newItems?.chats ?? []
+
+                const existingIds = new Set(current.map(c => c.id))
+
+                const unique = incoming.filter(c => !existingIds.has(c.id))
+
+                currentCache.chats = [...current, ...unique]
+                currentCache.meta = newItems?.meta
             },
 
             forceRefetch({ currentArg, previousArg }) {

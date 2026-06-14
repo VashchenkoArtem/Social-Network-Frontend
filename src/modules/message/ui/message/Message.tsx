@@ -29,7 +29,7 @@ export function Message(props: IMessageProps) {
 
     return (
         <View>
-            { user.id === data.sender_id ? (
+            { user?.id === data.sender_id ? (
                 <View style={{ width: "100%", alignItems: "flex-end" }}>
                     <View style={styles.message}>
 
@@ -118,8 +118,7 @@ export function Message(props: IMessageProps) {
                                     )
                                 }
                                 <View style={styles.messageInfoContainer}>
-                                    <Text style={styles.sendTime}>{createdDate}</Text>
-                                    <MessageStatusMarkIcon color={COLORS.gray} />    
+                                    <Text style={styles.sendTime}>{createdDate}</Text> 
                                 </View>
                             </View>
                         </View>

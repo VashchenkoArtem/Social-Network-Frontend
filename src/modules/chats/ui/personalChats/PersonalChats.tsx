@@ -21,7 +21,6 @@ export function PersonalChats(props: {count?: number}){
         cursor: undefined,
         limit: 25
     })
-    console.log(data)
     const personalChats = data?.chats ?? []
     const hasMore = data?.meta.hasMore
     const loadMore = () => {
