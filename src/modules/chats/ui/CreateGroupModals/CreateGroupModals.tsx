@@ -44,6 +44,7 @@ export function CreateGroupModals({ visible, onClose }: ICreateGroupModalsProps)
             />
 
             <ConfirmGroupModal
+                mode="create"
                 visible={visible && creationStep === 2}
                 onClose={handleCloseModals}
                 onBackStep={() => setCreationStep(1)}

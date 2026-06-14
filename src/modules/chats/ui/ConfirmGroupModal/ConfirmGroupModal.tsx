@@ -40,7 +40,15 @@ interface IFriendRequest {
 
     user: IUser
 }
-
+interface GroupUserPayload {
+    id: number;
+    username: string;
+    profile_app_profile: {
+        id: number;
+        avatar: string;
+        pseudonym: string;
+    };
+}
 interface IConfirmGroupModalProps {
     visible: boolean;
     onClose: () => void;
@@ -53,6 +61,7 @@ interface IConfirmGroupModalProps {
     onChangeAvatar: (uri: string | null) => void;
     mode: "create" | "edit";
     chatId?: number;
+    usersInGroup?: GroupUserPayload[]
 }
 
 export function ConfirmGroupModal({
@@ -66,7 +75,8 @@ export function ConfirmGroupModal({
     avatarUri,
     onChangeAvatar,
     mode,
-    chatId
+    chatId,
+    usersInGroup
 }: IConfirmGroupModalProps) {
     const { data: friendsRequestsData } = useGetAllFriendsQuery(undefined);
     const friendsRequests = (friendsRequestsData || []) as unknown as IFriendRequest[];
@@ -77,6 +87,15 @@ export function ConfirmGroupModal({
             .filter(Boolean)
             .filter(user => selectedUserIds.includes(user.id));
     }, [friendsRequests, selectedUserIds]);
+    const chosenParticipants = chosenFriends.map((friend) => ({
+        id: friend.id,
+        username: friend.username,
+        profile_app_profile: {
+            id: friend.profile_app_profile.id,
+            avatar: friend.profile_app_profile.avatar || "",
+            pseudonym: friend.profile_app_profile.pseudonym || "",
+        }
+    }))
     const pickGroupImage = async () => {
         const result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ['images'], 
@@ -100,50 +119,42 @@ export function ConfirmGroupModal({
             const formData = new FormData();
             const xhr = new XMLHttpRequest();
 
-            formData.append("name", groupName.trim());
-            formData.append("userIds", JSON.stringify(selectedUserIds));
-            console.log(avatarUri, "avatarUri");
-            if (avatarUri) {
-                formData.append(
-                    "avatar",
-                    {
-                        uri: avatarUri,
-                        name: `group_${Date.now()}.jpg`,
-                        type: "image/jpeg"
-                    } as any
-                );
-            }
-
-            if (mode === "create") {
-                formData.append("is_group", "true");
-
-                xhr.open(
-                    "POST",
-                    `http://${SERVER.host}:${SERVER.port}/chat`
-                );
-            } else {
-                xhr.open(
-                    "PATCH",
-                    `http://${SERVER.host}:${SERVER.port}/chat/${chatId}`
-                );
-            }
-
-            xhr.setRequestHeader(
-                "Authorization",
-                `Bearer ${token}`
+            xhr.open(
+                mode === "create" ? "POST" : "PATCH",
+                mode === "create"
+                    ? `http://${SERVER.host}:${SERVER.port}/chat`
+                    : `http://${SERVER.host}:${SERVER.port}/chat/${chatId}`
             );
 
+            xhr.setRequestHeader("Authorization", `Bearer ${token}`);
 
+            xhr.onload = () => {
+                console.log("STATUS:", xhr.status);
+                console.log("RESPONSE:", xhr.responseText);
+
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    onClose();
+                } else {
+                    Alert.alert("Ошибка", "Не удалось выполнить запрос");
+                }
+            };
 
             xhr.onerror = () => {
-                console.log(xhr.responseText, "error");
-                Alert.alert(
-                    "Помилка",
-                    mode === "create"
-                        ? "Не вдалося створити групу"
-                        : "Не вдалося оновити групу"
-                );
+                console.log("XHR ERROR:", xhr.responseText);
+                Alert.alert("Ошибка", "Network error");
             };
+
+            formData.append("name", groupName.trim());
+            formData.append("userIds", JSON.stringify(selectedUserIds));
+            formData.append("is_group", "true");
+
+            if (avatarUri) {
+                formData.append("avatar", {
+                    uri: avatarUri,
+                    name: `group_${Date.now()}.jpg`,
+                    type: "image/jpeg",
+                } as any);
+            }
 
             xhr.send(formData);
         } catch (error) {
@@ -233,7 +244,7 @@ export function ConfirmGroupModal({
                     <Text style={{ fontSize: 16, color: COLORS.black, textAlign: 'left' }}>Учасники</Text>
 
                     <FlatList
-                        data={chosenFriends}
+                        data={usersInGroup ? usersInGroup : chosenParticipants}
                         style={{ width: '100%' }}
                         contentContainerStyle={{ width: '100%' }}
                         keyExtractor={(item) => item.id.toString()}
@@ -251,7 +262,7 @@ export function ConfirmGroupModal({
                                         ) : (
                                             <View style={[styles.avatar, styles.placeholderAvatar, { backgroundColor: COLORS.lightestGray }]}>
                                                 <Text style={[styles.placeholderText, { color: COLORS.gray }]}>
-                                                    {item.first_name ? item.first_name[0].toUpperCase() : "U"}
+                                                    {item.profile_app_profile.pseudonym ? item.profile_app_profile.pseudonym[0].toUpperCase() : "U"}
                                                 </Text>
                                             </View>
                                         )}

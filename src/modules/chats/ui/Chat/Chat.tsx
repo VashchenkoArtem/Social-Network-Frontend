@@ -29,7 +29,7 @@ export function Chat(props: { chatId: number | undefined }) {
     const { data: chat, isLoading: isChatLoading } = useGetChatByIdQuery(Number(chatId), {
         skip: !chatId,
     })
-
+    const usersInGroup = chat?.chat_app_chat_users.map((user) => user.user_app_user)
     const [isEditModalVisible, setIsEditModalVisible] = useState(false)
 
     const [groupName, setGroupName] = useState("")
@@ -185,7 +185,7 @@ export function Chat(props: { chatId: number | undefined }) {
                             </TouchableOpacity>
 
                             <View style={styles.divider} />
-                           {chat.is_group && (
+                           {chat.is_group && user.id === chat.admin_id && (
                                 <TouchableOpacity
                                     style={styles.menuBtn}
                                     onPress={() => {
@@ -234,7 +234,7 @@ export function Chat(props: { chatId: number | undefined }) {
                     onChangeAvatar={setAvatarUri}
     
                     selectedUserIds={selectedUserIds}
-    
+                    usersInGroup={usersInGroup}
                     onRemoveParticipant={(userId: number) => {
                         setSelectedUserIds(prev =>
                             prev.filter(id => id !== userId)

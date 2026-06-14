@@ -9,6 +9,7 @@ export interface IUser {
 	profile_app_profile: IProfile
 }
 export interface IProfile {
+	id: number
 	pseudonym: string;
 	avatar?: string
 	signature?: string;

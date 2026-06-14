@@ -74,7 +74,6 @@ export function MyPostsPage() {
         await refetch();
         setRefreshing(false);
     };
-
     const posts = data?.data ?? [];
 
     if (isLoading) {
