@@ -9,7 +9,7 @@ import { Button } from "@shared/ui/button"
 import { SERVER } from "@shared/constants/server"
 import { styles } from "./chat.styles"
 import { socket } from "@shared/socket/socket"
-import { UserContext } from "@modules/auth/context/user-context"
+import { UserContext, useUserContext } from "@modules/auth/context/user-context"
 import { Messages } from "@modules/message/ui/messages/Messages"
 import { getAvatar } from "@shared/utils/avatar"
 import { useLazyMarkMessagesAsReadQuery } from "@modules/message/api/messageApi"
@@ -37,10 +37,18 @@ export function Chat(props: { chatId: number | undefined }) {
     const [selectedUserIds, setSelectedUserIds] = useState<number[]>([])
     const [markMessagesAsRead] = useLazyMarkMessagesAsReadQuery()
     const [deleteGroupChat] = useDeleteGroupChatMutation()
+    const [onlineUserIds, setOnlineUserIds] = useState<number[]>([])
     
-    const userContext = useContext(UserContext)
-    const user = userContext?.user
-    const token = userContext?.token
+    const participantsInChatIds = chat?.chat_app_chat_users.map((participant) => participant.user_app_user.id )
+    const { getOnlineUsers, user, token } = useUserContext()!
+    useEffect(() => {
+        async function loadOnlineUsers() {
+            if (!participantsInChatIds?.length) return
+            const online = await getOnlineUsers(participantsInChatIds)
+            setOnlineUserIds(online)
+        }
+        loadOnlineUsers()
+    }, [participantsInChatIds])
     useEffect(() => {
         if (!user) {
             router.replace("/login")
@@ -166,7 +174,7 @@ export function Chat(props: { chatId: number | undefined }) {
                         </Text>
                         {chat.is_group && (
                             <Text style={styles.chatOnlineStatus}>
-                                {chat.chat_app_chat_users.length} учасника, 1 в мережі
+                                {chat.chat_app_chat_users.length} учасника, {onlineUserIds.length} в мережі
                             </Text>
                         )}
                     </View>

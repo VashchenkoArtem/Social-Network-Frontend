@@ -9,6 +9,7 @@ import { COLORS } from "@shared/constants/colors";
 
 export function Message(props: IMessageProps) {
     const { data } = props
+    console.log("Message data:", data)
     if (!data) return null
     const { user } = useUserContext()!
     const createdDate = new Date(data.created_at).toLocaleTimeString([], {
@@ -75,12 +76,22 @@ export function Message(props: IMessageProps) {
                             <Text style={styles.sendTime}>
                                 {createdDate}
                             </Text>
-
-                            <MessageStatusMarkIcon
-                                width={10}
-                                height={10}
-                                color={COLORS.gray}
-                            />
+                            <View>
+                                <MessageStatusMarkIcon
+                                    width={10}
+                                    height={10}
+                                    color={COLORS.gray}
+                                />
+                                { data.chat_app_message_readers && data.chat_app_message_readers.length > 0 && (
+                                    <View style = {{ position: "absolute", right: -5}}>
+                                        <MessageStatusMarkIcon
+                                            width={10}
+                                            height={10}
+                                            color={COLORS.gray}
+                                        />
+                                    </View>
+                                )}
+                            </View>
                         </View>
                     </View>
                 </View>

@@ -35,6 +35,9 @@ export interface IMessage{
     chat_app_messageimage?: {
         id: number,
         image: string
+    }[],
+    chat_app_message_readers?: {
+        user_id: number
     }[]
 }
 export interface ICreateMessage{
