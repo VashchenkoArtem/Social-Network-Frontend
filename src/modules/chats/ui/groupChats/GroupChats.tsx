@@ -7,7 +7,7 @@ import { Redirect } from "expo-router";
 import { useState } from "react";
 
 export function GroupChats(){
-     const [cursor, setCursor] = useState<number | null>(null)
+    const [cursor, setCursor] = useState<number | null>(null)
     const [refreshing, setRefreshing] = useState(false)
     
     const { 

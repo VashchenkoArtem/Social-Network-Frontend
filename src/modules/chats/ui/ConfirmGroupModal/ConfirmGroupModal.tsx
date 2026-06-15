@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, FlatList, Image, Alert } from "react-nati
 import Modal from "react-native-modal";
 import * as ImagePicker from "expo-image-picker"; 
 import { useGetAllFriendsQuery } from "@modules/friends/api/friendsApi"; 
-import { useCreateChatMutation } from "@modules/chats/api/chatsApi";
+import { useCreateChatMutation, useLazyGetChatByIdQuery } from "@modules/chats/api/chatsApi";
 import { Input } from "@shared/ui/input"; 
 import { SERVER } from "@shared/constants/server";
 import { COLORS } from "@shared/constants/colors";
@@ -12,6 +12,7 @@ import { styles } from "./styles";
 import { Button } from "@shared/ui/button";
 import { IUser } from "@shared/types/user.types";
 import { useUserContext } from "@modules/auth/context/user-context";
+import { ChatAvatar } from "../ChatAvatar/ChatAvatar";
 
 interface IUserProfile {
     avatar: string | null;
@@ -62,6 +63,10 @@ interface IConfirmGroupModalProps {
     mode: "create" | "edit";
     chatId?: number;
     usersInGroup?: GroupUserPayload[]
+    chat?: {
+        avatar: string;
+        is_group: boolean;
+    }
 }
 
 export function ConfirmGroupModal({
@@ -76,11 +81,13 @@ export function ConfirmGroupModal({
     onChangeAvatar,
     mode,
     chatId,
-    usersInGroup
+    usersInGroup,
+    chat
 }: IConfirmGroupModalProps) {
     const { data: friendsRequestsData } = useGetAllFriendsQuery(undefined);
+    const [ getChatById ] = useLazyGetChatByIdQuery();
     const friendsRequests = (friendsRequestsData || []) as unknown as IFriendRequest[];
-    const { token } = useUserContext()!
+    const { token, user } = useUserContext()!
     const chosenFriends = React.useMemo(() => {
         return (friendsRequests ?? [])
             .map(r => r.user)
@@ -96,6 +103,7 @@ export function ConfirmGroupModal({
             pseudonym: friend.profile_app_profile.pseudonym || "",
         }
     }))
+    const filteredUsersInGroup = usersInGroup?.filter((userInGroup) => userInGroup.id !== user?.id) || [];
     const pickGroupImage = async () => {
         const result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ['images'], 
@@ -129,13 +137,11 @@ export function ConfirmGroupModal({
             xhr.setRequestHeader("Authorization", `Bearer ${token}`);
 
             xhr.onload = () => {
-                console.log("STATUS:", xhr.status);
-                console.log("RESPONSE:", xhr.responseText);
-
                 if (xhr.status >= 200 && xhr.status < 300) {
                     onClose();
-                } else {
-                    Alert.alert("Ошибка", "Не удалось выполнить запрос");
+                    if (chatId){
+                        getChatById(chatId);
+                    }
                 }
             };
 
@@ -204,16 +210,23 @@ export function ConfirmGroupModal({
 
                 <View style={styles.pickGroupImageContainer}>
                     <TouchableOpacity onPress={pickGroupImage} activeOpacity={0.8}>
-                        {avatarUri ? (
-                            <Image 
-                                source={{ uri: avatarUri }} 
-                                style={{ width: 46, height: 46, borderRadius: 100 }} 
+                        {avatarUri && !avatarUri.includes("default-group-avatar.png") ? (
+                            <Image
+                                source={{ uri: avatarUri }}
+                                style={{
+                                    width: 46,
+                                    height: 46,
+                                    borderRadius: 123,
+                                }}
                             />
                         ) : (
-                            <View style={[styles.avatar, { width: 46, height: 46, borderRadius: 30, backgroundColor: COLORS.plum, justifyContent: "center", alignItems: "center" }]}>
-                                <Text style={{ color: COLORS.white, fontSize: 18, fontWeight: "bold" }}>
-                                    {groupName ? groupName[0].toUpperCase() : "NG"}
-                                </Text>
+                            <View>
+                                <ChatAvatar
+                                    avatar={!chat?.avatar.includes("default-group-avatar.png") ? chat?.avatar : undefined}
+                                    isGroup={true}
+                                    groupName={groupName}
+                                />
+                                <Text>{chat?.is_group}</Text>
                             </View>
                         )}
                     </TouchableOpacity>
@@ -244,7 +257,7 @@ export function ConfirmGroupModal({
                     <Text style={{ fontSize: 16, color: COLORS.black, textAlign: 'left' }}>Учасники</Text>
 
                     <FlatList
-                        data={usersInGroup ? usersInGroup : chosenParticipants}
+                        data={usersInGroup ? filteredUsersInGroup : chosenParticipants}
                         style={{ width: '100%' }}
                         contentContainerStyle={{ width: '100%' }}
                         keyExtractor={(item) => item.id.toString()}

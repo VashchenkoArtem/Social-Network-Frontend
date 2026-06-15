@@ -7,7 +7,7 @@ import { styles } from "../ConfirmGroupModal/styles";
 export function ChatAvatar(props: IProps){
     const { avatar, isGroup, groupName } = props
     if (isGroup){
-        if (avatar !== "default-group-avatar.png"){
+        if (avatar && avatar !== "default-group-avatar.png"){
             return (<Image
                 source={{ uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${avatar}` }}
                 style={{ width: 46, height: 46, borderRadius: 123, backgroundColor: COLORS.lightestGray }}
@@ -20,6 +20,7 @@ export function ChatAvatar(props: IProps){
                     </View>)
         }
     } else {
+        
         return (
             <Image
                 source={{ uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${avatar}` }}

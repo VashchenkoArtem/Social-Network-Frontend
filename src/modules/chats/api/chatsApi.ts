@@ -135,6 +135,7 @@ export const {
     useCreateChatMutation,
     useDeleteGroupChatMutation,
     useGetChatByIdQuery,
+    useLazyGetChatByIdQuery,
     useLazyGetPersonalChatsQuery,
     useLazyGetGroupChatsQuery
 } = chatApi

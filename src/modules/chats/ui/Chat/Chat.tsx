@@ -53,7 +53,7 @@ export function Chat(props: { chatId: number | undefined }) {
 
         setAvatarUri(
             chat.avatar
-                ? `http://${SERVER.host}:${SERVER.port}/media/${chat.avatar}`
+                ? `http://${SERVER.host}:${SERVER.port}/media/thumb/${chat.avatar}`
                 : null
         )
 
@@ -239,6 +239,10 @@ export function Chat(props: { chatId: number | undefined }) {
                         setSelectedUserIds(prev =>
                             prev.filter(id => id !== userId)
                         )
+                    }}
+                    chat = {{
+                        avatar: chat.avatar,
+                        is_group: chat.is_group
                     }}
                 />
             
