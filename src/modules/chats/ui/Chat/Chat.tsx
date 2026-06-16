@@ -1,7 +1,7 @@
-import { useDeleteGroupChatMutation, useGetChatByIdQuery } from "@modules/chats/api/chatsApi"
+import { useDeleteGroupChatMutation, useGetChatByIdQuery, useLeaveGroupChatMutation } from "@modules/chats/api/chatsApi"
 import { useRouter } from "expo-router"
 import { useContext, useEffect, useState } from "react"
-import { TouchableOpacity, View, Text, Image, Pressable, Platform, KeyboardAvoidingView, ActivityIndicator } from "react-native"
+import { TouchableOpacity, View, Text, Image, Pressable, Platform, KeyboardAvoidingView, ActivityIndicator, Alert } from "react-native"
 import { ICONS } from "@shared/ui"
 import { COLORS } from "@shared/constants/colors"
 import { Input } from "@shared/ui/input"
@@ -37,10 +37,14 @@ export function Chat(props: { chatId: number | undefined }) {
     const [selectedUserIds, setSelectedUserIds] = useState<number[]>([])
     const [markMessagesAsRead] = useLazyMarkMessagesAsReadQuery()
     const [deleteGroupChat] = useDeleteGroupChatMutation()
+    
+    const [leaveGroupChat] = useLeaveGroupChatMutation() 
+
     const [onlineUserIds, setOnlineUserIds] = useState<number[]>([])
     
     const participantsInChatIds = chat?.chat_app_chat_users.map((participant) => participant.user_app_user.id )
     const { getOnlineUsers, user, token } = useUserContext()!
+
     useEffect(() => {
         async function loadOnlineUsers() {
             if (!participantsInChatIds?.length) return
@@ -49,11 +53,13 @@ export function Chat(props: { chatId: number | undefined }) {
         }
         loadOnlineUsers()
     }, [participantsInChatIds])
+
     useEffect(() => {
         if (!user) {
             router.replace("/login")
         }
     }, [user])
+
     useEffect(() => {
         if (!chat) return
 
@@ -69,6 +75,7 @@ export function Chat(props: { chatId: number | undefined }) {
             chat.chat_app_chat_users.map(user => user.id)
         )
     }, [chat])
+
     useEffect(() => {
         if (chatId) {
             markMessagesAsRead(Number(chatId))
@@ -90,6 +97,19 @@ export function Chat(props: { chatId: number | undefined }) {
     const otherUser = chat.chat_app_chat_users.find(
         (chatUser) => chatUser.user_id !== user.id
     )
+
+    const isGroup = chat.is_group;
+    const isAdmin = chat.admin_id === user.id;
+
+    const handleLeaveChat = async () => {
+        try {
+            await leaveGroupChat(chat.id).unwrap();
+            router.replace("/chats");
+        } catch (error) {
+            console.error(error);
+            Alert.alert("Помилка", "Сталася помилка мережі");
+        }
+    };
 
     const pickImages = async () => {
         const permission = await requestMediaLibraryPermissionsAsync()
@@ -186,73 +206,95 @@ export function Chat(props: { chatId: number | undefined }) {
                     </TouchableOpacity>
 
                     {isMenuOpen && (
-                        <Pressable style={styles.menuContainer}>
-                            <TouchableOpacity style={styles.menuBtn}>
+                        <Pressable style={styles.menuContainer} onPress={() => setIsMenuOpen(false)}>
+                            <TouchableOpacity style={styles.menuBtn} onPress={() => { /* Логіка медіа */ setIsMenuOpen(false); }}>
                                 <ICONS.MyPostsPageIcon color={COLORS.black} />
                                 <Text style={styles.menuBtnText}>Медіа</Text>
                             </TouchableOpacity>
 
                             <View style={styles.divider} />
-                           {chat.is_group && user.id === chat.admin_id && (
-                                <TouchableOpacity
+
+                            {isGroup ? (
+                                isAdmin ? (
+                                    <>
+                                        <TouchableOpacity
+                                            style={styles.menuBtn}
+                                            onPress={() => {
+                                                setIsEditModalVisible(true);
+                                                setIsMenuOpen(false);
+                                            }}
+                                        >
+                                            <ICONS.EditIcon color={COLORS.black} />
+                                            <Text style={styles.menuBtnText}>Редагувати групу</Text>
+                                        </TouchableOpacity>
+
+                                        <View style={styles.divider} />
+
+                                        <TouchableOpacity 
+                                            style={styles.menuBtn}
+                                            onPress={() => {
+                                                deleteGroupChat(chat.id);
+                                                router.replace("/chats");
+                                                setIsMenuOpen(false);
+                                            }}
+                                        >
+                                            <ICONS.ExitIcon color={COLORS.black} />
+                                            <Text style={styles.menuBtnText}>Видалити групу</Text>
+                                        </TouchableOpacity>
+                                    </>
+                                ) : (
+                                    
+                                    <TouchableOpacity 
+                                        style={styles.menuBtn}
+                                        onPress={() => {
+                                            handleLeaveChat();
+                                            setIsMenuOpen(false);
+                                        }}
+                                    >
+                                        <ICONS.ExitIcon color={COLORS.black} />
+                                        <Text style={styles.menuBtnText}>Покинути групу</Text>
+                                    </TouchableOpacity>
+                                )
+                            ) : (
+                                <TouchableOpacity 
                                     style={styles.menuBtn}
                                     onPress={() => {
-                                        setIsEditModalVisible(true)
+                                        deleteGroupChat(chat.id);
+                                        router.replace("/chats");
+                                        setIsMenuOpen(false);
                                     }}
                                 >
-                                    <ICONS.EditIcon color={COLORS.black} />
-                                    <Text style={styles.menuBtnText}>
-                                        Редагувати групу
-                                    </Text>
+                                    <ICONS.ExitIcon color={COLORS.black} />
+                                    <Text style={styles.menuBtnText}>Видалити чат</Text>
                                 </TouchableOpacity>
                             )}
-                            <TouchableOpacity 
-                                style={styles.menuBtn}
-                                onPress={() => {
-                                    deleteGroupChat(chat.id)
-                                    router.replace("/chats")
-                                }}
-                            >
-                                <ICONS.ExitIcon color={COLORS.black} />
-                                <Text style={styles.menuBtnText}>
-                                    {chat.is_group ? 
-                                        chat.admin_id === user.id ? "Видалити групу" :
-                                        "Покинути групу" : "Видалити чат"}
-                                </Text>
-                            </TouchableOpacity>
- 
                         </Pressable>
                     )}
                 </View>
             </View>
 
             <Messages chatId={chatId} />
-                <ConfirmGroupModal
-                    visible={isEditModalVisible}
-                    onClose={() => setIsEditModalVisible(false)}
-                    onBackStep={() => setIsEditModalVisible(false)}
-    
-                    mode="edit"
-                    chatId={chat.id}
-    
-                    groupName={groupName}
-                    setGroupName={setGroupName}
-    
-                    avatarUri={avatarUri}
-                    onChangeAvatar={setAvatarUri}
-    
-                    selectedUserIds={selectedUserIds}
-                    usersInGroup={usersInGroup}
-                    onRemoveParticipant={(userId: number) => {
-                        setSelectedUserIds(prev =>
-                            prev.filter(id => id !== userId)
-                        )
-                    }}
-                    chat = {{
-                        avatar: chat.avatar,
-                        is_group: chat.is_group
-                    }}
-                />
+            
+            <ConfirmGroupModal
+                visible={isEditModalVisible}
+                onClose={() => setIsEditModalVisible(false)}
+                onBackStep={() => setIsEditModalVisible(false)}
+                mode="edit"
+                chatId={chat.id}
+                groupName={groupName}
+                setGroupName={setGroupName}
+                avatarUri={avatarUri}
+                onChangeAvatar={setAvatarUri}
+                selectedUserIds={selectedUserIds}
+                usersInGroup={usersInGroup}
+                onRemoveParticipant={(userId: number) => {
+                    setSelectedUserIds(prev => prev.filter(id => id !== userId))
+                }}
+                chat={{
+                    avatar: chat.avatar,
+                    is_group: chat.is_group
+                }}
+            />
             
             {selectedImages.length > 0 && (
                 <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8, marginBottom: 8, paddingHorizontal: 10 }}>
@@ -298,7 +340,6 @@ export function Chat(props: { chatId: number | undefined }) {
                     />
                 </View>
             </View>
-            
         </KeyboardAvoidingView>
     )
 }

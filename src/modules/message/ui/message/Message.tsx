@@ -9,7 +9,6 @@ import { COLORS } from "@shared/constants/colors";
 
 export function Message(props: IMessageProps) {
     const { data } = props
-    console.log("Message data:", data)
     if (!data) return null
     const { user } = useUserContext()!
     const createdDate = new Date(data.created_at).toLocaleTimeString([], {

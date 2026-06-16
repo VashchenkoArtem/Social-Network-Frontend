@@ -6,35 +6,45 @@ import { ICONS } from "@shared/ui";
 import { Link } from "expo-router";
 import { IProps } from "./types";
 import { SERVER } from "@shared/constants/server";
-import Modal from "react-native-modal"
+import Modal from "react-native-modal";
 
 import { CreatePostForm } from "@modules/posts/ui/create-post-form";
-import { useCreateHeartMutation, useCreateLikeMutation, useDeleteHeartMutation, useDeleteLikeMutation, useDeletePostMutation, useGetAllHeartsQuery, useGetAllLikesQuery, useGetPostHeartStatusQuery, useGetPostLikeStatusQuery, useViewPostMutation } from "@modules/posts/api/postsApi";
+import { 
+    useCreateHeartMutation, 
+    useCreateLikeMutation, 
+    useDeleteHeartMutation, 
+    useDeleteLikeMutation, 
+    useDeletePostMutation, 
+    useGetAllHeartsQuery, 
+    useGetAllLikesQuery, 
+    useGetPostHeartStatusQuery, 
+    useGetPostLikeStatusQuery, 
+    useViewPostMutation 
+} from "@modules/posts/api/postsApi";
 import { SmallUserCard } from "@shared/ui/smallUserCard/SmallUserCard";
 
-
 export function PostCard(props: IProps){
-    const { post, isOnlineUser } = props
+    const { post, isOnlineUser } = props;
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [deletePost] = useDeletePostMutation();
     const [viewPost] = useViewPostMutation();
     const photos = post.post_app_postimage ?? [];
-    const [isPostModalOpen, setisPostModalOpen] = useState(false)
-    const [isPostLiked, setIsPostLiked] = useState(false)
-    const [isPostHearted, setIsPostHearted] = useState(false)
+    const [isPostModalOpen, setisPostModalOpen] = useState(false);
+    const [isPostLiked, setIsPostLiked] = useState(false);
+    const [isPostHearted, setIsPostHearted] = useState(false);
+    const [localLikesCount, setLocalLikesCount] = useState(0);
+    const [localHeartsCount, setLocalHeartsCount] = useState(0);
 
-    const { data: likesCount } = useGetAllLikesQuery({ postId: post.id })
-    const { data: heartsCount } = useGetAllHeartsQuery({ postId: post.id })
+    const { data: likesCount } = useGetAllLikesQuery({ postId: post.id });
+    const { data: heartsCount } = useGetAllHeartsQuery({ postId: post.id });
+    const { data: likeStatus } = useGetPostLikeStatusQuery({ postId: post.id });
+    const { data: heartStatus } = useGetPostHeartStatusQuery({ postId: post.id });
 
-    const { data: likeStatus } = useGetPostLikeStatusQuery({ postId: post.id })
-    const { data: heartStatus } = useGetPostHeartStatusQuery({ postId: post.id })
-
-    const [createLike] = useCreateLikeMutation()
-    const [deleteLike] = useDeleteLikeMutation()
-
-    const [createHeart] = useCreateHeartMutation()
-    const [deleteHeart] = useDeleteHeartMutation()
+    const [createLike] = useCreateLikeMutation();
+    const [deleteLike] = useDeleteLikeMutation();
+    const [createHeart] = useCreateHeartMutation();
+    const [deleteHeart] = useDeleteHeartMutation();
 
     useEffect(() => {
         if (post?.id) {
@@ -42,19 +52,31 @@ export function PostCard(props: IProps){
                 .unwrap()
                 .catch((error) => console.error("Помилка реєстрації перегляду:", error));
         }
-    }, [post?.id])
+    }, [post?.id]);
 
     useEffect(() => {
         if (likeStatus?.isLiked !== undefined) {
-            setIsPostLiked(likeStatus.isLiked)
+            setIsPostLiked(likeStatus.isLiked);
         }
-    }, [likeStatus])
+    }, [likeStatus]);
+
+    useEffect(() => {
+        if (likesCount !== undefined) {
+            setLocalLikesCount(likesCount);
+        }
+    }, [likesCount]);
 
     useEffect(() => {
         if (heartStatus?.isHearted !== undefined) {
-            setIsPostHearted(heartStatus.isHearted)
+            setIsPostHearted(heartStatus.isHearted);
         }
-    }, [heartStatus])
+    }, [heartStatus]);
+
+    useEffect(() => {
+        if (heartsCount !== undefined) {
+            setLocalHeartsCount(heartsCount);
+        }
+    }, [heartsCount]);
 
     const handleEdit = () => {
         setIsMenuOpen(false);
@@ -64,39 +86,52 @@ export function PostCard(props: IProps){
     };
 
     const handleLike = async () => {
+        const previousLiked = isPostLiked;
+        const previousCount = localLikesCount;
+
+        setIsPostLiked(!previousLiked);
+        setLocalLikesCount(prev => previousLiked ? prev - 1 : prev + 1);
+
         try {
-            if (isPostLiked) {
-                await deleteLike({ postId: post.id }).unwrap()
-                setIsPostLiked(false)
+            if (previousLiked) {
+                await deleteLike({ postId: post.id }).unwrap();
             } else {
-                await createLike({ postId: post.id }).unwrap()
-                setIsPostLiked(true)
+                await createLike({ postId: post.id }).unwrap();
             }
         } catch (error) {
-            console.log(error)
+            console.error("Помилка при зміні лайку:", error);
+            setIsPostLiked(previousLiked);
+            setLocalLikesCount(previousCount);
         }
-    }
+    };
 
     const handleHeart = async () => {
+        const previousHearted = isPostHearted;
+        const previousCount = localHeartsCount;
+
+        setIsPostHearted(!previousHearted);
+        setLocalHeartsCount(prev => previousHearted ? prev - 1 : prev + 1);
+
         try {
-            if (isPostHearted) {
-                await deleteHeart({ postId: post.id }).unwrap()
-                setIsPostHearted(false)
+            if (previousHearted) {
+                await deleteHeart({ postId: post.id }).unwrap();
             } else {
-                await createHeart({ postId: post.id }).unwrap()
-                setIsPostHearted(true)
+                await createHeart({ postId: post.id }).unwrap();
             }
         } catch (error) {
-            console.log(error)
+            console.error("Помилка при зміні сердечка:", error);
+            setIsPostHearted(previousHearted);
+            setLocalHeartsCount(previousCount);
         }
-    }
+    };
 
-    const authorProfile = post.user_app_user.profile_app_profile
-    const authorUser = post.user_app_user
-    if (!authorProfile) return null
+    const authorProfile = post.user_app_user.profile_app_profile;
+    if (!authorProfile) return null;
+
     return (
         <View style={styles.postContainer}>
             <SmallUserCard isOnline={isOnlineUser} pseudonym={authorProfile.pseudonym} avatar={authorProfile.avatar} signature={authorProfile.signature} isPadding={true}/>
+            
             <Modal
                 isVisible={isEditModalOpen}
                 onBackdropPress={() => setIsEditModalOpen(false)}
@@ -117,87 +152,74 @@ export function PostCard(props: IProps){
                 </View>
             </Modal>
 
-
             <View style={styles.postContent}>
                 <Text style={styles.postTitle}>{ post.title }</Text>
                 
                 <View>
                     <Text style={styles.postDescription}>{ post.content }</Text>
                     <View style = {{flexDirection: "row", gap: 5, flexWrap: "wrap"}}>
-                        { post.post_app_post_tags?.map((tag) => {
-                            return (
-                                <Text style = {styles.tag} key = {tag.post_app_tag.id}>#{tag.post_app_tag.name}</Text>
-                            )
-                        })}
+                        { post.post_app_post_tags?.map((tag) => (
+                            <Text style={styles.tag} key={tag.post_app_tag.id}>#{tag.post_app_tag.name}</Text>
+                        ))}
                     </View>
                 </View>
+                
                 <View>
-                    { post.post_app_postlink?.map((url) => {
-                        return (
-                            <Link href={url.url} key={url.id} style = {[styles.tag, {textDecorationLine: "underline"}]}>{url.url}</Link>
-                        )
-                    })}
-                </View>
-            {photos?.length === 1 && (
-                <Image
-                    source={{ uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${photos[0].original_image}` }}
-                    style={{ width: "100%", height: 250, borderRadius: 10 }}
-                />
-            )}
-
-            {photos?.length > 1 && (
-                <View style={styles.photosContainer}>
-                    {photos.map((photo) => (
-                        <Image
-                            key={photo.id}
-                            source={{
-                                uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${photo.original_image}`,
-                            }}
-                            style={getPhotoStyle(photos.length)}
-                        />
+                    { post.post_app_postlink?.map((url) => (
+                        <Link href={url.url} key={url.id} style={[styles.tag, {textDecorationLine: "underline"}]}>{url.url}</Link>
                     ))}
                 </View>
-            )}
+
+                {photos?.length === 1 && (
+                    <Image
+                        source={{ uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${photos[0].original_image}` }}
+                        style={{ width: "100%", height: 250, borderRadius: 10 }}
+                    />
+                )}
+
+                {photos?.length > 1 && (
+                    <View style={styles.photosContainer}>
+                        {photos.map((photo) => (
+                            <Image
+                                key={photo.id}
+                                source={{ uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${photo.original_image}` }}
+                                style={getPhotoStyle(photos.length)}
+                            />
+                        ))}
+                    </View>
+                )}
+
                 <View style={styles.postFooter}>
                     <View style={styles.postFooterContainer}>
-                        <TouchableOpacity 
-                            style={styles.postFooterBtn}
-                            onPress={handleLike}
-                        >
+                        <TouchableOpacity style={styles.postFooterBtn} onPress={handleLike}>
                             { isPostLiked ? (
-                                <ICONS.PostLikeFilledIcon width = {20} height={20} color = {COLORS.plum} />
+                                <ICONS.PostLikeFilledIcon width={20} height={20} color={COLORS.plum} />
                             ) : (
-                                <ICONS.PostLikeIcon width = {20} height={20} color = {COLORS.gray} />
+                                <ICONS.PostLikeIcon width={20} height={20} color={COLORS.gray} />
                             ) }
-                            <Text>{likesCount} Вподобань</Text>
+                            <Text>{localLikesCount} Вподобань</Text>
                         </TouchableOpacity>
                     </View>
 
                     <View style={styles.postFooterContainer}>
-                        <TouchableOpacity 
-                            style={styles.postFooterBtn}
-                            onPress={handleHeart}
-                        >
+                        <TouchableOpacity style={styles.postFooterBtn} onPress={handleHeart}>
                             { isPostHearted ? (
-                                <ICONS.PostThumbUpFilledIcon width = {20} height={20} color = {COLORS.plum} />
+                                <ICONS.PostThumbUpFilledIcon width={20} height={20} color={COLORS.plum} />
                             ) : (
-                                <ICONS.PostThumbUpIcon width = {20} height={20} color = {COLORS.gray} />
+                                <ICONS.PostThumbUpIcon width={20} height={20} color={COLORS.gray} />
                             ) }
-                            <Text>{heartsCount} Вподобань</Text>
+                            <Text>{localHeartsCount} Вподобань</Text>
                         </TouchableOpacity>
                     </View>
 
                     <View style={styles.postFooterContainer}>
                         <TouchableOpacity style={styles.postFooterBtn}>
-                            <ICONS.PostViewsIcon width = {20} height={20} color = {COLORS.gray}/>
+                            <ICONS.PostViewsIcon width={20} height={20} color={COLORS.gray}/>
                             <Text>{post._count?.post_app_postview ?? 0} Переглядів</Text>
                         </TouchableOpacity>
                     </View>
-
                 </View>
             </View>
-
         </View>
-    )
+    );
 }
-

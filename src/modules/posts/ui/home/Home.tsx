@@ -49,8 +49,8 @@ export function HomePage() {
             getAllRequests({cursor: undefined, limit: 2})
             getAllRecommendedPeople({limit: 4})
             getAllFriends() 
-            getPersonalChats({cursor: undefined, limit: 2})
-            getGroupChats({cursor: undefined, limit: 2})
+            getPersonalChats({cursor: undefined, limit: 10})
+            getGroupChats({cursor: undefined, limit: 10})
         }
     }, [data?.meta?.nextCursor]);
     const prefetchPosts = postApi.usePrefetch("getAllPosts");

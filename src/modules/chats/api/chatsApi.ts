@@ -124,7 +124,14 @@ export const chatApi = baseApi.injectEndpoints({
             query: (chatId) => ({
                 url: `chat/${chatId}`
             })
-        })
+        }),
+        leaveGroupChat: builder.mutation<void, number>({
+            query: (chatId) => ({
+                url: `group-chats/${chatId}/leave`,
+                method: 'DELETE' 
+            }),
+            invalidatesTags: [{ type: 'GroupChats', id: 'LIST' }]
+        }),
     }),
     overrideExisting: true
 })
@@ -137,5 +144,6 @@ export const {
     useGetChatByIdQuery,
     useLazyGetChatByIdQuery,
     useLazyGetPersonalChatsQuery,
-    useLazyGetGroupChatsQuery
+    useLazyGetGroupChatsQuery,
+    useLeaveGroupChatMutation
 } = chatApi
