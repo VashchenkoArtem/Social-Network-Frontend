@@ -172,7 +172,7 @@ export function PostCard(props: IProps){
 
                 {photos?.length === 1 && (
                     <Image
-                        source={{ uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${photos[0].original_image}` }}
+                        source={{ uri: photos[0].original_image }}
                         style={{ width: "100%", height: 250, borderRadius: 10 }}
                     />
                 )}
@@ -182,7 +182,7 @@ export function PostCard(props: IProps){
                         {photos.map((photo) => (
                             <Image
                                 key={photo.id}
-                                source={{ uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${photo.original_image}` }}
+                                source={{ uri:photo.original_image }}
                                 style={getPhotoStyle(photos.length)}
                             />
                         ))}
