@@ -18,6 +18,7 @@ import { ChatAvatar } from "../ChatAvatar/ChatAvatar"
 import { ConfirmGroupModal } from "../ConfirmGroupModal/ConfirmGroupModal"
 
 
+
 export function Chat(props: { chatId: number | undefined }) {
     const { chatId } = props
     const router = useRouter()
@@ -46,12 +47,17 @@ export function Chat(props: { chatId: number | undefined }) {
     const { getOnlineUsers, user, token } = useUserContext()!
 
     useEffect(() => {
+        if (!participantsInChatIds) return
+
         async function loadOnlineUsers() {
-            if (!participantsInChatIds?.length) return
-            const online = await getOnlineUsers(participantsInChatIds)
+            const online = await getOnlineUsers(participantsInChatIds ?? [])
             setOnlineUserIds(online)
         }
+        
         loadOnlineUsers()
+
+        const interval = setInterval(loadOnlineUsers, 10000)
+        return () => clearInterval(interval)
     }, [participantsInChatIds])
 
     useEffect(() => {
@@ -100,6 +106,10 @@ export function Chat(props: { chatId: number | undefined }) {
 
     const isGroup = chat.is_group;
     const isAdmin = chat.admin_id === user.id;
+
+    const isOtherUserOnline = otherUser?.user_app_user?.id 
+        ? onlineUserIds.includes(otherUser.user_app_user.id) 
+        : false;
 
     const handleDeleteChat = async () => {
         try {
@@ -203,9 +213,19 @@ export function Chat(props: { chatId: number | undefined }) {
                                 : otherUser?.user_app_user?.profile_app_profile?.pseudonym || ""
                             }
                         </Text>
+                        
                         {chat.is_group && (
                             <Text style={styles.chatOnlineStatus}>
                                 {chat.chat_app_chat_users.length} учасника, {onlineUserIds.length} в мережі
+                            </Text>
+                        )}
+
+                        {!chat.is_group && (
+                            <Text style={[
+                                styles.chatOnlineStatus, 
+                                isOtherUserOnline && { color: COLORS.plum }
+                            ]}>
+                                {isOtherUserOnline ? "В мережі" : "Офлайн"}
                             </Text>
                         )}
                     </View>
@@ -239,27 +259,18 @@ export function Chat(props: { chatId: number | undefined }) {
                                             <Text style={styles.menuBtnText}>Редагувати групу</Text>
                                         </TouchableOpacity>
 
-
                                         <TouchableOpacity 
                                             style={styles.menuBtn}
-                                            onPress={() => {
-                                                deleteGroupChat(chat.id);
-                                                router.replace("/chats");
-                                                setIsMenuOpen(false);
-                                            }}
+                                            onPress={handleDeleteChat}
                                         >
                                             <ICONS.ExitIcon color={COLORS.black} />
                                             <Text style={styles.menuBtnText}>Видалити групу</Text>
                                         </TouchableOpacity>
                                     </>
                                 ) : (
-                                    
                                     <TouchableOpacity 
                                         style={styles.menuBtn}
-                                        onPress={() => {
-                                            handleLeaveChat();
-                                            setIsMenuOpen(false);
-                                        }}
+                                        onPress={handleLeaveChat}
                                     >
                                         <ICONS.ExitIcon color={COLORS.black} />
                                         <Text style={styles.menuBtnText}>Покинути групу</Text>
@@ -268,11 +279,7 @@ export function Chat(props: { chatId: number | undefined }) {
                             ) : (
                                 <TouchableOpacity 
                                     style={styles.menuBtn}
-                                    onPress={() => {
-                                        deleteGroupChat(chat.id);
-                                        router.replace("/chats");
-                                        setIsMenuOpen(false);
-                                    }}
+                                    onPress={handleDeleteChat}
                                 >
                                     <ICONS.ExitIcon color={COLORS.black} />
                                     <Text style={styles.menuBtnText}>Видалити чат</Text>

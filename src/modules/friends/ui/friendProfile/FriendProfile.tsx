@@ -9,9 +9,11 @@ import { FriendAlbum } from '../friendAlbum/FriendAlbum';
 import { ICONS } from '@shared/ui';
 import { COLORS } from '@shared/constants/colors';
 import { useCreateFriendRequestMutation, useDeleteFriendRequestMutation, useGetPostsByUserIdQuery, useGetUserByIdQuery, useUpdateFriendRequestMutation } from '../../api/friendsApi';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { PostCard } from '@modules/posts/ui/postCard/PostCard';
 import { BigUserCard } from '@shared/ui/bigUserCard/BigUserCard';
+import { useUserContext } from '@modules/auth/context/user-context';
+
 
 interface IProps {
     userId: number;
@@ -20,12 +22,36 @@ interface IProps {
 
 export function FriendProfile({ userId, requestId }: IProps) {
     const router = useRouter();
+    
+    const { getOnlineUsers } = useUserContext(); 
+    
+    const [isOnline, setIsOnline] = useState<boolean>(false);
+
     const { data: user } = useGetUserByIdQuery(userId);
     const { data } = useGetAlbumsQuery(userId)
     const [ createFriendRequest ] = useCreateFriendRequestMutation()
     const [ updateFriendRequest ] = useUpdateFriendRequestMutation()
     const [isAccepted, setIsAccepted ] = useState<boolean>(false)
     const { data: posts } = useGetPostsByUserIdQuery(userId)
+
+    useEffect(() => {
+        if (!userId) return;
+
+        async function checkOnline() {
+            try {
+                const onlineIds = await getOnlineUsers([userId]);
+                setIsOnline(onlineIds.includes(userId));
+            } catch (e) {
+                console.log("Ошибка проверки статуса сокета", e);
+            }
+        }
+        checkOnline();
+
+        const interval = setInterval(checkOnline, 10000);
+
+        return () => clearInterval(interval);
+    }, [userId]);
+
     if (!user) return null
 
 
@@ -46,6 +72,7 @@ export function FriendProfile({ userId, requestId }: IProps) {
                         <Text style={styles.close} ><ICONS.LeftArrowIcon color = {COLORS.gray}/></Text>
                     </TouchableOpacity>
                 </View>
+                
                 <BigUserCard username={user.username} avatar = {user.profile_app_profile.avatar} pseudonym={user.profile_app_profile.pseudonym}/>
 
                 <View style={styles.friendFollowersInfo}>
@@ -126,7 +153,12 @@ export function FriendProfile({ userId, requestId }: IProps) {
             <View style = {{paddingBottom: 20}}>
                 { posts?.map((post) => {
                     return(
-                        <PostCard post = {post} key={post.id} isEditingPost={false}/>
+                        <PostCard 
+                            post = {post} 
+                            key={post.id} 
+                            isEditingPost={false}
+                            isOnlineUser={isOnline}поста
+                        />
                     )
                 }) }
             </View>

@@ -4,8 +4,6 @@ import { getAvatar } from "@shared/utils/avatar";
 import { getOtherUser } from "@shared/utils/friends";
 import { useRouter } from "expo-router";
 import { TouchableOpacity, Image, View, Text } from "react-native";
-import { styles } from "./styles";
-import { COLORS } from "@shared/constants/colors";
 import { SmallUserCard } from "@shared/ui/smallUserCard/SmallUserCard";
 
 export function PersonalChatFrame(props: {chat: IChat, unreadCount?: number, chatUnreadCount?: number, isGroupChat?: boolean}){
@@ -17,7 +15,7 @@ export function PersonalChatFrame(props: {chat: IChat, unreadCount?: number, cha
             style={[{ flexDirection: "row", gap: 12 }]}
             onPress={() => {
                 socket.emit("joinChat", {
-                    chatId: chat.id,
+                    chatId: chat.id
                 });
                 router.push(`(chats)/${chat.id}?count=${unreadCount}&${chat.is_group === true ? `is_group=${chat.is_group}` : undefined}`);
             }}
