@@ -21,14 +21,15 @@ export function Message(props: IMessageProps) {
 
     const images = data.chat_app_messageimage ?? [];
     const neededImages = images.slice(0, 7);
+
     const hasText = !!data.text;
     const hasImages = neededImages.length > 0;
 
-    const imageMessageRows = [
-        neededImages.slice(0, 2),
-        neededImages.slice(2, 5),
-        neededImages.slice(5, 7),
-    ].filter((row) => row.length > 0);
+    // const imageMessageRows = [
+    //     neededImages.slice(0, 2),
+    //     neededImages.slice(2, 5),
+    //     neededImages.slice(5, 7),
+    // ].filter((row) => row.length > 0);
 
     const imageUri = (image: string) =>
         image.startsWith("file:///")
@@ -62,6 +63,21 @@ export function Message(props: IMessageProps) {
         </View>
     );
 
+    const renderGrid = () => (
+        <View style={styles.imageGrid}>
+            {images.map((img, index) => (
+                <Image
+                    key={index}
+                    source={{ uri: imageUri(img.image) }}
+                    style={[
+                        styles.imageItem,
+                        images.length === 1 && styles.imageItemFull,
+                    ]}
+                />
+            ))}
+        </View>
+    )
+
     if (isMyMessage) {
         return (
             <View style={{ width: "100%", alignItems: "flex-end" }}>
@@ -77,7 +93,7 @@ export function Message(props: IMessageProps) {
                     {/* Только картинки — время под картинками */}
                     {!hasText && hasImages && (
                         <>
-                            <FlatList
+                            {/* <FlatList
                                 data={imageMessageRows}
                                 keyExtractor={(_, index) => String(index)}
                                 renderItem={({ item }) => (
@@ -91,7 +107,9 @@ export function Message(props: IMessageProps) {
                                         ))}
                                     </View>
                                 )}
-                            />
+                            /> */}
+
+                            { renderGrid() }
                             <View style={{ alignItems: "flex-end" }}>
                                 <MyTimeBlock />
                             </View>
@@ -102,7 +120,7 @@ export function Message(props: IMessageProps) {
                     {hasText && hasImages && (
                         <>
                             <Text style={styles.text}>{data.text}</Text>
-                            <FlatList
+                            {/* <FlatList
                                 data={imageMessageRows}
                                 keyExtractor={(_, index) => String(index)}
                                 renderItem={({ item }) => (
@@ -116,7 +134,8 @@ export function Message(props: IMessageProps) {
                                         ))}
                                     </View>
                                 )}
-                            />
+                            /> */}
+                            { renderGrid() }
                             <View style={{ alignItems: "flex-end" }}>
                                 <MyTimeBlock />
                             </View>
@@ -154,7 +173,7 @@ export function Message(props: IMessageProps) {
                 {/* Только картинки — время под картинками */}
                 {!hasText && hasImages && (
                     <>
-                        <FlatList
+                        {/* <FlatList
                             data={data.chat_app_messageimage}
                             keyExtractor={(item, index) => `${item.id}-${index}`}
                             renderItem={({ item }) => (
@@ -163,7 +182,15 @@ export function Message(props: IMessageProps) {
                                     style={styles.imageFull}
                                 />
                             )}
-                        />
+                        /> */}
+
+                        { images.map((img, index) => (
+                            <Image
+                                key={index}
+                                source={{ uri: imageUri(img.image) }}
+                                style={styles.imageFull}
+                            />
+                        ))}
                         <TheirTimeBlock />
                     </>
                 )}
@@ -172,7 +199,7 @@ export function Message(props: IMessageProps) {
                 {hasText && hasImages && (
                     <>
                         <Text style={styles.text}>{data.text}</Text>
-                        <FlatList
+                        {/* <FlatList
                             data={data.chat_app_messageimage}
                             keyExtractor={(item, index) => `${item.id}-${index}`}
                             renderItem={({ item }) => (
@@ -181,7 +208,14 @@ export function Message(props: IMessageProps) {
                                     style={styles.imageFull}
                                 />
                             )}
-                        />
+                        /> */}
+                        {images.map((img, index) => (
+                            <Image
+                                key={index}
+                                source={{ uri: imageUri(img.image) }}
+                                style={styles.imageFull}
+                            />
+                        ))}
                         <TheirTimeBlock />
                     </>
                 )}

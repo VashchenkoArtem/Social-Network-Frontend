@@ -8,7 +8,7 @@ export const styles = StyleSheet.create({
         borderRadius: 6,
         paddingHorizontal: 10,
         paddingVertical: 8,
-        maxWidth: 220,
+        maxWidth: 230,
     },
 
     // Чужое сообщение — строка с аватаром
@@ -26,7 +26,7 @@ export const styles = StyleSheet.create({
         paddingHorizontal: 10,
         paddingVertical: 8,
         borderRadius: 6,
-        maxWidth: 220,
+        maxWidth: 230,
         gap: 4,
     },
 
@@ -60,6 +60,8 @@ export const styles = StyleSheet.create({
 
     // Аватар чужого пользователя
     avatar: {
+        width: 46,
+        height: 46,
         borderRadius: 123,
         marginTop: 8,
         backgroundColor: COLORS.lightestGray,
@@ -70,6 +72,25 @@ export const styles = StyleSheet.create({
         color: COLORS.plum,
     },
 
+    imageGrid: {
+        flexDirection: "row",
+        flexWrap: "wrap",
+        gap: 5,
+        marginTop: 6
+    },
+
+    imageItem: {
+        width: "32%",
+        aspectRatio: 1,
+        borderRadius: 6
+    },
+
+    imageItemFull: {
+        width: 220,
+        height: 220,
+        borderRadius: 6
+    },
+    
     // Контейнер строки картинок (для моих сообщений, grid-подобный)
     imageContainer: {
         flexDirection: "row",
@@ -88,7 +109,12 @@ export const styles = StyleSheet.create({
     imageFull: {
         width: 200,
         height: 200,
-        borderRadius: 5,
+        borderRadius: 6,
         marginTop: 4,
+    },
+
+    myRow: {
+        width: "100%",
+        alignItems: "flex-end",
     },
 });

@@ -9,18 +9,20 @@ import { RegForm } from "@modules/auth/models/types/registration.types";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { regValidator } from "@modules/auth/models/lib/registration.validation";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { useSendCodeMutation } from "@modules/auth/api/userApi";
 import { UserContext } from "@modules/auth/context/user-context";
 import { COLORS } from "@shared/constants/colors";
 import { ErrorIcon } from "@shared/ui/icons/urls/ErrorIcon";
 import { ActivityIndicator } from "react-native-paper";
+import { number } from "yup";
 
 export function RegistrationStepOne() {
 
 	const router = useRouter();
 	const [sendCode, { isLoading }] = useSendCodeMutation();
 	const { user } = useContext(UserContext)!;
+	const [buttonWidth, setButtonWidth] = useState<number>()
 	const {
 		handleSubmit,
 		control,
@@ -104,10 +106,13 @@ export function RegistrationStepOne() {
 
 					<Button
 						variant={"purple"}
-						text={ isLoading ? '' : "Створити акаунт"}
-						style={[styles.button, styles.purple]}
+						text={"Створити акаунт"}
+						style={[
+							styles.button,
+							styles.purple,
+						]}						
 						onPress={handleSubmit(onSubmit)}
-						iconLeft={ isLoading && <ActivityIndicator animating={true} color={COLORS.foggy}/> }
+						isLoadingAfter={ isLoading ? true : false}
 					/>
 
 					{errors.root && (
