@@ -67,7 +67,7 @@ export function Chat(props: { chatId: number | undefined }) {
 
         setAvatarUri(
             chat.avatar
-                ? `http://${SERVER.host}:${SERVER.port}/media/thumb/${chat.avatar}`
+                ? chat.avatar
                 : null
         )
 
@@ -100,6 +100,17 @@ export function Chat(props: { chatId: number | undefined }) {
 
     const isGroup = chat.is_group;
     const isAdmin = chat.admin_id === user.id;
+
+    const handleDeleteChat = async () => {
+        try {
+            await deleteGroupChat(chat.id).unwrap();
+            setIsEditModalVisible(false);
+            router.replace("/chats");
+        } catch (error) {
+            console.error(error);
+            Alert.alert("Помилка", "Не вдалося видалити групу");
+        }
+    };
 
     const handleLeaveChat = async () => {
         try {
@@ -228,7 +239,6 @@ export function Chat(props: { chatId: number | undefined }) {
                                             <Text style={styles.menuBtnText}>Редагувати групу</Text>
                                         </TouchableOpacity>
 
-                                        <View style={styles.divider} />
 
                                         <TouchableOpacity 
                                             style={styles.menuBtn}
@@ -294,6 +304,8 @@ export function Chat(props: { chatId: number | undefined }) {
                     avatar: chat.avatar,
                     is_group: chat.is_group
                 }}
+                isAdmin={isAdmin} 
+                onDeleteChat={handleDeleteChat}
             />
             
             {selectedImages.length > 0 && (

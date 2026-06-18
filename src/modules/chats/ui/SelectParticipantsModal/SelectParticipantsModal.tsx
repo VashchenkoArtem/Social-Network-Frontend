@@ -10,6 +10,7 @@ import { FriendRequest } from "@modules/friends/api/api.types";
 import { ICONS } from "@shared/ui/icons/icons";
 import { SearchIcon } from "@shared/ui/icons/inputs";
 import { Button } from "@shared/ui/button";
+import { getAvatar } from "@shared/utils/avatar";
 
 interface ISelectParticipantsModalProps {
     visible: boolean;
@@ -75,9 +76,6 @@ export function SelectParticipantsModal({
 
     const renderItem = ({ item }: { item: FriendProfileType }) => {
         const isSelected = selectedUserIds.includes(item.id);
-        const avatarUri = item.profile_app_profile?.avatar 
-            ? `http://${SERVER.host}:${SERVER.port}/media/thumb/${item.profile_app_profile.avatar}`
-            : null;
 
         return (
             <TouchableOpacity 
@@ -86,15 +84,7 @@ export function SelectParticipantsModal({
                 activeOpacity={0.7}
             >
                 <View style={styles.friendInfo}>
-                    {avatarUri ? (
-                        <Image source={{ uri: avatarUri }} style={styles.avatar} />
-                    ) : (
-                        <View style={[styles.avatar, styles.placeholderAvatar]}>
-                            <Text style={styles.placeholderText}>
-                                {item.profile_app_profile?.pseudonym?.[0]?.toUpperCase() || "U"}
-                            </Text>
-                        </View>
-                    )}
+                    <Image source={{ uri: item.profile_app_profile.avatar ? item.profile_app_profile.avatar : getAvatar(item.profile_app_profile.avatar) }} style={styles.avatar} />
                     <Text style={styles.friendName}>
                         {item.profile_app_profile.pseudonym}
                     </Text>

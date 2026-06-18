@@ -13,6 +13,7 @@ import { Button } from "@shared/ui/button";
 import { IUser } from "@shared/types/user.types";
 import { useUserContext } from "@modules/auth/context/user-context";
 import { ChatAvatar } from "../ChatAvatar/ChatAvatar";
+import { getAvatar } from "@shared/utils/avatar";
 
 interface IUserProfile {
     avatar: string | null;
@@ -35,12 +36,11 @@ interface IFriend {
 interface IFriendRequest {
     id: number;
     status: string | null;
-
     from_user_id: number;
     to_user_id: number;
-
-    user: IUser
+    user: IUser;
 }
+
 interface GroupUserPayload {
     id: number;
     username: string;
@@ -50,6 +50,7 @@ interface GroupUserPayload {
         pseudonym: string;
     };
 }
+
 interface IConfirmGroupModalProps {
     visible: boolean;
     onClose: () => void;
@@ -62,11 +63,13 @@ interface IConfirmGroupModalProps {
     onChangeAvatar: (uri: string | null) => void;
     mode: "create" | "edit";
     chatId?: number;
-    usersInGroup?: GroupUserPayload[]
+    usersInGroup?: GroupUserPayload[];
     chat?: {
         avatar: string;
         is_group: boolean;
-    }
+    };
+    isAdmin?: boolean;
+    onDeleteChat?: () => void;
 }
 
 export function ConfirmGroupModal({
@@ -82,18 +85,22 @@ export function ConfirmGroupModal({
     mode,
     chatId,
     usersInGroup,
-    chat
+    chat,
+    isAdmin = false,
+    onDeleteChat
 }: IConfirmGroupModalProps) {
     const { data: friendsRequestsData } = useGetAllFriendsQuery(undefined);
     const [ getChatById ] = useLazyGetChatByIdQuery();
     const friendsRequests = (friendsRequestsData || []) as unknown as IFriendRequest[];
-    const { token, user } = useUserContext()!
+    const { token, user } = useUserContext()!;
+
     const chosenFriends = React.useMemo(() => {
         return (friendsRequests ?? [])
             .map(r => r.user)
             .filter(Boolean)
             .filter(user => selectedUserIds.includes(user.id));
     }, [friendsRequests, selectedUserIds]);
+
     const chosenParticipants = chosenFriends.map((friend) => ({
         id: friend.id,
         username: friend.username,
@@ -102,8 +109,10 @@ export function ConfirmGroupModal({
             avatar: friend.profile_app_profile.avatar || "",
             pseudonym: friend.profile_app_profile.pseudonym || "",
         }
-    }))
+    }));
+
     const filteredUsersInGroup = usersInGroup?.filter((userInGroup) => userInGroup.id !== user?.id) || [];
+
     const pickGroupImage = async () => {
         const result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ['images'], 
@@ -116,6 +125,23 @@ export function ConfirmGroupModal({
             onChangeAvatar(result.assets[0].uri);
         }
     };
+
+    // const confirmDelete = () => {
+    //     Alert.alert(
+    //         "Видалення чату",
+    //         "Ви впевнені, що хочете повністю видалити цей чат? Усі повідомлення та медіа будуть стерті для всіх учасників.",
+    //         [
+    //             { text: "Скасувати", style: "cancel" },
+    //             { 
+    //                 text: "Видалити", 
+    //                 style: "destructive", 
+    //                 onPress: () => {
+    //                     if (onDeleteChat) onDeleteChat();
+    //                 } 
+    //             }
+    //         ]
+    //     );
+    // };
 
     const handleSubmit = async () => {
         if (!groupName.trim()) {
@@ -174,7 +200,6 @@ export function ConfirmGroupModal({
             );
         }
     };
-
     return (
         <Modal
             isVisible={visible}
@@ -187,15 +212,12 @@ export function ConfirmGroupModal({
             animationOutTiming={200}
         >
             <View style={styles.container}>
-                {/* hitSlop={15} */}
                 <TouchableOpacity style={styles.closeBtn} onPress={onClose}>
                     <ICONS.CloseModalIcon color={COLORS.black} width={12} height={12} />
                 </TouchableOpacity>
 
                 <Text style={styles.title}>
-                    {mode === "create"
-                        ? "Нова група"
-                        : "Редагування групи"}
+                    {mode === "create" ? "Нова група" : "Редагування групи"}
                 </Text>
 
                 <View style={styles.groupNameInputContainer}>
@@ -222,7 +244,7 @@ export function ConfirmGroupModal({
                         ) : (
                             <View>
                                 <ChatAvatar
-                                    avatar={!chat?.avatar.includes("default-group-avatar.png") ? chat?.avatar : undefined}
+                                    avatar={chat?.avatar && !chat.avatar.includes("default-group-avatar.png") ? chat.avatar : undefined}
                                     isGroup={true}
                                     groupName={groupName}
                                 />
@@ -263,22 +285,11 @@ export function ConfirmGroupModal({
                         keyExtractor={(item) => item.id.toString()}
                         showsVerticalScrollIndicator={false}
                         renderItem={({ item }) => {
-                            const userAvatarUri = item.profile_app_profile.avatar
-                                ? `http://${SERVER.host}:${SERVER.port}/media/thumb/${item.profile_app_profile.avatar}`
-                                : null;
-
+                            
                             return (
                                 <View style={[styles.friendRow, { justifyContent: "space-between" }]}>
                                     <View style={styles.friendInfo}>
-                                        {userAvatarUri ? (
-                                            <Image source={{ uri: userAvatarUri }} style={styles.avatar} />
-                                        ) : (
-                                            <View style={[styles.avatar, styles.placeholderAvatar, { backgroundColor: COLORS.lightestGray }]}>
-                                                <Text style={[styles.placeholderText, { color: COLORS.gray }]}>
-                                                    {item.profile_app_profile.pseudonym ? item.profile_app_profile.pseudonym[0].toUpperCase() : "U"}
-                                                </Text>
-                                            </View>
-                                        )}
+                                        <Image source={{ uri: item.profile_app_profile.avatar ? item.profile_app_profile.avatar : getAvatar(item.profile_app_profile.avatar) }} style={styles.avatar} />
                                         <Text style={[styles.friendName, { color: COLORS.black }]}>
                                             {item.profile_app_profile.pseudonym}
                                         </Text>
@@ -299,19 +310,12 @@ export function ConfirmGroupModal({
                         text="Назад"
                         onPress={onBackStep}
                     />
-                <Button
-                    variant="purple"
-                    text={
-                        mode === "create"
-                            ? "Створити групу"
-                            : "Зберегти"
-                    }
-                    onPress={handleSubmit}
-                    disabled={
-                        !groupName.trim() ||
-                        selectedUserIds.length === 0
-                    }
-                />                                                           
+                    <Button
+                        variant="purple"
+                        text={mode === "create" ? "Створити групу" : "Зберегти"}
+                        onPress={handleSubmit}
+                        disabled={!groupName.trim() || selectedUserIds.length === 0}
+                    />                                                                             
                 </View>
             </View>
         </Modal>

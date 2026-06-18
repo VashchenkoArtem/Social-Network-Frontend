@@ -9,17 +9,21 @@ import { ChatAvatar } from "@modules/chats/ui/ChatAvatar/ChatAvatar";
 
 export function SmallUserCard(props: IProps){
     const { avatar, pseudonym, signature, isPadding, lastMessage, time, unreadCount, isGroup, groupName, isOnline } = props
-
     return (
         <View style={[{ width: "100%",alignItems: "flex-start" }, isPadding && {paddingHorizontal: 16,paddingTop: 16 }]}>
             <View style = {{flex: 1, flexDirection: 'row', alignItems: "center", gap: 10}}>
                 <View>
                     { isGroup && groupName
                         ? <ChatAvatar groupName={groupName} avatar={avatar} isGroup={isGroup}/>
-                        : <Image
-                            source={{ uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${avatar}` }}
-                            style={{ width: 46, height: 46, borderRadius: 123, backgroundColor: COLORS.lightestGray }}
-                        /> 
+                        :  avatar ? 
+                            <Image
+                                source={{ uri: avatar }}
+                                style={{ width: 46, height: 46, borderRadius: 123, backgroundColor: COLORS.lightestGray }}
+                            /> 
+                            : <Image
+                                source={{ uri: getAvatar(avatar) }}
+                                style={{ width: 46, height: 46, borderRadius: 123, backgroundColor: COLORS.lightestGray }}
+                            /> 
                     }
                     
                     <UnreadMessages count={unreadCount} top={0} right={0.5}/>

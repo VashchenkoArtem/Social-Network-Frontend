@@ -109,7 +109,7 @@ export const chatApi = baseApi.injectEndpoints({
 
         createChat: builder.mutation<IChat, ICreateGroupChatDto>({
             query: (body) => ({
-                url: 'chats',
+                url: 'chat',
                 method: 'POST',
                 body
             }),
@@ -118,7 +118,21 @@ export const chatApi = baseApi.injectEndpoints({
             query: (chatId) => ({
                 url: `group-chats/${chatId}`,
                 method: 'DELETE'
-            })
+            }),
+            async onQueryStarted(chatId, { dispatch, queryFulfilled }) {
+                try {
+                    await queryFulfilled;
+                    dispatch(
+                        chatApi.util.updateQueryData('getGroupChats', { limit: 25 }, (draft) => {
+                            if (draft && draft.chats) {
+                                draft.chats = draft.chats.filter(chat => chat.id !== chatId);
+                            }
+                        })
+                    );
+                } catch (error) {
+                    console.error("Не вдалося видалити чат з кешу:", error);
+                }
+            }
         }),
         getChatById: builder.query<IChat, number>({
             query: (chatId) => ({
@@ -130,7 +144,21 @@ export const chatApi = baseApi.injectEndpoints({
                 url: `group-chats/${chatId}/leave`,
                 method: 'DELETE' 
             }),
-            invalidatesTags: [{ type: 'GroupChats', id: 'LIST' }]
+            async onQueryStarted(chatId, { dispatch, queryFulfilled }) {
+                try {
+                    await queryFulfilled;
+                    
+                    dispatch(
+                        chatApi.util.updateQueryData('getGroupChats', { limit: 25 }, (draft) => {
+                            if (draft && draft.chats) {
+                                draft.chats = draft.chats.filter(chat => chat.id !== chatId);
+                            }
+                        })
+                    );
+                } catch (error) {
+                    console.error("Не вдалося оновити кеш після виходу з чату:", error);
+                }
+            }
         }),
     }),
     overrideExisting: true

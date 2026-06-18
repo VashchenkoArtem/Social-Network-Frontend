@@ -26,23 +26,6 @@ export function MyPostsPage() {
         cursor: undefined,
         limit: 3,
     });
-    const [ onlineUserIds, setOnlineUserIds ] = useState<number[]>([])
-    const userIds =
-        data?.data
-            ?.filter(item => item?.user_app_user)
-            .map(item => item.user_app_user.id) ?? [];
-    const { getOnlineUsers } = useUserContext()!;
-    useEffect(() => {
-        async function loadOnlineUsers() {
-            if (!userIds?.length) return
-
-            const online = await getOnlineUsers(userIds)
-
-            setOnlineUserIds(online)
-        }
-
-        loadOnlineUsers()
-    }, [userIds])
     const prefetchMyPosts = postApi.usePrefetch("myPosts");
 
     useEffect(() => {
@@ -107,7 +90,7 @@ export function MyPostsPage() {
             keyExtractor={(item) => String(item.id)}
             renderItem={({ item }) => (
                 <PostCard
-                    isOnlineUser={onlineUserIds.includes(item.user_app_user.id)}
+                    isOnlineUser={true}
                     post={item}
                     isEditingPost={true}
                 />

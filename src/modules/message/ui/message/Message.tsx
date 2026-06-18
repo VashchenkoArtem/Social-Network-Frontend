@@ -1,4 +1,3 @@
-import { IMessage } from "@shared/types/message.types";
 import { IMessageProps } from "./message.types";
 import { styles } from "./styles";
 import { View, Text, Image, FlatList } from "react-native";
@@ -8,135 +7,185 @@ import { SERVER } from "@shared/constants/server";
 import { COLORS } from "@shared/constants/colors";
 
 export function Message(props: IMessageProps) {
-    const { data } = props
-    if (!data) return null
-    const { user } = useUserContext()!
+    const { data } = props;
+    if (!data) return null;
+
+    const { user } = useUserContext()!;
+    const isMyMessage = user?.id === data.sender_id;
+
     const createdDate = new Date(data.created_at).toLocaleTimeString([], {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false
-    })
-    const images = data.chat_app_messageimage ?? []
-    const neededImages = images.slice(0, 7)
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+    });
+
+    const images = data.chat_app_messageimage ?? [];
+    const neededImages = images.slice(0, 7);
+    const hasText = !!data.text;
+    const hasImages = neededImages.length > 0;
 
     const imageMessageRows = [
         neededImages.slice(0, 2),
         neededImages.slice(2, 5),
-        neededImages.slice(5, 7)
-    ].filter((row) => {
-        return row.length > 0
-    })
+        neededImages.slice(5, 7),
+    ].filter((row) => row.length > 0);
 
-    return (
-        <View>
-            { user?.id === data.sender_id ? (
-                <View style={{ width: "100%", alignItems: "flex-end" }}>
-                    <View style={styles.message}>
+    const imageUri = (image: string) =>
+        image.startsWith("file:///")
+            ? image
+            : `http://${SERVER.host}:${SERVER.port}/media/thumb/${image}`;
 
-                        {data.text && (
-                            <Text style={styles.text}>
-                                {data.text}
-                            </Text>
-                        )}
+    // Блок времени + статус (для моих сообщений)
+    const MyTimeBlock = () => (
+        <View style={styles.messageInfoContainer}>
+            <Text style={styles.sendTime}>{createdDate}</Text>
+            <View>
+                <MessageStatusMarkIcon width={10} height={10} color={COLORS.gray} />
+                {data.chat_app_message_readers &&
+                    data.chat_app_message_readers.length > 0 && (
+                        <View style={{ position: "absolute", right: -5 }}>
+                            <MessageStatusMarkIcon
+                                width={10}
+                                height={10}
+                                color={COLORS.gray}
+                            />
+                        </View>
+                    )}
+            </View>
+        </View>
+    );
 
-                        {data.chat_app_messageimage &&
-                            neededImages.length > 0 && (
-                                <FlatList
-                                    data={imageMessageRows}
-                                    keyExtractor={(item, index) =>
-                                        String(index)
-                                    }
-                                    renderItem={({ item }) => (
-                                        <View style={styles.imageContainer}>
-                                            {item.map((imageItem, index) => (
-                                                <Image
-                                                    key={index}
-                                                    source={{
-                                                        uri: imageItem.image.startsWith("file:///")
-                                                            ? imageItem.image
-                                                            : `http://${SERVER.host}:${SERVER.port}/media/thumb/${imageItem.image}`
-                                                    }}
-                                                    // width={200}
-                                                    // height={200}
-                                                    style={{
-                                                        width: 100,
-                                                        height: 100,
-                                                        borderRadius: 6,
-                                                    }}
-                                                />
-                                            ))}
-                                        </View>
-                                    )}
-                                />
-                            )
-                        }
+    // Блок времени (для чужих сообщений)
+    const TheirTimeBlock = () => (
+        <View style={styles.messageInfoContainer}>
+            <Text style={styles.sendTime}>{createdDate}</Text>
+        </View>
+    );
 
-                        <View style={styles.messageInfoContainer}>
-                            <Text style={styles.sendTime}>
-                                {createdDate}
-                            </Text>
-                            <View>
-                                <MessageStatusMarkIcon
-                                    width={10}
-                                    height={10}
-                                    color={COLORS.gray}
-                                />
-                                { data.chat_app_message_readers && data.chat_app_message_readers.length > 0 && (
-                                    <View style = {{ position: "absolute", right: -5}}>
-                                        <MessageStatusMarkIcon
-                                            width={10}
-                                            height={10}
-                                            color={COLORS.gray}
-                                        />
+    if (isMyMessage) {
+        return (
+            <View style={{ width: "100%", alignItems: "flex-end" }}>
+                <View style={styles.myMessage}>
+                    {/* Только текст — время inline справа внизу */}
+                    {hasText && !hasImages && (
+                        <View style={styles.textWithTime}>
+                            <Text style={styles.text}>{data.text}</Text>
+                            <MyTimeBlock />
+                        </View>
+                    )}
+
+                    {/* Только картинки — время под картинками */}
+                    {!hasText && hasImages && (
+                        <>
+                            <FlatList
+                                data={imageMessageRows}
+                                keyExtractor={(_, index) => String(index)}
+                                renderItem={({ item }) => (
+                                    <View style={styles.imageContainer}>
+                                        {item.map((imageItem, index) => (
+                                            <Image
+                                                key={index}
+                                                source={{ uri: imageUri(imageItem.image) }}
+                                                style={styles.imageThumb}
+                                            />
+                                        ))}
                                     </View>
                                 )}
+                            />
+                            <View style={{ alignItems: "flex-end" }}>
+                                <MyTimeBlock />
                             </View>
-                        </View>
-                    </View>
-                </View>
-            )
-            : (
-                <View style = {{ width: "100%", justifyContent: "flex-start", flexDirection: "row", gap: 4}}>
-                    <Image source={{
-                        uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${data.user_app_user.profile_app_profile.avatar}`
-                    }} width={46} height = {46} style = {{ borderRadius: 123, marginTop: 8, backgroundColor: COLORS.lightestGray}}/>
-                    
-                    <View style={styles.notMyMessageContainer}>
-                        <Text style = {styles.username}>{data.user_app_user.profile_app_profile.pseudonym}</Text>
-                        <View>
-                            <View style = {{flexDirection: "row",gap:10,maxWidth: 200, justifyContent: "flex-end", flexWrap: "wrap", alignItems: "flex-end"}}>
-                                {data.text && 
-                                    <Text style={styles.text}>{data.text}</Text>
-                                }
-                                {data.chat_app_messageimage &&
-                                    data.chat_app_messageimage.length > 0 && (
-                                        <FlatList
-                                            style ={{gap: 10}}
-                                            data={data.chat_app_messageimage}
-                                            keyExtractor={(item, index) =>
-                                                    `${item.id}-${index}`
-                                                }
-                                            renderItem={(item)=>{
-                                                return <View>
-                                                    <Image
-                                                        source={{ uri: item.item.image.startsWith("file:///") ? item.item.image :  `http://${SERVER.host}:${SERVER.port}/media/thumb/${item.item.image}`}}
-                                                        width = {200} height = {200} style = {{borderRadius: 5}}
-                                                    ></Image>
-                                                </View>
-                                            }}
-                                        />
-                                    )
-                                }
-                                <View style={styles.messageInfoContainer}>
-                                    <Text style={styles.sendTime}>{createdDate}</Text> 
-                                </View>
-                            </View>
-                        </View>
-                    </View>
-                </View>
-            )
-        }
+                        </>
+                    )}
 
+                    {/* Текст + картинки — текст, потом картинки, потом время */}
+                    {hasText && hasImages && (
+                        <>
+                            <Text style={styles.text}>{data.text}</Text>
+                            <FlatList
+                                data={imageMessageRows}
+                                keyExtractor={(_, index) => String(index)}
+                                renderItem={({ item }) => (
+                                    <View style={styles.imageContainer}>
+                                        {item.map((imageItem, index) => (
+                                            <Image
+                                                key={index}
+                                                source={{ uri: imageUri(imageItem.image) }}
+                                                style={styles.imageThumb}
+                                            />
+                                        ))}
+                                    </View>
+                                )}
+                            />
+                            <View style={{ alignItems: "flex-end" }}>
+                                <MyTimeBlock />
+                            </View>
+                        </>
+                    )}
+                </View>
+            </View>
+        );
+    }
+
+    // Чужое сообщение
+    return (
+        <View style={styles.theirMessageRow}>
+            <Image
+                source={{
+                    uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${data.user_app_user.profile_app_profile.avatar}`,
+                }}
+                width={46}
+                height={46}
+                style={styles.avatar}
+            />
+            <View style={styles.theirMessage}>
+                <Text style={styles.username}>
+                    {data.user_app_user.profile_app_profile.pseudonym}
+                </Text>
+
+                {/* Только текст — время inline справа внизу */}
+                {hasText && !hasImages && (
+                    <View style={styles.textWithTime}>
+                        <Text style={styles.text}>{data.text}</Text>
+                        <TheirTimeBlock />
+                    </View>
+                )}
+
+                {/* Только картинки — время под картинками */}
+                {!hasText && hasImages && (
+                    <>
+                        <FlatList
+                            data={data.chat_app_messageimage}
+                            keyExtractor={(item, index) => `${item.id}-${index}`}
+                            renderItem={({ item }) => (
+                                <Image
+                                    source={{ uri: imageUri(item.image) }}
+                                    style={styles.imageFull}
+                                />
+                            )}
+                        />
+                        <TheirTimeBlock />
+                    </>
+                )}
+
+                {/* Текст + картинки — текст, потом картинки, потом время */}
+                {hasText && hasImages && (
+                    <>
+                        <Text style={styles.text}>{data.text}</Text>
+                        <FlatList
+                            data={data.chat_app_messageimage}
+                            keyExtractor={(item, index) => `${item.id}-${index}`}
+                            renderItem={({ item }) => (
+                                <Image
+                                    source={{ uri: imageUri(item.image) }}
+                                    style={styles.imageFull}
+                                />
+                            )}
+                        />
+                        <TheirTimeBlock />
+                    </>
+                )}
+            </View>
         </View>
-    )
+    );
 }

@@ -11,7 +11,7 @@ import { SmallUserCard } from "@shared/ui/smallUserCard/SmallUserCard";
 export function PersonalChatFrame(props: {chat: IChat, unreadCount?: number, chatUnreadCount?: number, isGroupChat?: boolean}){
     const { chat, unreadCount, chatUnreadCount, isGroupChat } = props
     const router = useRouter()
-    const participantUser = chat.chat_app_chat_users[0].user_app_user
+    const participantUser = chat.chat_app_chat_users[0]?.user_app_user
     return (
         <TouchableOpacity
             style={[{ flexDirection: "row", gap: 12 }]}

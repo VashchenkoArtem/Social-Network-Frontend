@@ -20,7 +20,9 @@ export function Requests(props: {setChosenTab: (title: string) => void, isMargin
         isLoading 
     } = useGetAllRequestsQuery({
         cursor,
-        limit: 3
+        limit: 2
+    }, {
+        pollingInterval: 3000,
     })
 
     const hasMore = data?.meta.hasMore

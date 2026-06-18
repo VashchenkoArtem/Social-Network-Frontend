@@ -8,6 +8,7 @@ import { PlusIcon } from "@shared/ui/icons/buttons/Plus";
 import { COLORS } from "@shared/constants/colors";
 import { SERVER } from "@shared/constants/server";
 import { getAvatar } from "@shared/utils/avatar";
+import { BigUserCard } from "@shared/ui/bigUserCard/BigUserCard";
 
 interface AvatarFieldProps {
     value?: string;
@@ -21,15 +22,7 @@ export function AvatarField({ value, onPress, avatar }: AvatarFieldProps) {
             onPress={onPress}
             style={styles.ContainerAvatar}
         >
-            <View style={styles.AvatarView}>
-                <Image
-                    source={{uri: value
-						? value
-						: `http://${SERVER.host}:${SERVER.port}/media/thumb/${avatar}` 
-					}}
-                    style={styles.SelectedAvatar}
-                />
-            </View>
+            <BigUserCard avatar={value ? value : avatar} usernameNotIncluded={true} isOnline={true}/>
         </TouchableOpacity>
     );
 }

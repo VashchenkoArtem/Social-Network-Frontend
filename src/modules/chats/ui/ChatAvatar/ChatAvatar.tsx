@@ -3,13 +3,14 @@ import { IProps } from "./types";
 import { SERVER } from "@shared/constants/server";
 import { COLORS } from "@shared/constants/colors";
 import { styles } from "../ConfirmGroupModal/styles";
+import { getAvatar } from "@shared/utils/avatar";
 
 export function ChatAvatar(props: IProps){
     const { avatar, isGroup, groupName } = props
     if (isGroup){
         if (avatar && avatar !== "default-group-avatar.png"){
             return (<Image
-                source={{ uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${avatar}` }}
+                source={{ uri: avatar }}
                 style={{ width: 46, height: 46, borderRadius: 123, backgroundColor: COLORS.lightestGray }}
                 />)
         }else{
@@ -20,10 +21,9 @@ export function ChatAvatar(props: IProps){
                     </View>)
         }
     } else {
-        
         return (
             <Image
-                source={{ uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${avatar}` }}
+                source={{ uri: avatar ? avatar : getAvatar(avatar) }}
                 style={{ width: 46, height: 46, borderRadius: 123, backgroundColor: COLORS.lightestGray }}
             />
         )
