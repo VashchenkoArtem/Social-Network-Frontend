@@ -144,43 +144,47 @@ export function Chat(props: { chatId: number | undefined }) {
             allowsMultipleSelection: true,
             selectionLimit: 7,
             quality: 0.8,
+            base64: true,
         })
+    if (!result.canceled) {
+        const assets = result.assets.slice(0, 7)
 
-        if (!result.canceled) {
-            const assets = result.assets.slice(0, 7)
-            setSelectedImages(assets.map(asset => asset.uri))
-        }
+        const base64Images = assets
+            .filter(a => a.base64)
+            .map(a => `data:image/jpeg;base64,${a.base64}`)
+
+        setSelectedImages(base64Images)
+    }
     }
 
     const sendMessage = async () => {
         if (!messageText.trim() && selectedImages.length === 0) return
-
         socket.emit("sendMessage", {
             text: messageText,
             chat_id: chatId,
             sender_id: user.id,
             avatar: user.profile_app_profile.avatar ? user.profile_app_profile.avatar : getAvatar(user.profile_app_profile.avatar),
             pseudonym: user.profile_app_profile.pseudonym || "",
-            photos: selectedImages  
+            photos: selectedImages   
         })
 
-        if (selectedImages.length > 0) {
-            const xhr = new XMLHttpRequest()
-            const formData = new FormData()
+        // if (selectedImages.length > 0) {
+        //     const xhr = new XMLHttpRequest()
+        //     const formData = new FormData()
 
-            xhr.open('POST', `http://${SERVER.host}:${SERVER.port}/messages/chat/${chat.id}`)
-            xhr.setRequestHeader('Authorization', `Bearer ${token}`)
+        //     xhr.open('POST', `http://${SERVER.host}:${SERVER.port}/messages/chat/${chat.id}`)
+        //     xhr.setRequestHeader('Authorization', `Bearer ${token}`)
 
-            formData.append("text", messageText)
-            selectedImages.forEach((uri, index) => {
-                formData.append("images", {
-                    uri,
-                    type: "image/jpeg",
-                    name: `photo-${index}.jpg`,
-                } as any)
-            })
-            xhr.send(formData)
-        }
+        //     formData.append("text", messageText)
+        //     selectedImages.forEach((uri, index) => {
+        //         formData.append("images", {
+        //             uri,
+        //             type: "image/jpeg",
+        //             name: `photo-${index}.jpg`,
+        //         } as any)
+        //     })
+        //     xhr.send(formData)
+        // }
         
         setSelectedImages([])
         setMessageText("")

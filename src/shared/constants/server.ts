@@ -7,3 +7,5 @@ export const SERVER = {
 
 export const SERVER_URL = `http://${SERVER.host}:${SERVER.port}`
 export const NGROK_SERVER_URL = `https://yu-unabiding-vampishly.ngrok-free.dev`
+
+export const CLOUDINARY_URL ="https://res.cloudinary.com/depqshccq/image/upload/";

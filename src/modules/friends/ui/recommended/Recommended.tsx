@@ -21,7 +21,6 @@ export function Recommended(props: {setChosenTab: (title: string) => void, isMar
         cursor,
         limit: 2
     }, {
-        pollingInterval: 3000,
     })
     
     const hasMore = data?.meta.hasMore

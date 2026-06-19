@@ -5,7 +5,7 @@ import { COLORS } from "@shared/constants/colors";
 import { ICONS } from "@shared/ui";
 import { Link } from "expo-router";
 import { IProps } from "./types";
-import { SERVER } from "@shared/constants/server";
+import { CLOUDINARY_URL, SERVER } from "@shared/constants/server";
 import Modal from "react-native-modal";
 
 import { CreatePostForm } from "@modules/posts/ui/create-post-form";
@@ -22,7 +22,6 @@ import {
     useViewPostMutation 
 } from "@modules/posts/api/postsApi";
 import { SmallUserCard } from "@shared/ui/smallUserCard/SmallUserCard";
-
 export function PostCard(props: IProps){
     const { post, isOnlineUser } = props;
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -153,7 +152,7 @@ export function PostCard(props: IProps){
             </Modal>
 
             <View style={styles.postContent}>
-                <Text style={styles.postTitle}>{ post.title }</Text>
+                <Text style={styles.postTitle}>{ post.title } </Text>
                 
                 <View>
                     <Text style={styles.postDescription}>{ post.content }</Text>
@@ -172,20 +171,22 @@ export function PostCard(props: IProps){
 
                 {photos?.length === 1 && (
                     <Image
-                        source={{ uri: photos[0].original_image }}
+                        source={{  uri: `${CLOUDINARY_URL}${photos[0].original_image}` }}
                         style={{ width: "100%", height: 250, borderRadius: 10 }}
                     />
                 )}
 
                 {photos?.length > 1 && (
                     <View style={styles.photosContainer}>
-                        {photos.map((photo) => (
-                            <Image
-                                key={photo.id}
-                                source={{ uri:photo.original_image }}
-                                style={getPhotoStyle(photos.length)}
-                            />
-                        ))}
+                        {photos.map((photo) => {
+                            return (
+                                <Image
+                                    key={photo.id}
+                                    source={{  uri: `${CLOUDINARY_URL}${photo.original_image}` }}
+                                    style={getPhotoStyle(photos.length)}
+                                />
+                            )
+                        })}
                     </View>
                 )}
 

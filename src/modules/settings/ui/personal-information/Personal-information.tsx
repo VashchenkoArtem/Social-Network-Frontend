@@ -206,7 +206,6 @@ export function PersonalInformation() {
 		
 		onChange(selectedUri);
 	};
-
 	return (
 		<>
 			<KeyboardAwareScrollView

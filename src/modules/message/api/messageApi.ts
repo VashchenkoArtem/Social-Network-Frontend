@@ -33,10 +33,10 @@ export const messageApi = baseApi.injectEndpoints({
 					}
 				}
 
-				socket.on("newMessage", listener)
+				socket.on("newMessage", listener) 
                 await cacheEntryRemoved
                 socket.off("newMessage", listener)
-			},
+			}, 
 
             // async onCacheEntryAdded(
                 // arg,

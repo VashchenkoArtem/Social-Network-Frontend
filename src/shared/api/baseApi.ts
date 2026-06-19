@@ -1,12 +1,12 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { SERVER } from "@shared/constants/server";
+import { NGROK_SERVER_URL, SERVER } from "@shared/constants/server";
 
 export const baseApi = createApi({
 
 	reducerPath: "api",
 	baseQuery: fetchBaseQuery({
-		baseUrl: `http://${SERVER.host}:${SERVER.port}`,
+		baseUrl: NGROK_SERVER_URL,
 		prepareHeaders: async (headers, { getState }) => {
 			const token = await AsyncStorage.getItem("token");
 			if (token) {

@@ -3,7 +3,7 @@ import { getAvatar } from "@shared/utils/avatar";
 import { View, Image, Text } from "react-native";
 import { IProps } from "./types";
 import { styles } from "./styles";
-import { SERVER } from "@shared/constants/server";
+import { CLOUDINARY_URL, SERVER } from "@shared/constants/server";
 import { UnreadMessages } from "../unreadMessages/UndreadMessages";
 import { ChatAvatar } from "@modules/chats/ui/ChatAvatar/ChatAvatar";
 
@@ -17,9 +17,9 @@ export function SmallUserCard(props: IProps){
                         ? <ChatAvatar groupName={groupName} avatar={avatar} isGroup={isGroup}/>
                         :  avatar ? 
                             <Image
-                                source={{ uri: avatar }}
+                                source={{ uri: `${CLOUDINARY_URL}${avatar}` }}
                                 style={{ width: 46, height: 46, borderRadius: 123, backgroundColor: COLORS.lightestGray }}
-                            /> 
+                            />
                             : <Image
                                 source={{ uri: getAvatar(avatar) }}
                                 style={{ width: 46, height: 46, borderRadius: 123, backgroundColor: COLORS.lightestGray }}

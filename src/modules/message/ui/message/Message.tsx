@@ -3,7 +3,7 @@ import { styles } from "./styles";
 import { View, Text, Image, FlatList } from "react-native";
 import { useUserContext } from "@modules/auth/context/user-context";
 import { MessageStatusMarkIcon } from "@shared/ui/icons/urls/MessageStatusMark";
-import { SERVER } from "@shared/constants/server";
+import { CLOUDINARY_URL, SERVER } from "@shared/constants/server";
 import { COLORS } from "@shared/constants/colors";
 
 export function Message(props: IMessageProps) {
@@ -30,12 +30,24 @@ export function Message(props: IMessageProps) {
         neededImages.slice(5, 7),
     ].filter((row) => row.length > 0);
 
-    const imageUri = (image: string) =>
-        image.startsWith("file:///")
-            ? image
-            : `http://${SERVER.host}:${SERVER.port}/media/thumb/${image}`;
+    const imageUri = (image: string) => {
+        if (!image) return "";
 
-    // Блок времени + статус (для моих сообщений)
+        if (image.startsWith("data:image")) {
+            return image;
+        }
+
+        if (image.startsWith("file:///")) {
+            return image;
+        }
+
+        if (image.startsWith("/9j/") || image.startsWith("iVBOR")) {
+            return `data:image/jpeg;base64,${image}`;
+        }
+
+        return `${CLOUDINARY_URL}${image}`;
+    };
+
     const MyTimeBlock = () => (
         <View style={styles.messageInfoContainer}>
             <Text style={styles.sendTime}>{createdDate}</Text>
@@ -54,19 +66,15 @@ export function Message(props: IMessageProps) {
             </View>
         </View>
     );
-
-    // Блок времени (для чужих сообщений)
     const TheirTimeBlock = () => (
         <View style={styles.messageInfoContainer}>
             <Text style={styles.sendTime}>{createdDate}</Text>
         </View>
     );
-
     if (isMyMessage) {
         return (
             <View style={{ width: "100%", alignItems: "flex-end" }}>
                 <View style={styles.myMessage}>
-                    {/* Только текст — время inline справа внизу */}
                     {hasText && !hasImages && (
                         <View style={styles.textWithTime}>
                             <Text style={styles.text}>{data.text}</Text>
@@ -74,7 +82,6 @@ export function Message(props: IMessageProps) {
                         </View>
                     )}
 
-                    {/* Только картинки — время под картинками */}
                     {!hasText && hasImages && (
                         <>
                             <FlatList
@@ -98,7 +105,6 @@ export function Message(props: IMessageProps) {
                         </>
                     )}
 
-                    {/* Текст + картинки — текст, потом картинки, потом время */}
                     {hasText && hasImages && (
                         <>
                             <Text style={styles.text}>{data.text}</Text>
@@ -107,13 +113,16 @@ export function Message(props: IMessageProps) {
                                 keyExtractor={(_, index) => String(index)}
                                 renderItem={({ item }) => (
                                     <View style={styles.imageContainer}>
-                                        {item.map((imageItem, index) => (
-                                            <Image
-                                                key={index}
-                                                source={{ uri: imageUri(imageItem.image) }}
-                                                style={styles.imageThumb}
-                                            />
-                                        ))}
+                                        {item.map((imageItem, index) => {
+                                            return (
+                                                <Image
+                                                    key={index}
+                                                    source={{ uri: imageUri(imageItem.image) }}
+                                                    style={styles.imageThumb}
+                                                />
+                                            )
+                                        }
+                                        )}
                                     </View>
                                 )}
                             />
@@ -127,7 +136,6 @@ export function Message(props: IMessageProps) {
         );
     }
 
-    // Чужое сообщение
     return (
         <View style={styles.theirMessageRow}>
             <Image
@@ -143,7 +151,6 @@ export function Message(props: IMessageProps) {
                     {data.user_app_user.profile_app_profile.pseudonym}
                 </Text>
 
-                {/* Только текст — время inline справа внизу */}
                 {hasText && !hasImages && (
                     <View style={styles.textWithTime}>
                         <Text style={styles.text}>{data.text}</Text>
@@ -151,24 +158,25 @@ export function Message(props: IMessageProps) {
                     </View>
                 )}
 
-                {/* Только картинки — время под картинками */}
                 {!hasText && hasImages && (
                     <>
                         <FlatList
                             data={data.chat_app_messageimage}
                             keyExtractor={(item, index) => `${item.id}-${index}`}
-                            renderItem={({ item }) => (
-                                <Image
-                                    source={{ uri: imageUri(item.image) }}
-                                    style={styles.imageFull}
-                                />
-                            )}
+                            renderItem={({ item }) => {
+                                return (
+                                        <Image
+                                            source={{ uri: imageUri(item.image) }}
+                                            style={styles.imageFull}
+                                        />
+                                )
+                            }
+                            }
                         />
                         <TheirTimeBlock />
                     </>
                 )}
 
-                {/* Текст + картинки — текст, потом картинки, потом время */}
                 {hasText && hasImages && (
                     <>
                         <Text style={styles.text}>{data.text}</Text>
