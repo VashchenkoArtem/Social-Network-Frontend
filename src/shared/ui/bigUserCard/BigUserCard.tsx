@@ -10,9 +10,7 @@ export function BigUserCard(props: IProps){
         <View style = {{alignItems: "center"}}>
             <View style = {{ alignItems: "center", width: 96, height: 96}}>
                 <Image
-                    source={{ uri: avatar 
-                        ? `${avatar}`
-                        : getAvatar(avatar)
+                    source={{ uri: `${CLOUDINARY_URL}${avatar}` || getAvatar(avatar)
                     }}
                     style = {styles.authorAvatar}
                 />

@@ -347,6 +347,7 @@ export function Chat(props: { chatId: number | undefined }) {
                         notMarginBottom={true}
                         value={messageText} 
                         onChangeText={(text) => setMessageText(text)}
+                        autoCapitalize="sentences"
                     />
                 </View>
 

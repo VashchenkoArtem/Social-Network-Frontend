@@ -6,7 +6,7 @@ export const styles = StyleSheet.create({
     groupChatContainer: {
         flexDirection: "column",
         justifyContent: "space-between",
-        borderBlockColor: COLORS.lightGray,
+        borderColor: COLORS.lightGray,
         borderRadius: 10,
         borderWidth: 1,
         flex: 1,
