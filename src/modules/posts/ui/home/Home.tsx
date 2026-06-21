@@ -65,8 +65,7 @@ export function HomePage() {
 
         loadOnlineUsers()
     }, [userIds])
-    
-    useEffect(() => {
+    useEffect(() => {   
         if (!user) return;
 
         const hasNoUsername = !user.username || user.username.trim() === "";

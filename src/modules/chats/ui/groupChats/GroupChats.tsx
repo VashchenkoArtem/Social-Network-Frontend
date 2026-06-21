@@ -46,6 +46,5 @@ export function GroupChats(){
             Icon = {<ICONS.ChatsPageIcon color = {COLORS.gray} height={20}/>}
             onEndReached={loadMore}
         />
-
     )
 }
