@@ -47,7 +47,6 @@ export function Message(props: IMessageProps) {
 
         return `${CLOUDINARY_URL}${image}`;
     };
-
     const MyTimeBlock = () => (
         <View style={styles.messageInfoContainer}>
             <Text style={styles.sendTime}>{createdDate}</Text>
@@ -183,12 +182,15 @@ export function Message(props: IMessageProps) {
                         <FlatList
                             data={data.chat_app_messageimage}
                             keyExtractor={(item, index) => `${item.id}-${index}`}
-                            renderItem={({ item }) => (
-                                <Image
-                                    source={{ uri: imageUri(item.image) }}
-                                    style={styles.imageFull}
-                                />
-                            )}
+                            renderItem={({ item }) => {
+                                return (
+                                    <Image
+                                        source={{ uri: imageUri(item.image) }}
+                                        style={styles.imageFull}
+                                    />
+                                )    
+                            }
+                            }
                         />
                         <TheirTimeBlock />
                     </>

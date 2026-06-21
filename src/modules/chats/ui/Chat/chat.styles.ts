@@ -64,9 +64,10 @@ export const styles = StyleSheet.create({
 
 
     menuContainer: {
+        alignItems: "flex-end",
         position: "absolute",
-        top: 40,
-        right: 0,
+        top: -16,
+        right: -16,
         width: 310,
         backgroundColor: COLORS.preWhite,        
         borderRadius: 10,

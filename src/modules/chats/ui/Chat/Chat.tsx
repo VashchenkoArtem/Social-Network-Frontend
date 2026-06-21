@@ -242,13 +242,15 @@ export function Chat(props: { chatId: number | undefined }) {
 
                     {isMenuOpen && (
                         <Pressable style={styles.menuContainer} onPress={() => setIsMenuOpen(false)}>
-                            <TouchableOpacity style={styles.menuBtn} onPress={() => { /* Логіка медіа */ setIsMenuOpen(false); }}>
+                            {/* <TouchableOpacity style={styles.menuBtn} onPress={() => { setIsMenuOpen(false); }}>
                                 <ICONS.MyPostsPageIcon color={COLORS.black} />
                                 <Text style={styles.menuBtnText}>Медіа</Text>
+                            </TouchableOpacity> */}
+
+                            {/* <View style={styles.divider} /> */}
+                            <TouchableOpacity onPress={() => setIsMenuOpen(!isMenuOpen)}>
+                                <ICONS.DotsIcon color={COLORS.gray} />
                             </TouchableOpacity>
-
-                            <View style={styles.divider} />
-
                             {isGroup ? (
                                 isAdmin ? (
                                     <>
