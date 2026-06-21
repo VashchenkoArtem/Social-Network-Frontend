@@ -1,4 +1,6 @@
-import { ICreateMessage, IMessage } from "@shared/types/message.types";
+import { ICreateMessage, IMessage, IUnreadCountUpdatePayload } from "@shared/types/message.types";
+
+
 export interface UserPayload {
     userIds: number[]
 }
@@ -18,6 +20,7 @@ export interface ServerEvents {
     userOnline: (data: { userId: number }) => void;
     userOffline: (data: { userId: number }) => void;
     onlineUsersList: (users: number[]) => void;
+    unreadCountUpdate: (data: IUnreadCountUpdatePayload) => void;
 }
 
 export interface SocketData {

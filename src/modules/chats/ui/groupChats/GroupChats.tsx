@@ -6,7 +6,8 @@ import { ChatsFrame } from "@shared/ui/chatsFrame/ChatsFrame";
 import { Redirect } from "expo-router";
 import { useState } from "react";
 
-export function GroupChats(){
+export function GroupChats(props: {count?: number}){
+    const { count } = props
     const [cursor, setCursor] = useState<number | null>(null)
     const [refreshing, setRefreshing] = useState(false)
     
@@ -17,8 +18,6 @@ export function GroupChats(){
     } = useGetGroupChatsQuery({
         cursor: undefined,
         limit: 25
-    }, {
-        pollingInterval: 3000
     })
     const groupChats = data?.chats ?? []
     const hasMore = data?.meta.hasMore
@@ -42,6 +41,7 @@ export function GroupChats(){
         <ChatsFrame 
             isGroups={true} 
             items = {groupChats} 
+            unreadMessagesCount={count}
             frameTitle="Групові чати" 
             Icon = {<ICONS.ChatsPageIcon color = {COLORS.gray} height={20}/>}
             onEndReached={loadMore}
