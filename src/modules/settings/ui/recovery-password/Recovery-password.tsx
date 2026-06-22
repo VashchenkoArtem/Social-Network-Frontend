@@ -1,4 +1,4 @@
-import { IUser } from "@shared/types/user.types";
+git aimport { IUser } from "@shared/types/user.types";
 import { Modal } from "@shared/ui/modal";
 import { OtpInput } from "@shared/ui/OptInput";
 import { useState } from "react";

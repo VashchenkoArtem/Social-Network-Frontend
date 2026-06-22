@@ -25,7 +25,9 @@ export const messageApi = baseApi.injectEndpoints({
 				{ updateCachedData, cacheDataLoaded, cacheEntryRemoved },
 			) {
 				await cacheDataLoaded;
-				const listener = (newMessage: IMessage) => {
+
+                // Нове повідомлення — додаємо в початок списку
+				const newMessageListener = (newMessage: IMessage) => {
 					if (newMessage.chat_id === chatId) {
 						updateCachedData((draft) => {
 							draft.messages.unshift(newMessage);
@@ -33,9 +35,30 @@ export const messageApi = baseApi.injectEndpoints({
 					}
 				}
 
-				socket.on("newMessage", listener) 
+                // Співрозмовник зайшов у чат — позначаємо всі наші повідомлення прочитаними
+                const messagesReadListener = (data: { chatId: number; readerId: number }) => {
+                    if (data.chatId !== chatId) return
+                    updateCachedData((draft) => {
+                        draft.messages.forEach((message) => {
+                            const alreadyRead = message.chat_app_message_readers?.some(
+                                (r) => r.user_id === data.readerId
+                            )
+                            if (!alreadyRead) {
+                                if (!message.chat_app_message_readers) {
+                                    message.chat_app_message_readers = []
+                                }
+                                message.chat_app_message_readers.push({ user_id: data.readerId })
+                            }
+                        })
+                    })
+                }
+
+				socket.on("newMessage", newMessageListener)
+                socket.on("messagesRead", messagesReadListener)
+
                 await cacheEntryRemoved
-                socket.off("newMessage", listener)
+                socket.off("newMessage", newMessageListener)
+                socket.off("messagesRead", messagesReadListener)
 			}, 
 
             serializeQueryArgs: ({ queryArgs }) => {

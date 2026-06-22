@@ -1,6 +1,4 @@
-import { ICreateMessage, IMessage, IUnreadCountUpdatePayload } from "@shared/types/message.types";
-
-
+import { ICreateMessage, IMessage, IUnreadSummary, IUnreadCountUpdatePayload } from "@shared/types/message.types";
 export interface UserPayload {
     userIds: number[]
 }
@@ -21,6 +19,7 @@ export interface ServerEvents {
     userOffline: (data: { userId: number }) => void;
     onlineUsersList: (users: number[]) => void;
     unreadCountUpdate: (data: IUnreadCountUpdatePayload) => void;
+    messagesRead: (data: { chatId: number; readerId: number }) => void;
 }
 
 export interface SocketData {
