@@ -5,6 +5,7 @@ import { useUserContext } from "@modules/auth/context/user-context";
 import { MessageStatusMarkIcon } from "@shared/ui/icons/urls/MessageStatusMark";
 import { CLOUDINARY_URL, SERVER } from "@shared/constants/server";
 import { COLORS } from "@shared/constants/colors";
+import { getAvatar } from "@shared/utils/avatar";
 
 export function Message(props: IMessageProps) {
     const { data } = props;
@@ -106,7 +107,6 @@ export function Message(props: IMessageProps) {
 
                     {hasText && hasImages && (
                         <>
-                            <Text style={styles.text}>{data.text}</Text>
                             <FlatList
                                 data={imageMessageRows}
                                 keyExtractor={(_, index) => String(index)}
@@ -125,9 +125,10 @@ export function Message(props: IMessageProps) {
                                     </View>
                                 )}
                             />
+                            <Text style={styles.text}>{data.text}</Text>
                             <View style={{ alignItems: "flex-end" }}>
                                 <MyTimeBlock />
-                            </View>
+                            </View> 
                         </>
                     )}
                 </View>
@@ -139,7 +140,9 @@ export function Message(props: IMessageProps) {
         <View style={styles.theirMessageRow}>
             <Image
                 source={{
-                    uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${data.user_app_user.profile_app_profile.avatar}`,
+                    uri: data.user_app_user.profile_app_profile.avatar 
+                    ? `${CLOUDINARY_URL}${data.user_app_user.profile_app_profile.avatar}`
+                    : getAvatar("avatar")
                 }}
                 width={46}
                 height={46}
@@ -178,7 +181,7 @@ export function Message(props: IMessageProps) {
 
                 {hasText && hasImages && (
                     <>
-                        <Text style={styles.text}>{data.text}</Text>
+                       
                         <FlatList
                             data={data.chat_app_messageimage}
                             keyExtractor={(item, index) => `${item.id}-${index}`}
@@ -192,6 +195,7 @@ export function Message(props: IMessageProps) {
                             }
                             }
                         />
+                        <Text style={styles.text}>{data.text}</Text>
                         <TheirTimeBlock />
                     </>
                 )}

@@ -6,7 +6,7 @@ export const baseApi = createApi({
 
 	reducerPath: "api",
 	baseQuery: fetchBaseQuery({
-		baseUrl: SERVER_URL,
+		baseUrl: NGROK_SERVER_URL,
 		prepareHeaders: async (headers, { getState }) => {
 			const token = await AsyncStorage.getItem("token");
 			if (token) {

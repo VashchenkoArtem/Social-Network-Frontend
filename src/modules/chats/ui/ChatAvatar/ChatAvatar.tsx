@@ -23,7 +23,7 @@ export function ChatAvatar(props: IProps){
     } else {
         return (
             <Image
-                source={{ uri: avatar ? avatar : getAvatar(avatar) }}
+                source={{ uri: avatar ? `${CLOUDINARY_URL}${avatar}` : getAvatar(avatar) }}
                 style={{ width: 46, height: 46, borderRadius: 123, backgroundColor: COLORS.lightestGray }}
             />
         )

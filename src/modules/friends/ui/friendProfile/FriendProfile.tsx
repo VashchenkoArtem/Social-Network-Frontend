@@ -23,34 +23,20 @@ interface IProps {
 export function FriendProfile({ userId, requestId }: IProps) {
     const router = useRouter();
     
-    const { getOnlineUsers } = useUserContext(); 
-    
-    const [isOnline, setIsOnline] = useState<boolean>(false);
-
+    const { getOnlineUsers } = useUserContext()!
     const { data: user } = useGetUserByIdQuery(userId);
     const { data } = useGetAlbumsQuery(userId)
     const [ createFriendRequest ] = useCreateFriendRequestMutation()
     const [ updateFriendRequest ] = useUpdateFriendRequestMutation()
-    const [isAccepted, setIsAccepted ] = useState<boolean>(false)
     const { data: posts } = useGetPostsByUserIdQuery(userId)
-
+    const [ onlineUser, setOnlineUser ] = useState<number[]>()
     useEffect(() => {
-        if (!userId) return;
-
-        async function checkOnline() {
-            try {
-                const onlineIds = await getOnlineUsers([userId]);
-                setIsOnline(onlineIds.includes(userId));
-            } catch (e) {
-                console.log("Ошибка проверки статуса сокета", e);
-            }
+        async function loadOnlineUsers() {
+            const online = await getOnlineUsers([userId])
+            setOnlineUser(online)
         }
-        checkOnline();
-
-        const interval = setInterval(checkOnline, 10000);
-
-        return () => clearInterval(interval);
-    }, [userId]);
+        loadOnlineUsers()
+    }, [userId])
 
     if (!user) return null
 
@@ -73,7 +59,7 @@ export function FriendProfile({ userId, requestId }: IProps) {
                     </TouchableOpacity>
                 </View>
                 
-                <BigUserCard username={user.username} avatar = {user.profile_app_profile.avatar} pseudonym={user.profile_app_profile.pseudonym}/>
+                <BigUserCard isOnline={onlineUser?.includes(userId)} username={user.username} avatar = {user.profile_app_profile.avatar} pseudonym={user.profile_app_profile.pseudonym}/>
 
                 <View style={styles.friendFollowersInfo}>
                     <View style={styles.infoRow}>
@@ -157,7 +143,7 @@ export function FriendProfile({ userId, requestId }: IProps) {
                             post = {post} 
                             key={post.id} 
                             isEditingPost={false}
-                            isOnlineUser={isOnline}поста
+                            isOnlineUser={onlineUser?.includes(userId)}
                         />
                     )
                 }) }

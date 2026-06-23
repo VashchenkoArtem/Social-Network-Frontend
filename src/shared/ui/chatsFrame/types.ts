@@ -9,4 +9,5 @@ export interface IChatProps {
     unreadMessagesCount?: number;
     isGroups?: boolean
     onEndReached?: () => void;
+    onlineUsersIds?: number[]
 }

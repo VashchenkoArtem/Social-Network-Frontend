@@ -6,8 +6,8 @@ import { useRouter } from "expo-router";
 import { TouchableOpacity, Image, View, Text } from "react-native";
 import { SmallUserCard } from "@shared/ui/smallUserCard/SmallUserCard";
 
-export function PersonalChatFrame(props: {chat: IChat, chatUnreadCount?: number, isGroupChat?: boolean}){
-    const { chat, chatUnreadCount, isGroupChat } = props
+export function PersonalChatFrame(props: {chat: IChat, chatUnreadCount?: number, isGroupChat?: boolean, onlineUsersIds?: number[]}){
+    const { chat, chatUnreadCount, isGroupChat, onlineUsersIds } = props
     const router = useRouter()
     const participantUser = chat.chat_app_chat_users[0]?.user_app_user
     return (
@@ -39,6 +39,7 @@ export function PersonalChatFrame(props: {chat: IChat, chatUnreadCount?: number,
                         : undefined
                     }
                 unreadCount={chatUnreadCount}
+                isOnline={onlineUsersIds?.includes(participantUser.id)}
                 />
         </TouchableOpacity>
     )

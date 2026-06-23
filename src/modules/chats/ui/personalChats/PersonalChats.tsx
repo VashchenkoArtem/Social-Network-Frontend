@@ -3,12 +3,12 @@ import { useGetPersonalChatsQuery } from "@modules/chats/api/chatsApi"
 import { COLORS } from "@shared/constants/colors"
 import { ICONS } from "@shared/ui"
 import { ChatsFrame } from "@shared/ui/chatsFrame/ChatsFrame"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { View } from "react-native"
 
 export function PersonalChats(props: {count?: number}){
     const { count } = props
-
+    const { getOnlineUsers } = useUserContext()!
     const [cursor, setCursor] = useState<number | null>(null)
     const [refreshing, setRefreshing] = useState(false)
     const [ onlineUserIds, setOnlineUserIds ] = useState<number[]>([])
@@ -22,7 +22,18 @@ export function PersonalChats(props: {count?: number}){
         limit: 25
     })
     const personalChats = data?.chats ?? []
+    const usersIds = data?.chats
+        .filter(chat => !chat.is_group)
+        .map(chat => chat.chat_app_chat_users[0].user_id);
     const hasMore = data?.meta.hasMore
+    useEffect(() => {
+        async function loadOnlineUsers() {
+            if (!usersIds?.length) return
+            const online = await getOnlineUsers(usersIds)
+            setOnlineUserIds(online)
+        }
+        loadOnlineUsers()
+    }, [usersIds])
     const loadMore = () => {
         if (isFetching) return;
         if (!hasMore) return;
@@ -48,6 +59,7 @@ export function PersonalChats(props: {count?: number}){
                 Icon = {<ICONS.ChatsPageIcon 
                 color = {COLORS.gray} height={20}/>}
                 onEndReached={loadMore}
+                onlineUsersIds = {onlineUserIds}
             />
         </View>
     )

@@ -35,7 +35,6 @@ export const messageApi = baseApi.injectEndpoints({
 					}
 				}
 
-                // Співрозмовник зайшов у чат — позначаємо всі наші повідомлення прочитаними
                 const messagesReadListener = (data: { chatId: number; readerId: number }) => {
                     if (data.chatId !== chatId) return
                     updateCachedData((draft) => {
