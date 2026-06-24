@@ -334,8 +334,6 @@ npm run start
 
 </details>
 
----
-
 <details>
 <summary>
   <b style="font-size: 17px">Переваги архітектури</b>
