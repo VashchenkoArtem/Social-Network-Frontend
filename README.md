@@ -68,69 +68,31 @@
 
 <div align="left">
 
-<div style="margin-bottom: 14px;">
-  <b>1.</b> Створіть папку, де буде зберігатись проєкт
-</div>
+**1.** Створіть папку, де буде зберігатись проєкт
 
-<div style="margin-bottom: 14px;">
-  <b>2.</b> Склонуйте репозиторій (кнопка <b>Code</b> у GitHub)
-  
-  <div style="
-    margin-top: 8px;
-    background: #0f172a;
-    color: #ffffff;
-    padding: 10px 12px;
-    border-radius: 10px;
-    font-family: monospace;
-    font-size: 13px;
-  ">
-    git clone &lt;url&gt;
-  </div>
+**2.** Склонуйте репозиторій (кнопка **Code** у GitHub)
 
-  <div style="
-    margin-top: 6px;
-    background: #111827;
-    color: #d1d5db;
-    padding: 10px 12px;
-    border-radius: 10px;
-    font-family: monospace;
-    font-size: 13px;
-  ">
+```bash
+git clone <url>
+```
+
+**3.** Перейдіть у створену папку
+
+```bash
 cd Social-Network-Frontend
-  </div>
-</div>
+```
 
-<div style="margin-bottom: 14px;">
-  <b>3.</b> Встановіть усі необхідні модулі
-  
-  <div style="
-    margin-top: 8px;
-    background: #0f172a;
-    color: #ffffff;
-    padding: 10px 12px;
-    border-radius: 10px;
-    font-family: monospace;
-    font-size: 13px;
-  ">
+**4.** Встановіть усі необхідні модулі
+
+```sh
 npm install
-  </div>
-</div>
+```
 
-<div>
-  <b>4.</b> Запустіть проєкт
-  
-  <div style="
-    margin-top: 8px;
-    background: #0f172a;
-    color: #ffffff;
-    padding: 10px 12px;
-    border-radius: 10px;
-    font-family: monospace;
-    font-size: 13px;
-  ">
+**5.** Запустіть проєкт
+
+```sh
 npm run start
-  </div>
-</div>
+```
 
 </div>
  
@@ -390,25 +352,17 @@ npm run start
 
 </details>
 
-## Висновок
+## Висновки
 
-<div style="
-    margin-top: 8px;
-    background: #0f172a;
-    color: #ffffff;
-    padding: 10px 12px;
-    border-radius: 10px;
-    font-family: monospace;
-    font-size: 13px;
-  ">
-    У ході розробки було створено повноцінний клієнтський застосунок соціальної мережі, який надає користувачам широкий набір можливостей для комунікації, взаємодії та обміну інформацією. Архітектура застосунку побудована за модульним принципом, завдяки чому кожна функціональна частина системи є незалежною та відповідає лише за власну область відповідальності. Кожен модуль містить власні компоненти інтерфейсу, логіку взаємодії із сервером, механізми валідації та засоби керування станом. У застосунку реалізовано повний цикл роботи користувача із системою: від реєстрації до взаємодії з іншими користувачами.Особлива увага була приділена реалізації соціальних можливостей платформи. Користувачі можуть надсилати запити у друзі, переглядати профілі інших користувачів, працювати з персональними альбомами та взаємодіяти із публікаціями. Крім того, застосунок підтримує обмін повідомленнями в режимі реального часу, створення особистих і групових чатів, а також забезпечує швидку та зручну комунікацію між учасниками системи. Для організації роботи з даними використовується REST API, що забезпечує ефективну взаємодію між клієнтською та серверною частинами застосунку. Таким чином, поставлені цілі були повністю досягнуті, а отриманий результат являє собою сучасний, функціональний та зручний програмний продукт, що відповідає актуальним вимогам до розробки соціальних платформ.
-</div>
+- У ході розробки було створено повноцінний клієнтський застосунок соціальної мережі, який надає користувачам широкий набір можливостей для комунікації, взаємодії та обміну інформацією. Архітектура застосунку побудована за модульним принципом, завдяки чому кожна функціональна частина системи є незалежною та відповідає лише за власну область відповідальності. Кожен модуль містить власні компоненти інтерфейсу, логіку взаємодії із сервером, механізми валідації та засоби керування станом. У застосунку реалізовано повний цикл роботи користувача із системою: від реєстрації до взаємодії з іншими користувачами.Особлива увага була приділена реалізації соціальних можливостей платформи. Користувачі можуть надсилати запити у друзі, переглядати профілі інших користувачів, працювати з персональними альбомами та взаємодіяти із публікаціями. Крім того, застосунок підтримує обмін повідомленнями в режимі реального часу, створення особистих і групових чатів, а також забезпечує швидку та зручну комунікацію між учасниками системи. Для організації роботи з даними використовується REST API, що забезпечує ефективну взаємодію між клієнтською та серверною частинами застосунку. Таким чином, поставлені цілі були повністю досягнуті, а отриманий результат являє собою сучасний, функціональний та зручний програмний продукт, що відповідає актуальним вимогам до розробки соціальних платформ.
+
 
 <p align="right">
   <a href="#topUA">
     (вгору ⬆)
   </a>
 </p>
+
 ---
 
 <p align="right">
@@ -481,71 +435,28 @@ For beginners, this project demonstrates how to build a scalable frontend applic
 
 <div align="left">
 
-<div style="margin-bottom: 14px;">
-  <b>1.</b> Create a folder where the project will be stored
-</div>
+**1.** Create a folder where the project will be stored
 
-<div style="margin-bottom: 14px;">
-  <b>2.</b> Clone the repository (using the <b>Code</b> button on GitHub)
+**2.** Clone the repository (use the **Code** button on GitHub)
 
-  <div style="
-    margin-top: 8px;
-    background: #0f172a;
-    color: #ffffff;
-    padding: 10px 12px;
-    border-radius: 10px;
-    font-family: monospace;
-    font-size: 13px;
-  ">
-    git clone &lt;url&gt;
-  </div>
+```bash
+git clone <url>
+```
 
-  <div style="
-    margin-top: 6px;
-    background: #111827;
-    color: #d1d5db;
-    padding: 10px 12px;
-    border-radius: 10px;
-    font-family: monospace;
-    font-size: 13px;
-  ">
-    cd Social-Network-Frontend
-  </div>
-</div>
+**3.** Navigate to the project directory
+```bash
+cd Social-Network-Frontend
+```
 
-<div style="margin-bottom: 14px;">
-  <b>3.</b> Install dependencies
+**4.** Install all required dependencies
+```sh
+npm install
+```
 
-  <div style="
-    margin-top: 8px;
-    background: #0f172a;
-    color: #ffffff;
-    padding: 10px 12px;
-    border-radius: 10px;
-    font-family: monospace;
-    font-size: 13px;
-  ">
-    npm install
-  </div>
-</div>
-
-<div>
-  <b>4.</b> Run the project
-
-  <div style="
-    margin-top: 8px;
-    background: #0f172a;
-    color: #ffffff;
-    padding: 10px 12px;
-    border-radius: 10px;
-    font-family: monospace;
-    font-size: 13px;
-  ">
-    npm run start
-  </div>
-</div>
-
-</div>
+**5.** Run the project
+```sh
+npm run start
+```
 
 ---
 
@@ -780,17 +691,8 @@ Contains business logic:
 
 ## Conclusion
 
-<div style="
-    margin-top: 8px;
-    background: #0f172a;
-    color: #ffffff;
-    padding: 10px 12px;
-    border-radius: 10px;
-    font-family: monospace;
-    font-size: 13px;
-  ">
-    During development, a fully functional client-side social network application was built, providing users with a wide range of communication and interaction features. The system is based on a modular architecture, ensuring that each functional unit is independent and responsible for its own domain. Each module contains its own UI components, server communication logic, validation mechanisms, and state management tools. The application implements a full user lifecycle, from registration to active social interaction. Special attention was given to social features, including friend requests, user profiles, albums, and post interactions. Additionally, the system supports real-time messaging, including both private and group chats, enabling fast and efficient communication. Data exchange is handled via REST API, ensuring reliable client-server interaction. Overall, the project objectives were fully achieved, resulting in a modern, scalable, and user-friendly social platform aligned with current frontend development standards.
-</div>
+- During development, a fully functional client-side social network application was built, providing users with a wide range ocommunication and interaction features. The system is based on a modular architecture, ensuring that each functional unit is independenand responsible for its own domain. Each module contains its own UI components, server communication logic, validation mechanisms, anstate management tools. The application implements a full user lifecycle, from registration to active social interaction. Speciaattention was given to social features, including friend requests, user profiles, albums, and post interactions. Additionally, thsystem supports real-time messaging, including both private and group chats, enabling fast and efficient communication. Data exchange ihandled via REST API, ensuring reliable client-server interaction. Overall, the project objectives were fully achieved, resulting in modern, scalable, and user-friendly social platform aligned with current frontend development standards.
+
 
 <p align="right">
     <a href="#topENG">
