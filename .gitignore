@@ -3,6 +3,8 @@
 # dependencies
 node_modules/
 
+readme_assets/
+
 # Expo
 .expo/
 dist/
