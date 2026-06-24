@@ -5,12 +5,13 @@
     "scheme": "social-network-scheme",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./src/assets/icon.png",
+    "icon": "./src/assets/WITfavicon.png",
     "userInterfaceStyle": "light",
     "ios": {
       "supportsTablet": true
     },
     "android": {
+      "package": "com.vashchenkoartem.socialnetwork",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./src/assets/android-icon-foreground.png",
@@ -26,6 +27,12 @@
       "expo-font",
       "expo-router",
       "expo-status-bar"
-    ]
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "df3498ed-7f81-496a-969a-0d030a04100d"
+      }
+    }
   }
 }
