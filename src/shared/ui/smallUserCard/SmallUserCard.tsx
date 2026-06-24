@@ -52,7 +52,7 @@ export function SmallUserCard(props: IProps){
             </View>
             { signature && 
                 <Image style={styles.authorSignature} source={{
-                    uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${signature}`
+                    uri: `${CLOUDINARY_URL}${signature}`
                 }}/>
             }
         </View>

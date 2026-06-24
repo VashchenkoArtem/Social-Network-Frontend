@@ -73,7 +73,6 @@ export const AlbumsModal = ({
 		};
 		try {
 			if (initialData) {
-				console.log();
 				await updateAlbum({
 					id: initialData.id,
 					data: payload,

@@ -11,7 +11,17 @@ export const friendApi = baseApi.injectEndpoints({
                 url: 'friends',
                 method: 'GET'
             }),
-            keepUnusedDataFor: 60
+
+            providesTags: (result) =>
+                result
+                    ? [
+                        ...result.map(({ id }) => ({
+                            type: 'Friends' as const,
+                            id
+                        })),
+                        { type: 'Friends', id: 'LIST' }
+                    ]
+                    : [{ type: 'Friends', id: 'LIST' }]
         }),
 
         getAllRequests: builder.query<PaginatedFriendsProps, { cursor?: number; limit?: number }>({
@@ -79,7 +89,12 @@ export const friendApi = baseApi.injectEndpoints({
             query: (id) => ({
                 url: `requests/${id}`,
                 method: 'DELETE'
-            })
+            }),
+
+            invalidatesTags: [
+                { type: 'RequestedUsers', id: 'LIST' },
+                { type: 'RecommendedUsers', id: 'LIST' }
+            ]
         }),
 
         updateFriendRequest: builder.mutation<void, UpdateFriendRequest>({
@@ -87,7 +102,13 @@ export const friendApi = baseApi.injectEndpoints({
                 url: 'requests',
                 method: 'PATCH',
                 body
-            })
+            }),
+
+            invalidatesTags: [
+                { type: 'RequestedUsers', id: 'LIST' },
+                { type: 'RecommendedUsers', id: 'LIST' },
+                { type: 'Friends', id: 'LIST' }
+            ]
         }),
 
         getRecommendedPeople: builder.query<PaginatedUsersResponse, { cursor?: number; limit?: number }>({

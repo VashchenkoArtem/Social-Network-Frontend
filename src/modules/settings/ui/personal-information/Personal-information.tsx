@@ -22,7 +22,7 @@ import { Modal } from "@shared/ui/modal";
 import { RecoveryPassword } from "../recovery-password/Recovery-password";
 import { UserContext } from "@modules/auth/context/user-context";
 import { Redirect } from "expo-router";
-import { SERVER } from "@shared/constants/server";
+import { CLOUDINARY_URL, SERVER } from "@shared/constants/server";
 import * as ImagePicker from "expo-image-picker";
 import { ProfileData, ReactNativeFile } from "@modules/auth/api/api.types"; 
 import { FONTS } from "@shared/constants/fonts";
@@ -533,7 +533,7 @@ export function PersonalInformation() {
 							(user?.profile_app_profile.signature ? (
 								<View style={styles.signatureImageWrapper}>
 									<Image
-										source={{  uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${user?.profile_app_profile.signature}` }}
+										source={{  uri: `${CLOUDINARY_URL}${user.profile_app_profile.signature}` }}
 										style={styles.signatureImage}
 									/>
 								</View>

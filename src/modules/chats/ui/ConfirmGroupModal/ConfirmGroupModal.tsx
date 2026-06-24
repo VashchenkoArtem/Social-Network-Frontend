@@ -172,7 +172,6 @@ export function ConfirmGroupModal({
             };
 
             xhr.onerror = () => {
-                console.log("XHR ERROR:", xhr.responseText);
                 Alert.alert("Ошибка", "Network error");
             };
 

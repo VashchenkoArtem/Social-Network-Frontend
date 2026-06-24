@@ -75,7 +75,6 @@ export const AddAlbumPhoto = ({ albumId, userId }: Props) => {
 
         xhr.onerror = (e) => {
             setIsUploading(false);
-            console.log('XHR ERROR:', e);
         };
 
         xhr.send(formData);
