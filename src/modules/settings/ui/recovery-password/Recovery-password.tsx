@@ -2,7 +2,7 @@ import { IUser } from "@shared/types/user.types";
 import { Modal } from "@shared/ui/modal";
 import { OtpInput } from "@shared/ui/OptInput";
 import { useState } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text } from "react-native";
 import { styles } from "./styles";
 import { useFonts } from "expo-font";
 import { Button } from "@shared/ui/button";

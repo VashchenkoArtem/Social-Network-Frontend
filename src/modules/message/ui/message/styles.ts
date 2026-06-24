@@ -29,11 +29,9 @@ export const styles = StyleSheet.create({
         maxWidth: 230,
         gap: 4,
     },
-
-    // Текст + время в одну строку (только текст без картинок)
     textWithTime: {
         flexDirection: "row",
-        flexWrap: "wrap",
+        // flexWrap: "wrap",
         alignItems: "flex-end",
         gap: 6,
     },

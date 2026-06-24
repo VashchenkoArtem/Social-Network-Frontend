@@ -1,6 +1,6 @@
 import { baseApi } from "@shared/api/baseApi";
 import { IMessageQuery, IUnreadMessageFromChatResponse } from "./api.types";
-import { IMessage, MessagePayload, PaginatedMessageResponse } from "@shared/types/message.types";
+import { IMessage, IUnreadCountUpdatePayload, IUnreadSummary, MessagePayload, PaginatedMessageResponse } from "@shared/types/message.types";
 import { socket } from "@shared/socket/socket";
 
 export const messageApi = baseApi.injectEndpoints({
@@ -25,7 +25,9 @@ export const messageApi = baseApi.injectEndpoints({
 				{ updateCachedData, cacheDataLoaded, cacheEntryRemoved },
 			) {
 				await cacheDataLoaded;
-				const listener = (newMessage: IMessage) => {
+
+                // Нове повідомлення — додаємо в початок списку
+				const newMessageListener = (newMessage: IMessage) => {
 					if (newMessage.chat_id === chatId) {
 						updateCachedData((draft) => {
 							draft.messages.unshift(newMessage);
@@ -33,31 +35,31 @@ export const messageApi = baseApi.injectEndpoints({
 					}
 				}
 
-				socket.on("newMessage", listener)
+                const messagesReadListener = (data: { chatId: number; readerId: number }) => {
+                    if (data.chatId !== chatId) return
+                    updateCachedData((draft) => {
+                        draft.messages.forEach((message) => {
+                            const alreadyRead = message.chat_app_message_readers?.some(
+                                (r) => r.user_id === data.readerId
+                            )
+                            if (!alreadyRead) {
+                                if (!message.chat_app_message_readers) {
+                                    message.chat_app_message_readers = []
+                                }
+                                message.chat_app_message_readers.push({ user_id: data.readerId })
+                            }
+                        })
+                    })
+                }
+
+				socket.on("newMessage", newMessageListener)
+                socket.on("messagesRead", messagesReadListener)
+
                 await cacheEntryRemoved
-                socket.off("newMessage", listener)
-			},
+                socket.off("newMessage", newMessageListener)
+                socket.off("messagesRead", messagesReadListener)
+			}, 
 
-            // async onCacheEntryAdded(
-                // arg,
-                // { updateCachedData, cacheDataLoaded, cacheEntryRemoved },
-                // ) {
-                // await cacheDataLoaded;
-
-                // const listener = (message: IMessage) => {
-                //     updateCachedData((draft) => {
-                //     const exists = draft.some(m => m.id === message.id);
-                //     if (!exists) {
-                //         draft.unshift(message);
-                //     }
-                //     });
-                // };
-
-                // socket.on("newMessage", listener);
-                // await cacheEntryRemoved;
-                // socket.off("newMessage", listener);
-            // },
-            
             serializeQueryArgs: ({ queryArgs }) => {
                 return queryArgs.chatId.toString()
             },
@@ -82,16 +84,75 @@ export const messageApi = baseApi.injectEndpoints({
                 )
             },            
         }),
-        getAllUnreadMessage: builder.query<number, void>({
-            query: () => ({
-                url: "messages/unread",
-            })
+
+        // Кількість непрочитаних окремо для особистих (is_group=false) або групових (is_group=true) чатів.
+        getAllUnreadMessage: builder.query<number, { isGroup?: boolean } | void>({
+            query: (arg) => {
+                const params = new URLSearchParams()
+                if (arg?.isGroup !== undefined) {
+                    params.set("is_group", String(arg.isGroup))
+                }
+                const query = params.toString()
+                return {
+                    url: `messages/unread${query ? `?${query}` : ""}`,
+                }
+            },
+            async onCacheEntryAdded(
+                arg,
+                { updateCachedData, cacheDataLoaded, cacheEntryRemoved },
+            ) {
+                await cacheDataLoaded;
+                const listener = (payload: IUnreadCountUpdatePayload) => {
+                    updateCachedData(() => {
+                        if (arg?.isGroup === true) return payload.summary.group
+                        if (arg?.isGroup === false) return payload.summary.personal
+                        return payload.summary.personal
+                    })
+                }
+                socket.on("unreadCountUpdate", listener)
+                await cacheEntryRemoved
+                socket.off("unreadCountUpdate", listener)
+            },
         }),
+
+        // Загальна кількість непрочитаних: особисті + групові чати разом.
+        getUnreadSummary: builder.query<IUnreadSummary, void>({
+            query: () => ({
+                url: "messages/unread/summary",
+            }),
+            async onCacheEntryAdded(
+                _arg,
+                { updateCachedData, cacheDataLoaded, cacheEntryRemoved },
+            ) {
+                await cacheDataLoaded;
+                const listener = (payload: IUnreadCountUpdatePayload) => {
+                    updateCachedData(() => payload.summary)
+                }
+                socket.on("unreadCountUpdate", listener)
+                await cacheEntryRemoved
+                socket.off("unreadCountUpdate", listener)
+            },
+        }),
+
+        // Мапа chatId -> кількість непрочитаних повідомлень у цьому чаті.
         getUnreadMessageFromChat: builder.query<IUnreadMessageFromChatResponse, void>({
             query: () => ({
                 url: "/messages/unreadChat"
-            })
+            }),
+            async onCacheEntryAdded(
+                _arg,
+                { updateCachedData, cacheDataLoaded, cacheEntryRemoved },
+            ) {
+                await cacheDataLoaded;
+                const listener = (payload: IUnreadCountUpdatePayload) => {
+                    updateCachedData(() => payload.byChat)
+                }
+                socket.on("unreadCountUpdate", listener)
+                await cacheEntryRemoved
+                socket.off("unreadCountUpdate", listener)
+            },
         }),
+
         markMessagesAsRead: builder.query<void, number>({
             query: (chatId) => ({
                 url: `/messages/read/chat/${chatId}`
@@ -104,6 +165,7 @@ export const messageApi = baseApi.injectEndpoints({
 export const { 
     useGetMessagesQuery,
     useGetAllUnreadMessageQuery,
+    useGetUnreadSummaryQuery,
     useGetUnreadMessageFromChatQuery,
     useLazyMarkMessagesAsReadQuery
 } = messageApi

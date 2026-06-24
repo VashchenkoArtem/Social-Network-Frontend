@@ -1,7 +1,7 @@
 import { useGetAllFriendsQuery } from "@modules/friends/api/friendsApi";
 import { ContactCard } from "../Contact/Contact";
 import { FlatList, View, Image, Text } from "react-native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ICONS } from "@shared/ui";
 import { COLORS } from "@shared/constants/colors";
 import { styles } from "@shared/ui/chatsFrame/styles";
@@ -14,16 +14,27 @@ import { useUserContext } from "@modules/auth/context/user-context";
 
 export function Contacts() {
     const { data } = useGetAllFriendsQuery();
-    const onlineUsers = useOnlineUsers()
     const [searchQuery, setSearchQuery] = useState("")
+    const [onlineUserIds, setOnlineUserIds] = useState<number[]>([])
     const filteredContacts = data?.filter((item) => {
         if (!item?.user?.profile_app_profile.pseudonym) return false
         const username = item.user.profile_app_profile.pseudonym.toLowerCase()
         const search = searchQuery.toLowerCase()
-
         return username.includes(search)
     }) ?? []
-    const { user } = useUserContext()!
+    const { user, getOnlineUsers } = useUserContext()!
+    const userIds = filteredContacts.map((contact) => contact.user.id)
+    useEffect(() => {
+        async function loadOnlineUsers() {
+            if (!userIds?.length) return
+
+            const online = await getOnlineUsers(userIds)
+
+            setOnlineUserIds(online)
+        }
+
+        loadOnlineUsers()
+    }, [userIds])
     if (!user) {
         return <Redirect href={"/login"}/>
     }
@@ -47,12 +58,11 @@ export function Contacts() {
                 contentContainerStyle={{gap: 10,paddingTop: 10}}
                 keyExtractor={(item) => String(item.user.id)}
                 renderItem={({ item }) => {
-                    // const isOnline = onlineUsers.has(Number(item.user.id));
-
+                    const isOnline = onlineUserIds.includes(Number(item.user.id));
                     return (
                         <ContactCard
                             friend={item.user}
-                            // isOnline={isOnline}
+                            isOnline={isOnline}
                         />
                     );
                 }}

@@ -5,7 +5,7 @@ import { Header } from "@shared/ui/header";
 import { Pressable, View } from "react-native";
 import { COLORS } from "@shared/constants/colors";
 import { StyleSheet, Text } from "react-native";
-import { useGetAllUnreadMessageQuery } from "@modules/message/api/messageApi";
+import { useGetUnreadSummaryQuery } from "@modules/message/api/messageApi";
 import { UnreadMessages } from "@shared/ui/unreadMessages/UndreadMessages";
 import { ReactNode } from "react";
 
@@ -54,10 +54,8 @@ const TabButton = ({ route, children, unreadCount, ...props }: {route: string; c
 	);
 };
 export default function TabLayout() {
-	const { data: unreadMessages } = useGetAllUnreadMessageQuery(undefined, {
-		pollingInterval: 3000,
-	});
-	const totalUnreadCount = unreadMessages;
+	const { data: unreadSummary } = useGetUnreadSummaryQuery();
+	const totalUnreadCount = unreadSummary?.total;
 	return (
 		<Tabs
 			screenOptions={{
@@ -106,7 +104,7 @@ export default function TabLayout() {
 					tabBarIcon: () => (
 						<View>
 							<ICONS.ChatsPageIcon color={COLORS.black} />
-							<UnreadMessages count = {unreadMessages}/>
+							<UnreadMessages count = {totalUnreadCount}/>
 						</View>
 					),
 					tabBarButton: (props) => <TabButton {...props} route="chats" unreadCount={totalUnreadCount} />,

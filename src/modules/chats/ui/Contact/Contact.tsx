@@ -7,7 +7,7 @@ import { SmallUserCard } from "@shared/ui/smallUserCard/SmallUserCard";
 
 export function ContactCard(props: {friend: IUser, isOnline?: boolean}){
     const [ createChat ] = useCreateChatMutation()
-    const { friend } = props
+    const { friend, isOnline } = props
     const router = useRouter()
     return (
         <TouchableOpacity onPress={async () => {
@@ -20,7 +20,7 @@ export function ContactCard(props: {friend: IUser, isOnline?: boolean}){
             })
             router.push(`/(chats)/${chat.id}`)
         }}>
-            <SmallUserCard pseudonym={friend.profile_app_profile.pseudonym} avatar={friend.profile_app_profile.avatar} />
+            <SmallUserCard pseudonym={friend.profile_app_profile.pseudonym} avatar={friend.profile_app_profile.avatar} isOnline={isOnline} />
         </TouchableOpacity>
     )
 }

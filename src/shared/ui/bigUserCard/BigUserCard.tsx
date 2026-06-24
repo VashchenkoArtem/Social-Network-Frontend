@@ -1,6 +1,6 @@
 import { View, Image, Text } from "react-native";
-import { IProps } from "./types";
-import { SERVER } from "@shared/constants/server";
+import { IProps } from "./types";  
+import { CLOUDINARY_URL } from "@shared/constants/server";
 import { getAvatar } from "@shared/utils/avatar";
 import { styles } from "./styles";
 
@@ -10,9 +10,7 @@ export function BigUserCard(props: IProps){
         <View style = {{alignItems: "center"}}>
             <View style = {{ alignItems: "center", width: 96, height: 96}}>
                 <Image
-                    source={{ uri: avatar 
-                        ? avatar
-                        : getAvatar(avatar)
+                    source={{ uri:avatar ? `${CLOUDINARY_URL}${avatar}` : getAvatar(avatar)
                     }}
                     style = {styles.authorAvatar}
                 />

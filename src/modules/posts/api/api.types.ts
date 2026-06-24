@@ -29,6 +29,7 @@ export interface PostPhoto {
     id: number;
     original_image: string ;
     postId: number | null 
+    compressed_image: string
 }
 
 export interface Tag {

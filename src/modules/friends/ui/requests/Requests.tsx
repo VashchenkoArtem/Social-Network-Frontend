@@ -22,7 +22,6 @@ export function Requests(props: {setChosenTab: (title: string) => void, isMargin
         cursor,
         limit: 2
     }, {
-        pollingInterval: 3000,
     })
 
     const hasMore = data?.meta.hasMore

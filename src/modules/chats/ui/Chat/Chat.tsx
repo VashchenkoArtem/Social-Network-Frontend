@@ -18,6 +18,7 @@ import { ChatAvatar } from "../ChatAvatar/ChatAvatar"
 import { ConfirmGroupModal } from "../ConfirmGroupModal/ConfirmGroupModal"
 
 
+
 export function Chat(props: { chatId: number | undefined }) {
     const { chatId } = props
     const router = useRouter()
@@ -46,12 +47,17 @@ export function Chat(props: { chatId: number | undefined }) {
     const { getOnlineUsers, user, token } = useUserContext()!
 
     useEffect(() => {
+        if (!participantsInChatIds) return
+
         async function loadOnlineUsers() {
-            if (!participantsInChatIds?.length) return
-            const online = await getOnlineUsers(participantsInChatIds)
+            const online = await getOnlineUsers(participantsInChatIds ?? [])
             setOnlineUserIds(online)
         }
+        
         loadOnlineUsers()
+
+        const interval = setInterval(loadOnlineUsers, 10000)
+        return () => clearInterval(interval)
     }, [participantsInChatIds])
 
     useEffect(() => {
@@ -101,6 +107,10 @@ export function Chat(props: { chatId: number | undefined }) {
     const isGroup = chat.is_group;
     const isAdmin = chat.admin_id === user.id;
 
+    const isOtherUserOnline = otherUser?.user_app_user?.id 
+        ? onlineUserIds.includes(otherUser.user_app_user.id) 
+        : false;
+
     const handleDeleteChat = async () => {
         try {
             await deleteGroupChat(chat.id).unwrap();
@@ -134,43 +144,47 @@ export function Chat(props: { chatId: number | undefined }) {
             allowsMultipleSelection: true,
             selectionLimit: 7,
             quality: 0.8,
+            base64: true,
         })
+    if (!result.canceled) {
+        const assets = result.assets.slice(0, 7)
 
-        if (!result.canceled) {
-            const assets = result.assets.slice(0, 7)
-            setSelectedImages(assets.map(asset => asset.uri))
-        }
+        const base64Images = assets
+            .filter(a => a.base64)
+            .map(a => `data:image/jpeg;base64,${a.base64}`)
+
+        setSelectedImages(base64Images)
+    }
     }
 
     const sendMessage = async () => {
         if (!messageText.trim() && selectedImages.length === 0) return
-
         socket.emit("sendMessage", {
             text: messageText,
             chat_id: chatId,
             sender_id: user.id,
             avatar: user.profile_app_profile.avatar ? user.profile_app_profile.avatar : getAvatar(user.profile_app_profile.avatar),
             pseudonym: user.profile_app_profile.pseudonym || "",
-            photos: selectedImages  
+            photos: selectedImages   
         })
 
-        if (selectedImages.length > 0) {
-            const xhr = new XMLHttpRequest()
-            const formData = new FormData()
+        // if (selectedImages.length > 0) {
+        //     const xhr = new XMLHttpRequest()
+        //     const formData = new FormData()
 
-            xhr.open('POST', `http://${SERVER.host}:${SERVER.port}/messages/chat/${chat.id}`)
-            xhr.setRequestHeader('Authorization', `Bearer ${token}`)
+        //     xhr.open('POST', `http://${SERVER.host}:${SERVER.port}/messages/chat/${chat.id}`)
+        //     xhr.setRequestHeader('Authorization', `Bearer ${token}`)
 
-            formData.append("text", messageText)
-            selectedImages.forEach((uri, index) => {
-                formData.append("images", {
-                    uri,
-                    type: "image/jpeg",
-                    name: `photo-${index}.jpg`,
-                } as any)
-            })
-            xhr.send(formData)
-        }
+        //     formData.append("text", messageText)
+        //     selectedImages.forEach((uri, index) => {
+        //         formData.append("images", {
+        //             uri,
+        //             type: "image/jpeg",
+        //             name: `photo-${index}.jpg`,
+        //         } as any)
+        //     })
+        //     xhr.send(formData)
+        // }
         
         setSelectedImages([])
         setMessageText("")
@@ -203,9 +217,19 @@ export function Chat(props: { chatId: number | undefined }) {
                                 : otherUser?.user_app_user?.profile_app_profile?.pseudonym || ""
                             }
                         </Text>
+                        
                         {chat.is_group && (
                             <Text style={styles.chatOnlineStatus}>
                                 {chat.chat_app_chat_users.length} учасника, {onlineUserIds.length} в мережі
+                            </Text>
+                        )}
+
+                        {!chat.is_group && (
+                            <Text style={[
+                                styles.chatOnlineStatus, 
+                                isOtherUserOnline && { color: COLORS.plum }
+                            ]}>
+                                {isOtherUserOnline ? "В мережі" : "Офлайн"}
                             </Text>
                         )}
                     </View>
@@ -218,13 +242,15 @@ export function Chat(props: { chatId: number | undefined }) {
 
                     {isMenuOpen && (
                         <Pressable style={styles.menuContainer} onPress={() => setIsMenuOpen(false)}>
-                            <TouchableOpacity style={styles.menuBtn} onPress={() => { /* Логіка медіа */ setIsMenuOpen(false); }}>
+                            {/* <TouchableOpacity style={styles.menuBtn} onPress={() => { setIsMenuOpen(false); }}>
                                 <ICONS.MyPostsPageIcon color={COLORS.black} />
                                 <Text style={styles.menuBtnText}>Медіа</Text>
+                            </TouchableOpacity> */}
+
+                            {/* <View style={styles.divider} /> */}
+                            <TouchableOpacity onPress={() => setIsMenuOpen(!isMenuOpen)}>
+                                <ICONS.DotsIcon color={COLORS.gray} />
                             </TouchableOpacity>
-
-                            <View style={styles.divider} />
-
                             {isGroup ? (
                                 isAdmin ? (
                                     <>
@@ -239,27 +265,18 @@ export function Chat(props: { chatId: number | undefined }) {
                                             <Text style={styles.menuBtnText}>Редагувати групу</Text>
                                         </TouchableOpacity>
 
-
                                         <TouchableOpacity 
                                             style={styles.menuBtn}
-                                            onPress={() => {
-                                                deleteGroupChat(chat.id);
-                                                router.replace("/chats");
-                                                setIsMenuOpen(false);
-                                            }}
+                                            onPress={handleDeleteChat}
                                         >
                                             <ICONS.ExitIcon color={COLORS.black} />
                                             <Text style={styles.menuBtnText}>Видалити групу</Text>
                                         </TouchableOpacity>
                                     </>
                                 ) : (
-                                    
                                     <TouchableOpacity 
                                         style={styles.menuBtn}
-                                        onPress={() => {
-                                            handleLeaveChat();
-                                            setIsMenuOpen(false);
-                                        }}
+                                        onPress={handleLeaveChat}
                                     >
                                         <ICONS.ExitIcon color={COLORS.black} />
                                         <Text style={styles.menuBtnText}>Покинути групу</Text>
@@ -268,11 +285,7 @@ export function Chat(props: { chatId: number | undefined }) {
                             ) : (
                                 <TouchableOpacity 
                                     style={styles.menuBtn}
-                                    onPress={() => {
-                                        deleteGroupChat(chat.id);
-                                        router.replace("/chats");
-                                        setIsMenuOpen(false);
-                                    }}
+                                    onPress={handleDeleteChat}
                                 >
                                     <ICONS.ExitIcon color={COLORS.black} />
                                     <Text style={styles.menuBtnText}>Видалити чат</Text>
@@ -336,6 +349,7 @@ export function Chat(props: { chatId: number | undefined }) {
                         notMarginBottom={true}
                         value={messageText} 
                         onChangeText={(text) => setMessageText(text)}
+                        autoCapitalize="sentences"
                     />
                 </View>
 

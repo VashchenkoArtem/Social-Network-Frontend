@@ -8,7 +8,6 @@ import { useUserContext } from "@modules/auth/context/user-context";
 export function AllFriends(props: {setChosenTab: (title: string) => void, isMarginBottom?: boolean, toDetailPage?: boolean}){
     const {setChosenTab, isMarginBottom, toDetailPage} = props
     const { data, isFetching, isLoading } = useGetAllFriendsQuery(undefined, {
-        pollingInterval: 5000
     })
     const { getOnlineUsers } = useUserContext()!
     const [ onlineUserIds, setOnlineUserIds ] = useState<number[]>([])

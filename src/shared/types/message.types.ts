@@ -51,3 +51,16 @@ export interface ICreateMessage{
     photos?: string[];
     status?: string
 }
+
+export interface IUnreadSummary {
+    personal: number;
+    group: number;
+    total: number;
+}
+
+export type IUnreadByChat = Record<number, number>
+
+export interface IUnreadCountUpdatePayload {
+    summary: IUnreadSummary;
+    byChat: IUnreadByChat;
+}

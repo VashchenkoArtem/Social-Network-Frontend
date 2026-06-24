@@ -1,6 +1,6 @@
 import { View, Image, Text } from "react-native";
 import { IProps } from "./types";
-import { SERVER } from "@shared/constants/server";
+import { CLOUDINARY_URL, SERVER } from "@shared/constants/server";
 import { COLORS } from "@shared/constants/colors";
 import { styles } from "../ConfirmGroupModal/styles";
 import { getAvatar } from "@shared/utils/avatar";
@@ -10,7 +10,7 @@ export function ChatAvatar(props: IProps){
     if (isGroup){
         if (avatar && avatar !== "default-group-avatar.png"){
             return (<Image
-                source={{ uri: avatar }}
+                source={{ uri: `${CLOUDINARY_URL}${avatar}` }}
                 style={{ width: 46, height: 46, borderRadius: 123, backgroundColor: COLORS.lightestGray }}
                 />)
         }else{
@@ -23,7 +23,7 @@ export function ChatAvatar(props: IProps){
     } else {
         return (
             <Image
-                source={{ uri: avatar ? avatar : getAvatar(avatar) }}
+                source={{ uri: avatar ? `${CLOUDINARY_URL}${avatar}` : getAvatar(avatar) }}
                 style={{ width: 46, height: 46, borderRadius: 123, backgroundColor: COLORS.lightestGray }}
             />
         )

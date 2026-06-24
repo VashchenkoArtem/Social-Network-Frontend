@@ -4,12 +4,10 @@ import { getAvatar } from "@shared/utils/avatar";
 import { getOtherUser } from "@shared/utils/friends";
 import { useRouter } from "expo-router";
 import { TouchableOpacity, Image, View, Text } from "react-native";
-import { styles } from "./styles";
-import { COLORS } from "@shared/constants/colors";
 import { SmallUserCard } from "@shared/ui/smallUserCard/SmallUserCard";
 
-export function PersonalChatFrame(props: {chat: IChat, unreadCount?: number, chatUnreadCount?: number, isGroupChat?: boolean}){
-    const { chat, unreadCount, chatUnreadCount, isGroupChat } = props
+export function PersonalChatFrame(props: {chat: IChat, chatUnreadCount?: number, isGroupChat?: boolean, onlineUsersIds?: number[]}){
+    const { chat, chatUnreadCount, isGroupChat, onlineUsersIds } = props
     const router = useRouter()
     const participantUser = chat.chat_app_chat_users[0]?.user_app_user
     return (
@@ -17,9 +15,10 @@ export function PersonalChatFrame(props: {chat: IChat, unreadCount?: number, cha
             style={[{ flexDirection: "row", gap: 12 }]}
             onPress={() => {
                 socket.emit("joinChat", {
-                    chatId: chat.id,
+                    chatId: chat.id
                 });
-                router.push(`(chats)/${chat.id}?count=${unreadCount}&${chat.is_group === true ? `is_group=${chat.is_group}` : undefined}`);
+                const query = chat.is_group ? "?is_group=true" : ""
+                router.push(`(chats)/${chat.id}${query}`);
             }}
         >
             <SmallUserCard 
@@ -40,6 +39,7 @@ export function PersonalChatFrame(props: {chat: IChat, unreadCount?: number, cha
                         : undefined
                     }
                 unreadCount={chatUnreadCount}
+                isOnline={onlineUsersIds?.includes(participantUser.id)}
                 />
         </TouchableOpacity>
     )

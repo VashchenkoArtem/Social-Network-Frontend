@@ -7,7 +7,10 @@ import { PersonalChats } from "@modules/chats/ui/personalChats/PersonalChats";
 import { GroupChats } from "@modules/chats/ui/groupChats/GroupChats";
 import { UnreadMessages } from "../unreadMessages/UndreadMessages";
 
-export const getRadioTabsArray = (unreadCount?: number): IRadioTab[] => [
+export const getRadioTabsArray = (
+    personalUnreadCount?: number,
+    groupUnreadCount?: number,
+): IRadioTab[] => [
     {
         title: "Контакти",
         icon: <ICONS.FriendsPageIcon color = {COLORS.black}/>,
@@ -23,24 +26,27 @@ export const getRadioTabsArray = (unreadCount?: number): IRadioTab[] => [
         title: "Повідомлення",
         icon: (<View>
                 <ICONS.ChatsPageIcon color = {COLORS.black}/>
-                <UnreadMessages count={unreadCount}/>
+                <UnreadMessages count={personalUnreadCount}/>
             </View>),
         content: (
             <View
                 style={{ flex: 1, paddingBottom: 8, backgroundColor: COLORS.preWhite }}
             >
-                <PersonalChats count={unreadCount} />
+                <PersonalChats count={personalUnreadCount} />
             </View>
         ),
     },
     {
         title: "Групові чати",
-        icon: <ICONS.ChatsPageIcon color = {COLORS.black}/>,
+        icon: (<View>
+                <ICONS.ChatsPageIcon color = {COLORS.black}/>
+                <UnreadMessages count={groupUnreadCount}/>
+            </View>),
         content: (
             <View
                 style={{ flex: 1, paddingBottom: 8, backgroundColor: COLORS.lightestGray }}
             >
-                <GroupChats />
+                <GroupChats count={groupUnreadCount} />
             </View>
         ),
     },
