@@ -1,5 +1,5 @@
 <p align="right">
-    <a href="#соціальна-мережа">
+    <a href="#topUA">
         <img src="https://img.shields.io/badge/🇺🇦-Українська-BDE0FE?style=flat-square">
     </a>
     <a href="#social-network">
@@ -36,7 +36,7 @@
 | Харлан Кирило | https://github.com/KirillKharlan |
 | Коцаба Анастасія | https://github.com/AnastasiiaKotsaba |
 | Галкін Єгор | https://github.com/EgorGalkinORG |
-| Марков Діма | https://github.com/ |
+| Марков Діма | https://github.com/DmitriyM08 |
 
 ## Каталог
 * [Мета створення проекту](#мета-створення-проєкту)
@@ -163,7 +163,7 @@ npm run start
 </summary>
 
 
-## `auth` - відповідає за повний процес автентифікації та ідентифікації користувача.
+### `auth` - відповідає за повний процес автентифікації та ідентифікації користувача.
 
 ### Функціонал:
 
@@ -191,7 +191,7 @@ npm run start
 
 ---
 
-## `chats` - реалізує систему особистих та групових чатів у режимі реального часу.
+### `chats` - реалізує систему особистих та групових чатів у режимі реального часу.
 
 ### Функціонал:
 
@@ -222,7 +222,7 @@ npm run start
 
 ---
 
-## `friends` - модуль, що відповідає за соціальну взаємодію між користувачами.
+### `friends` - модуль, що відповідає за соціальну взаємодію між користувачами.
 
 ### Функціонал:
 
@@ -252,7 +252,7 @@ npm run start
 
 ---
 
-## `message` - відображення повідомлень у чатах.
+### `message` - відображення повідомлень у чатах.
 
 ### Функціонал:
 
@@ -275,7 +275,7 @@ npm run start
 
 ---
 
-## `posts` - соціальної стрічка застосунку
+### `posts` - соціальної стрічка застосунку
 
 ### Функціонал:
 
@@ -301,7 +301,7 @@ npm run start
 
 ---
 
-## `settings` - модуль, що забезпечує керування персональними даними користувача.
+### `settings` - модуль, що забезпечує керування персональними даними користувача.
 
 ### Функціонал:
 
@@ -362,7 +362,7 @@ npm run start
 ---
 
 <p align="right">
-    <a href="#соціальна-мережа">
+    <a href="#topUA">
         <img src="https://img.shields.io/badge/🇺🇦-Українська-BDE0FE?style=flat-square">
     </a>
     <a href="#social-network">
@@ -400,7 +400,7 @@ For beginners, this project demonstrates how to build a scalable frontend applic
 | Kyrylo Kharlan | https://github.com/KirillKharlan |
 | Anastasiia Kotsaba | https://github.com/AnastasiiaKotsaba |
 | Yegor Galkin | https://github.com/EgorGalkinORG |
-| Dmytro Markov | https://github.com/ |
+| Dmytro Markov | https://github.com/DmitriyM08 |
 
 ## Table of Contents
 
@@ -522,7 +522,7 @@ Contains business logic:
   <b style="font-size: 17px">Core Application Modules</b>
 </summary>
 
-## `auth` — handles full user authentication and identity flow
+### `auth` — handles full user authentication and identity flow
 
 ### Features:
 - user registration
@@ -546,7 +546,7 @@ Contains business logic:
 
 ---
 
-## `chats` — real-time personal and group chat system
+### `chats` — real-time personal and group chat system
 
 ### Features:
 - creation of personal and group chats
@@ -573,7 +573,7 @@ Contains business logic:
 
 ---
 
-## `friends` — social interaction module
+### `friends` — social interaction module
 
 ### Features:
 - friend list management
@@ -599,7 +599,7 @@ Contains business logic:
 
 ---
 
-## `message` — chat message rendering system
+### `message` — chat message rendering system
 
 ### Features:
 - message display
@@ -618,7 +618,7 @@ Contains business logic:
 
 ---
 
-## `posts` — social feed module
+### `posts` — social feed module
 
 ### Features:
 - create, edit, delete posts
@@ -640,7 +640,7 @@ Contains business logic:
 
 ---
 
-## `settings` — user profile management
+### `settings` — user profile management
 
 ### Features:
 - editing personal data
