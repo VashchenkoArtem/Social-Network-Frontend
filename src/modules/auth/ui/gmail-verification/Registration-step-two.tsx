@@ -2,7 +2,6 @@ import React, { useContext, useState } from "react";
 import { View, Text, TouchableOpacity, Alert } from "react-native";
 import { OtpInput } from "@shared/ui/OptInput";
 import { useLocalSearchParams, usePathname, useRouter } from "expo-router";
-import { useVerification } from "@shared/hooks/useVerification";
 import { styles } from "./styles";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { useRegistrationMutation } from "@modules/auth/api/userApi";

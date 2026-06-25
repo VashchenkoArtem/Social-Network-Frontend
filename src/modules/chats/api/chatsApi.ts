@@ -25,35 +25,6 @@ export const chatApi = baseApi.injectEndpoints({
                 }
             },
 
-            serializeQueryArgs: ({ queryArgs }) => {
-                return 'groupChat'
-            },
-            
-            merge: (currentCache, newItems) => {
-                const currentChats = currentCache?.chats ?? []
-                const incomingChats = newItems?.chats ?? []
-
-                const existingIds = new Set(
-                    currentChats.map((chat) => chat.id)
-                )
-
-                const uniqueChats = incomingChats.filter(
-                    (chat) => !existingIds.has(chat.id)
-                )
-
-                if (uniqueChats.length > 0) {
-                    currentCache.chats.push(...uniqueChats)
-                }
-
-                currentCache.meta = newItems?.meta
-            },
-
-            forceRefetch({ currentArg, previousArg }) {
-                return (
-                    currentArg?.cursor !== previousArg?.cursor
-                )
-            },
-
             providesTags: (result) =>
                 result
                     ? [
@@ -102,53 +73,6 @@ export const chatApi = baseApi.injectEndpoints({
                 return {
                     url: `personal-chats?${params.toString()}`,
                 }
-            },
-
-            serializeQueryArgs: ({ queryArgs }) => {
-                return 'personalChat'
-            },
-            merge: (currentCache, newItems) => {
-                const current = currentCache?.chats ?? []
-                const incoming = newItems?.chats ?? []
-
-                const existingIds = new Set(current.map(c => c.id))
-
-                const unique = incoming.filter(c => !existingIds.has(c.id))
-
-                currentCache.chats = [...current, ...unique]
-                currentCache.meta = newItems?.meta
-            },
-
-            forceRefetch({ currentArg, previousArg }) {
-                return (
-                    currentArg?.cursor !== previousArg?.cursor
-                )
-            },
-
-            async onCacheEntryAdded(
-                _arg,
-                { updateCachedData, cacheDataLoaded, cacheEntryRemoved },
-            ) {
-                await cacheDataLoaded;
-                const listener = (message: IMessage) => {
-                    updateCachedData((draft) => {
-                        const chat = draft.chats.find((c) => c.id === message.chat_id)
-                        if (!chat) return
-                        chat.chat_app_message = [{
-                            id: message.id,
-                            text: message.text,
-                            created_at: message.created_at,
-                            sender_id: message.sender_id,
-                        }]
-                        draft.chats = [
-                            chat,
-                            ...draft.chats.filter((c) => c.id !== message.chat_id),
-                        ]
-                    })
-                }
-                socket.on("newMessage", listener)
-                await cacheEntryRemoved
-                socket.off("newMessage", listener)
             },
             // ({
             //     url: 'personal-chats',

@@ -5,7 +5,7 @@ import * as ImagePicker from "expo-image-picker";
 import { useGetAllFriendsQuery } from "@modules/friends/api/friendsApi"; 
 import { useCreateChatMutation, useLazyGetChatByIdQuery } from "@modules/chats/api/chatsApi";
 import { Input } from "@shared/ui/input"; 
-import { NGROK_SERVER_URL } from "@shared/constants/server";
+import { SERVER_URL } from "@shared/constants/server";
 import { COLORS } from "@shared/constants/colors";
 import { ICONS } from "@shared/ui"; 
 import { styles } from "./styles"; 
@@ -156,8 +156,8 @@ export function ConfirmGroupModal({
             xhr.open(
                 mode === "create" ? "POST" : "PATCH",
                 mode === "create"
-                    ? `${NGROK_SERVER_URL}/chat`
-                    : `${NGROK_SERVER_URL}/chat/${chatId}`
+                    ? `${SERVER_URL}/chat`
+                    : `${SERVER_URL}/chat/${chatId}`
             );
 
             xhr.setRequestHeader("Authorization", `Bearer ${token}`);

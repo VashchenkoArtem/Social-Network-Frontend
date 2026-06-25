@@ -166,24 +166,6 @@ export function Chat(props: { chatId: number | undefined }) {
             pseudonym: user.profile_app_profile.pseudonym || "",
             photos: selectedImages   
         })
-
-        // if (selectedImages.length > 0) {
-        //     const xhr = new XMLHttpRequest()
-        //     const formData = new FormData()
-
-        //     xhr.open('POST', `${NGROK_SERVER_URL}/messages/chat/${chat.id}`)
-        //     xhr.setRequestHeader('Authorization', `Bearer ${token}`)
-
-        //     formData.append("text", messageText)
-        //     selectedImages.forEach((uri, index) => {
-        //         formData.append("images", {
-        //             uri,
-        //             type: "image/jpeg",
-        //             name: `photo-${index}.jpg`,
-        //         } as any)
-        //     })
-        //     xhr.send(formData)
-        // }
         
         setSelectedImages([])
         setMessageText("")

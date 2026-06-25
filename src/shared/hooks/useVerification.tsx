@@ -1,3 +1,4 @@
+import { SERVER_URL } from "@shared/constants/server";
 import { useState } from "react";
 
 export const useVerification = () => {
@@ -10,7 +11,7 @@ export const useVerification = () => {
 	}) => {
 		setIsVerifying(true);
 		try {
-			const response = await fetch(`http://192.168.1.110:8000/registration`, {
+			const response = await fetch(`${SERVER_URL}/registration`, {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify(payload),

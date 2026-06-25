@@ -13,7 +13,9 @@ import { useUserContext } from "@modules/auth/context/user-context";
 
 
 export function Contacts() {
-    const { data } = useGetAllFriendsQuery();
+    const { data } = useGetAllFriendsQuery(undefined, {
+        pollingInterval: 5000
+    });
     const [searchQuery, setSearchQuery] = useState("")
     const [onlineUserIds, setOnlineUserIds] = useState<number[]>([])
     const filteredContacts = data?.filter((item) => {

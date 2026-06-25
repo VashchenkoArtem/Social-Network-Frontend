@@ -24,6 +24,7 @@ export const inputStyles = StyleSheet.create({
 	input: {
 		flex: 1,
 		fontFamily: FONTS.medium,
+		color: COLORS.black,
 	},
 	primary: {
 		borderColor: COLORS.gray,

@@ -4,13 +4,13 @@ import { styles } from "./styles";
 import { COLORS } from "@shared/constants/colors";
 
 export function AdditionalUrls(props: IProps) {
-	const { radioTabsArray, chosenTab, setChosenTab, chatContent, isChats } = props;
+	const { radioTabsArray, chosenTab, setChosenTab, chatContent, isChats, isSpaceBetween } = props;
 	return (
 		<View style={styles.additionalUrls }> 
 			<View
 			style={[
 				styles.tabs,
-				isChats ? { justifyContent: "center", } :undefined
+				isChats ? { justifyContent: "space-around", paddingHorizontal: 10 } :undefined
 			]}
 			>
 				{radioTabsArray.map((element) => {

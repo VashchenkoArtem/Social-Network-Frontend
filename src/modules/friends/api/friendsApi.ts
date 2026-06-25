@@ -39,26 +39,6 @@ export const friendApi = baseApi.injectEndpoints({
                 }
             },
 
-            serializeQueryArgs: ({ queryArgs }) => {
-                return `requests-${queryArgs.cursor}-${queryArgs.limit}`;
-            },
-            
-            merge: (currentCache, newItems) => {
-                const existingIds = new Set(
-                    currentCache.data.map(user => user.id)
-                )
-
-                const uniqueUsers = newItems.data.filter(
-                    user => !existingIds.has(user.id)
-                )
-                currentCache.data.push(...uniqueUsers)
-                currentCache.meta = newItems.meta
-            },
-
-            forceRefetch({ currentArg, previousArg }) {
-                return currentArg?.cursor !== previousArg?.cursor
-            },
-
             providesTags: (result) =>
                 result
                     ? [
@@ -77,13 +57,17 @@ export const friendApi = baseApi.injectEndpoints({
             keepUnusedDataFor: 60
         }),
         
-        createFriendRequest: builder.mutation<void, CreateFriendRequest>({
-            query: (body) => ({
-                url: 'requests',
-                method: 'POST',
-                body
-            })
+    createFriendRequest: builder.mutation<void, CreateFriendRequest>({
+        query: (body) => ({
+            url: 'requests',
+            method: 'POST',
+            body
         }),
+        invalidatesTags: [
+            { type: 'RecommendedUsers', id: 'LIST' },
+            { type: 'RequestedUsers', id: 'LIST' },
+        ]
+    }),
 
         deleteFriendRequest: builder.mutation<void, number>({
             query: (id) => ({
@@ -126,25 +110,6 @@ export const friendApi = baseApi.injectEndpoints({
                 }
             },
 
-            serializeQueryArgs: ({ queryArgs }) => {
-                return `recommended-${queryArgs.cursor}-${queryArgs.limit}`;
-            },
-            
-            merge: (currentCache, newItems) => {
-                const existingIds = new Set(
-                    currentCache.data.map(user => user.id)
-                )
-
-                const uniqueUsers = newItems.data.filter(
-                    user => !existingIds.has(user.id)
-                )
-                currentCache.data.push(...uniqueUsers)
-                currentCache.meta = newItems.meta
-            },
-
-            forceRefetch({ currentArg, previousArg }) {
-                return currentArg?.cursor !== previousArg?.cursor
-            },
 
             providesTags: (result) =>
                 result

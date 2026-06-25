@@ -23,10 +23,9 @@ import { PostTags } from "@modules/tabs/ui/postTags/postTags";
 import { PostLinks } from "@modules/tabs/ui/postLinks/postLinks";
 import { useGetTagsQuery } from "@modules/tabs/api/tagsApi";
 import { IPost } from "../postCard/types";
-import { useDispatch } from "react-redux";
 import { useAppDispatch } from "@modules/posts/api/store";
 import { ErrorIcon } from "@shared/ui/icons/urls/ErrorIcon";
-import { NGROK_SERVER_URL } from "@shared/constants/server";
+import { SERVER_URL } from "@shared/constants/server";
 
 export function CreatePostForm(props: {
 	setIsCreatePostModalOpen: (type: boolean) => void;
@@ -70,7 +69,7 @@ export function CreatePostForm(props: {
 			
 			if (editData.post_app_postimage) {
 				const existingUris = editData.post_app_postimage.map(p => 
-					`${NGROK_SERVER_URL}/media/thumb/${p.original_image}`
+					`${SERVER_URL}/media/thumb/${p.original_image}`
 				);
 				setPostImages(existingUris); 
 			}
@@ -141,7 +140,7 @@ export function CreatePostForm(props: {
 				await updatePost({ id: editData.id, formData }).unwrap();
 			} else {
 				setIsCreatingPost(true);
-				xhr.open('POST', `${NGROK_SERVER_URL}/posts`);
+				xhr.open('POST', `${SERVER_URL}/posts`);
 				xhr.onload = () => {
 					const newPost = JSON.parse(xhr.responseText);
 					dispatch(

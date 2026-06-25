@@ -10,7 +10,6 @@ import { Input } from "@shared/ui/input";
 import { SignatureEditor } from "@shared/ui/signatureEditor";
 import { Image } from "react-native";
 import { TouchableOpacity } from "react-native";
-import axios from 'axios';
 import {
 	useSendCodeMutation,
 	useUpdateUserInfoMutation,
@@ -18,16 +17,13 @@ import {
 } from "./../../../auth/api/userApi";
 import { AvatarField } from "../avatar-field/Avatar-Field";
 import { MyPostsPageIcon } from "@shared/ui/icons/urls/MyPostsPageIcon";
-import { Modal } from "@shared/ui/modal";
 import { RecoveryPassword } from "../recovery-password/Recovery-password";
 import { UserContext } from "@modules/auth/context/user-context";
 import { Redirect } from "expo-router";
-import { CLOUDINARY_URL, NGROK_SERVER_URL } from "@shared/constants/server";
+import { CLOUDINARY_URL, SERVER_URL } from "@shared/constants/server";
 import * as ImagePicker from "expo-image-picker";
-import { ProfileData, ReactNativeFile } from "@modules/auth/api/api.types"; 
 import { FONTS } from "@shared/constants/fonts";
 import { ErrorIcon } from "@shared/ui/icons/urls/ErrorIcon";
-import { socket } from "@shared/socket/socket";
 
 
 type FormData = {
@@ -98,7 +94,7 @@ export function PersonalInformation() {
 			type: 'image/png',
 		} as any);
 
-		xhr.open('PATCH', `${NGROK_SERVER_URL}/signature`);
+		xhr.open('PATCH', `${SERVER_URL}/signature`);
 
 		xhr.setRequestHeader('Authorization', `Bearer ${token}`);
 
@@ -129,7 +125,7 @@ export function PersonalInformation() {
 			await new Promise((resolve, reject) => {
 				const xhr = new XMLHttpRequest();
 				
-				xhr.open('PATCH', `${NGROK_SERVER_URL}/update-user`);
+				xhr.open('PATCH', `${SERVER_URL}/update-user`);
 				xhr.setRequestHeader('Authorization', `Bearer ${token}`);
 				xhr.onload = () => {
 					if (xhr.status >= 200 && xhr.status < 300) {

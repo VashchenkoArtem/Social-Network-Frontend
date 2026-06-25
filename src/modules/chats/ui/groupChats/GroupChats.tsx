@@ -18,7 +18,10 @@ export function GroupChats(props: {count?: number}){
     } = useGetGroupChatsQuery({
         cursor: undefined,
         limit: 25
-    })
+    },
+{
+    pollingInterval: 5000
+})
     const groupChats = data?.chats ?? []
     const hasMore = data?.meta.hasMore
     const loadMore = () => {

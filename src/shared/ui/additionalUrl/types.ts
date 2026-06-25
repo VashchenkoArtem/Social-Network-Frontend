@@ -10,5 +10,6 @@ export interface IProps {
 	chosenTab: string;
 	setChosenTab: (title: string) => void;
 	chatContent?: ReactNode;
-	isChats?: boolean
+	isChats?: boolean;
+	isSpaceBetween?: boolean
 }

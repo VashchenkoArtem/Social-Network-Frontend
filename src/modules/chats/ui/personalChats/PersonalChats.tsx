@@ -20,6 +20,8 @@ export function PersonalChats(props: {count?: number}){
     } = useGetPersonalChatsQuery({
         cursor: undefined,
         limit: 25
+    }, {
+        pollingInterval: 5000
     })
     const personalChats = data?.chats ?? []
     const usersIds = data?.chats
