@@ -19,7 +19,7 @@ export function Recommended(props: {setChosenTab: (title: string) => void, isMar
         refetch
     } = useGetRecommendedPeopleQuery({
         cursor,
-        limit: 5
+        limit: 100
     }, {
         pollingInterval: 3000
     })

@@ -8,4 +8,5 @@
 // export const SERVER_URL = `${NGROK_SERVER_URL}`
 export const NGROK_SERVER_URL = `https://yu-unabiding-vampishly.ngrok-free.dev`
 export const SERVER_URL ="https://social-network-backend-ykia.onrender.com"
+// export const SERVER_URL = "http://192.168.0.104:3000"
 export const CLOUDINARY_URL ="https://res.cloudinary.com/depqshccq/image/upload/";
