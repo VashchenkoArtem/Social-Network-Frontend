@@ -14,7 +14,7 @@ interface FriendFrameBaseProps {
     data: FriendsProps[] | null | undefined;
     toDetailPage?: boolean;
     isFetching?: boolean;
-    isLoading: boolean;
+    // isLoading: boolean;
     onlineUserIds?: number[]
 
     refreshing?: boolean

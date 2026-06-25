@@ -5,7 +5,7 @@ import { COLORS } from "@shared/constants/colors";
 import { ICONS } from "@shared/ui";
 import { Link } from "expo-router";
 import { IProps } from "./types";
-import { CLOUDINARY_URL, SERVER } from "@shared/constants/server";
+import { CLOUDINARY_URL } from "@shared/constants/server";
 import Modal from "react-native-modal";
 
 import { CreatePostForm } from "@modules/posts/ui/create-post-form";

@@ -1,6 +1,5 @@
 import { View, Image, Text } from "react-native";
 import { IProps } from "./types";
-import { SERVER } from "@shared/constants/server";
 import { Button } from "@shared/ui/button";
 import { styles } from './styles'
 import { useRouter } from "expo-router";

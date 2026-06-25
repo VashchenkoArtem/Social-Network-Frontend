@@ -8,7 +8,7 @@ export const styles = StyleSheet.create({
         borderRadius: 6,
         paddingHorizontal: 10,
         paddingVertical: 8,
-        maxWidth: 230,
+        maxWidth: 240,
     },
 
     // Чужое сообщение — строка с аватаром

@@ -6,7 +6,6 @@ import { ICONS } from "@shared/ui"
 import { COLORS } from "@shared/constants/colors"
 import { Input } from "@shared/ui/input"
 import { Button } from "@shared/ui/button"
-import { SERVER } from "@shared/constants/server"
 import { styles } from "./chat.styles"
 import { socket } from "@shared/socket/socket"
 import { UserContext, useUserContext } from "@modules/auth/context/user-context"
@@ -172,7 +171,7 @@ export function Chat(props: { chatId: number | undefined }) {
         //     const xhr = new XMLHttpRequest()
         //     const formData = new FormData()
 
-        //     xhr.open('POST', `http://${SERVER.host}:${SERVER.port}/messages/chat/${chat.id}`)
+        //     xhr.open('POST', `${NGROK_SERVER_URL}/messages/chat/${chat.id}`)
         //     xhr.setRequestHeader('Authorization', `Bearer ${token}`)
 
         //     formData.append("text", messageText)

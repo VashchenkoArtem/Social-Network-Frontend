@@ -3,7 +3,6 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-controller'
 import { Button } from "@shared/ui/button";
 import { styles } from './styles'
 import { useRouter } from "expo-router";
-import { SERVER } from '@shared/constants/server';
 import { useGetAlbumsQuery } from '@modules/settings/api/albumApi';
 import { FriendAlbum } from '../friendAlbum/FriendAlbum';
 import { ICONS } from '@shared/ui';

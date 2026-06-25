@@ -11,9 +11,9 @@ export default function PersonalInformationScreen() {
 
     // if (!context?.user) return <Redirect href="/login" />;
 
-    const avatar = getAvatar(user.profile_app_profile.avatar) 
+    const avatar = getAvatar(user?.profile_app_profile.avatar) 
 
-    const fullName = [user.first_name, user.last_name].filter(Boolean).join(" ");
+    const fullName = [user?.first_name, user?.last_name].filter(Boolean).join(" ");
 
     return (
         <Layout>
@@ -26,10 +26,10 @@ export default function PersonalInformationScreen() {
                 </View>
 
                 {!!fullName && <Text style={styles.name}>{fullName}</Text>}
-                {!!user.username && (
+                {!!user?.username && (
                     <Text style={styles.username}>@{user.username}</Text>
                 )}
-                {!!user.profile_app_profile.pseudonym && (
+                {!!user?.profile_app_profile.pseudonym && (
                     <Text style={styles.alias}>{user.profile_app_profile.pseudonym}</Text>
                 )}
             </ScrollView>

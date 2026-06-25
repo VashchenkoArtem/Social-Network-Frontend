@@ -1,7 +1,6 @@
 import { FlatList, View, Image, Text, TouchableOpacity } from "react-native"
 import { styles } from "./styles"
 import { IChatProps } from "./types"
-import { SERVER } from "@shared/constants/server"
 import { Input } from "../input"
 import { SearchIcon } from "../icons/inputs/Search"
 import { COLORS } from "@shared/constants/colors"

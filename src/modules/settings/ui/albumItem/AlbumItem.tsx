@@ -2,12 +2,12 @@ import React from 'react';
 import { View, Text, TouchableOpacity, Image } from 'react-native';
 import { ICONS } from "@shared/ui";
 import { COLORS } from "@shared/constants/colors";
-import { SERVER } from "@shared/constants/server";
 import { Album } from "@modules/settings/api/albumApi";
 import { DeletePhoto } from "../deletePhoto/deletePhoto";
 import { AddAlbumPhoto } from "../albumAddPhoto/addPhoto";
 import { AvatarAddPhoto } from "../avatarAddPhoto/AvatarAddPhoto";
 import { styles } from "./styles";
+import { CLOUDINARY_URL } from '@shared/constants/server';
 
 interface AlbumItemProps {
     album: Album;
@@ -71,7 +71,7 @@ export const AlbumItem = ({
                 {photosToRender.map((photo) => (
                     <View key={photo.id}>
                         <Image
-                            source={{ uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${photo.image}` }}
+                            source={{ uri: `${CLOUDINARY_URL}${photo.image}` }}
                             style={styles.albumPhoto}
                             blurRadius={isAvatar ? 0 : (photo.is_shown && album.is_shown ? 0 : 9)}
                         />

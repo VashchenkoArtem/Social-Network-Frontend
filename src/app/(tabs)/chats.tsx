@@ -8,7 +8,6 @@ import { AdditionalUrls } from "@shared/ui/additionalUrl";
 import { IRadioTab } from "@shared/ui/additionalUrl/types";
 import { getRadioTabsArray } from "@shared/ui/radiotabs/Radiotabs";
 import { useState } from "react";
-import { ScrollView, View, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ChatPage() {

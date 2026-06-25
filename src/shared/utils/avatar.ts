@@ -1,8 +1,8 @@
-import { SERVER } from "@shared/constants/server";
+import { NGROK_SERVER_URL } from "@shared/constants/server";
 
 export function getAvatar(filename: string | undefined | null){
     // if (filename){
-    //     return `http://${SERVER.host}:${SERVER.port}/media/thumb/${filename}`
+    //     return `${NGROK_SERVER_URL}/media/thumb/${filename}`
     // }
-    return `http://${SERVER.host}:${SERVER.port}/media/default-group-avatar.png`
+    return `${NGROK_SERVER_URL}/media/default-group-avatar.png`
 }

@@ -21,7 +21,7 @@ import { UserContext } from "@modules/auth/context/user-context";
 import { AlbumItem } from "../albumItem/AlbumItem";
 import { DeleteAlbum } from "../deleteAlbum/deleteAlbum";
 import { DeletePhoto } from "../deletePhoto/deletePhoto";
-import { SERVER } from "@shared/constants/server";
+import { CLOUDINARY_URL } from "@shared/constants/server";
 
 type AlbumForm = {
 	id: number;
@@ -204,7 +204,7 @@ return (
                                         <View key={photo.id}>
                                             <Image
                                                 source={{
-                                                    uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${photo.image}`,
+                                                    uri: `${CLOUDINARY_URL}${photo.image}`,
                                                 }}
                                                 style={styles.albumPhoto}
                                                 blurRadius={photo.is_shown && album.is_shown ? 0 : 9}

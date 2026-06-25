@@ -3,7 +3,7 @@ import { getAvatar } from "@shared/utils/avatar";
 import { View, Image, Text } from "react-native";
 import { IProps } from "./types";
 import { styles } from "./styles";
-import { CLOUDINARY_URL, SERVER } from "@shared/constants/server";
+import { CLOUDINARY_URL } from "@shared/constants/server";
 import { UnreadMessages } from "../unreadMessages/UndreadMessages";
 import { ChatAvatar } from "@modules/chats/ui/ChatAvatar/ChatAvatar";
 

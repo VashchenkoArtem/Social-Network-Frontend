@@ -16,7 +16,6 @@ export function FriendFrame({
     messageIfNull,
     toDetailPage,
     isFetching, 
-    isLoading,
     onlineUserIds,
     refreshing,
     onEndReached,
@@ -42,9 +41,7 @@ export function FriendFrame({
                 )}
             </View>
             <View>
-                {(isLoading || isFetching) ? (
-                    <ActivityIndicator animating={true} color={COLORS.gray} style={{ marginTop: 20 }}/>
-                ) : data ? (
+                { data ? (
                     data.length > 0 ? (
                         <FlatList
                             data={data}

@@ -1,9 +1,5 @@
-import { UserContext } from "@modules/auth/context/user-context";
 import { FriendProfile } from "@modules/friends/ui/friendProfile/FriendProfile";
-import { Redirect, useLocalSearchParams, useRouter } from "expo-router";
-import { useContext } from "react";
-import { View, Text } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Redirect, useLocalSearchParams } from "expo-router";
 
 export default function FriendProfileScreen(){
     const params = useLocalSearchParams()

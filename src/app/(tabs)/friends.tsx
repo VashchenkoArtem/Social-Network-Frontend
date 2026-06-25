@@ -24,7 +24,7 @@ export default function FriendsPage() {
 			</View> },
 		{ title: "Рекомендації", content: 
 			<View style={{ marginTop: 24, gap: 8 }}>
-				<Recommended setChosenTab={setChosenTab} isPaginate={true}/>
+				<Recommended setChosenTab={setChosenTab}/>
 			</View> },
 		{ title: "Всі друзі", content: 
 			<View style={{ marginTop: 24, gap: 8 }}>

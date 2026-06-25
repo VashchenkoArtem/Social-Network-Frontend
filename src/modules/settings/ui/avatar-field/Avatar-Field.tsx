@@ -6,7 +6,7 @@ import { useUpdateUserInfoMutation } from "@modules/auth/api/userApi";
 import { Button } from "@shared/ui/button";
 import { PlusIcon } from "@shared/ui/icons/buttons/Plus";
 import { COLORS } from "@shared/constants/colors";
-import { CLOUDINARY_URL, SERVER } from "@shared/constants/server";
+import { CLOUDINARY_URL } from "@shared/constants/server";
 import { getAvatar } from "@shared/utils/avatar";
 import { BigUserCard } from "@shared/ui/bigUserCard/BigUserCard";
 

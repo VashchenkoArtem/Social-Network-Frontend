@@ -21,12 +21,12 @@ import { useContext, useEffect, useState } from "react";
 import { UserContext, useUserContext } from "@modules/auth/context/user-context";
 import { PostTags } from "@modules/tabs/ui/postTags/postTags";
 import { PostLinks } from "@modules/tabs/ui/postLinks/postLinks";
-import { SERVER } from "@shared/constants/server";
 import { useGetTagsQuery } from "@modules/tabs/api/tagsApi";
 import { IPost } from "../postCard/types";
 import { useDispatch } from "react-redux";
 import { useAppDispatch } from "@modules/posts/api/store";
 import { ErrorIcon } from "@shared/ui/icons/urls/ErrorIcon";
+import { NGROK_SERVER_URL } from "@shared/constants/server";
 
 export function CreatePostForm(props: {
 	setIsCreatePostModalOpen: (type: boolean) => void;
@@ -70,7 +70,7 @@ export function CreatePostForm(props: {
 			
 			if (editData.post_app_postimage) {
 				const existingUris = editData.post_app_postimage.map(p => 
-					`http://${SERVER.host}:${SERVER.port}/media/thumb/${p.original_image}`
+					`${NGROK_SERVER_URL}/media/thumb/${p.original_image}`
 				);
 				setPostImages(existingUris); 
 			}
@@ -141,7 +141,7 @@ export function CreatePostForm(props: {
 				await updatePost({ id: editData.id, formData }).unwrap();
 			} else {
 				setIsCreatingPost(true);
-				xhr.open('POST', `http://${SERVER.host}:${SERVER.port}/posts`);
+				xhr.open('POST', `${NGROK_SERVER_URL}/posts`);
 				xhr.onload = () => {
 					const newPost = JSON.parse(xhr.responseText);
 					dispatch(

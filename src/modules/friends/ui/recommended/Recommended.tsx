@@ -19,8 +19,9 @@ export function Recommended(props: {setChosenTab: (title: string) => void, isMar
         refetch
     } = useGetRecommendedPeopleQuery({
         cursor,
-        limit: 2
+        limit: 5
     }, {
+        pollingInterval: 3000
     })
     
     const hasMore = data?.meta.hasMore
@@ -53,7 +54,6 @@ export function Recommended(props: {setChosenTab: (title: string) => void, isMar
         <View style = {isMarginBottom && {marginBottom: 48, flex: 1}}>
             <FriendFrame 
                 onlineUserIds={onlineUserIds} 
-                isLoading={isLoading} 
                 toDetailPage={toDetailPage} 
                 setChosenTab={setChosenTab} 
                 buttonText="Додати" 

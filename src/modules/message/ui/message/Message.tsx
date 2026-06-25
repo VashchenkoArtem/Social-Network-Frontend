@@ -3,8 +3,9 @@ import { styles } from "./styles";
 import { View, Text, Image, FlatList } from "react-native";
 import { useUserContext } from "@modules/auth/context/user-context";
 import { MessageStatusMarkIcon } from "@shared/ui/icons/urls/MessageStatusMark";
-import { SERVER } from "@shared/constants/server";
 import { COLORS } from "@shared/constants/colors";
+import { CLOUDINARY_URL } from "@shared/constants/server";
+import { getAvatar } from "@shared/utils/avatar";
 
 export function Message(props: IMessageProps) {
     const { data } = props;
@@ -34,7 +35,7 @@ export function Message(props: IMessageProps) {
     const imageUri = (image: string) =>
         image.startsWith("file:///")
             ? image
-            : `http://${SERVER.host}:${SERVER.port}/media/thumb/${image}`;
+            : `${CLOUDINARY_URL}${image}`;
 
     // Блок времени + статус (для моих сообщений)
     const MyTimeBlock = () => (
@@ -63,20 +64,22 @@ export function Message(props: IMessageProps) {
         </View>
     );
 
-    const renderGrid = () => (
-        <View style={styles.imageGrid}>
-            {images.map((img, index) => (
-                <Image
-                    key={index}
-                    source={{ uri: imageUri(img.image) }}
-                    style={[
-                        styles.imageItem,
-                        images.length === 1 && styles.imageItemFull,
-                    ]}
-                />
-            ))}
-        </View>
-    )
+    const renderGrid = () => {
+        return (
+            <View style={styles.imageGrid}>
+                {images.map((img, index) => (
+                    <Image
+                        key={index}
+                        source={{ uri: imageUri(img.image) }}
+                        style={[
+                            styles.imageItem,
+                            images.length === 1 && styles.imageItemFull,
+                        ]}
+                    />
+                ))}
+            </View>
+        )
+}
 
     if (isMyMessage) {
         return (
@@ -151,7 +154,7 @@ export function Message(props: IMessageProps) {
         <View style={styles.theirMessageRow}>
             <Image
                 source={{
-                    uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${data.user_app_user.profile_app_profile.avatar}`,
+                    uri: data.user_app_user.profile_app_profile.avatar ? `${CLOUDINARY_URL}${data.user_app_user.profile_app_profile.avatar}` : getAvatar("asdad"),
                 }}
                 width={46}
                 height={46}

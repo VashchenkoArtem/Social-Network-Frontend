@@ -3,8 +3,7 @@ import { styles } from "./friendAlbum.styles";
 import { ICONS } from "@shared/ui";
 import { COLORS } from "@shared/constants/colors";
 import { Album } from "@modules/settings/api/albumApi";
-import { SERVER } from "@shared/constants/server";
-
+import { CLOUDINARY_URL, NGROK_SERVER_URL } from "@shared/constants/server";
 export function FriendAlbum(props: {album: Album}){
     const { album } = props
     return (
@@ -19,7 +18,7 @@ export function FriendAlbum(props: {album: Album}){
                     ( album.photos.length !== 0  && 
                         <Image
                             source={{
-                                uri: `http://${SERVER.host}:${SERVER.port}/media/thumb/${album.photos[album.photos.length - 1].image}`
+                                uri: `${CLOUDINARY_URL}${album.photos[album.photos.length - 1].image}`
                             }}
                             height={162}
                             width={343}

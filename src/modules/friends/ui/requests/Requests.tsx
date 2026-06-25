@@ -22,6 +22,7 @@ export function Requests(props: {setChosenTab: (title: string) => void, isMargin
         cursor,
         limit: 2
     }, {
+        pollingInterval: 3000
     })
 
     const hasMore = data?.meta.hasMore
@@ -52,7 +53,6 @@ export function Requests(props: {setChosenTab: (title: string) => void, isMargin
         <View style = {[isMarginTop && {marginTop: 24}, isMarginBottom && {marginBottom: 24}]}>
             <FriendFrame 
                 data={users}
-                isLoading={isLoading} 
                 toDetailPage={toDetailPage} 
                 setChosenTab = {setChosenTab} 
                 buttonText="Підтвердити" 

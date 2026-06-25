@@ -5,11 +5,11 @@ import { Button } from "@shared/ui/button";
 import { ICONS } from "@shared/ui";
 import { COLORS } from "@shared/constants/colors";
 import { styles } from "./styles";
-import { SERVER } from "@shared/constants/server";
 import { ReactNativeFile } from "@modules/auth/api/api.types";
 import { useUserContext } from "@modules/auth/context/user-context";
 import { useState } from "react";
 import { useAppDispatch } from "@modules/posts/api/store";
+import { NGROK_SERVER_URL } from "@shared/constants/server";
 
 type Props = {
     albumId: number;
@@ -37,7 +37,7 @@ export const AddAlbumPhoto = ({ albumId, userId }: Props) => {
             } as any);
         });
 
-        xhr.open('POST', `http://${SERVER.host}:${SERVER.port}/upload/${albumId}`);
+        xhr.open('POST', `${NGROK_SERVER_URL}/upload/${albumId}`);
         xhr.setRequestHeader('Authorization', `Bearer ${token}`);
 
         xhr.onload = () => {

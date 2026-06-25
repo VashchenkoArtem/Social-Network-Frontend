@@ -1,6 +1,6 @@
 import { View, Image, Text } from "react-native";
 import { IProps } from "./types";
-import { CLOUDINARY_URL, SERVER } from "@shared/constants/server";
+import { CLOUDINARY_URL } from "@shared/constants/server";
 import { COLORS } from "@shared/constants/colors";
 import { styles } from "../ConfirmGroupModal/styles";
 import { getAvatar } from "@shared/utils/avatar";

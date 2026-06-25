@@ -4,7 +4,6 @@ import Modal from "react-native-modal";
 import { useGetAllFriendsQuery } from "@modules/friends/api/friendsApi"; 
 import { Input } from "@shared/ui/input"; 
 import { COLORS } from "@shared/constants/colors";
-import { SERVER } from "@shared/constants/server";
 import { styles } from "./styles"; 
 import { FriendRequest } from "@modules/friends/api/api.types";
 import { ICONS } from "@shared/ui/icons/icons";

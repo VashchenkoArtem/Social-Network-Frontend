@@ -7,7 +7,8 @@ import { useUserContext } from "@modules/auth/context/user-context";
 
 export function AllFriends(props: {setChosenTab: (title: string) => void, isMarginBottom?: boolean, toDetailPage?: boolean}){
     const {setChosenTab, isMarginBottom, toDetailPage} = props
-    const { data, isFetching, isLoading } = useGetAllFriendsQuery(undefined, {
+    const { data, isFetching } = useGetAllFriendsQuery(undefined, {
+        pollingInterval: 3000
     })
     const { getOnlineUsers } = useUserContext()!
     const [ onlineUserIds, setOnlineUserIds ] = useState<number[]>([])
@@ -25,7 +26,7 @@ export function AllFriends(props: {setChosenTab: (title: string) => void, isMarg
     }, [userIds])
     return (
         <View style = { isMarginBottom && {marginBottom: 24}}>
-            <FriendFrame onlineUserIds={onlineUserIds} isLoading={isLoading} toDetailPage={toDetailPage} setChosenTab={setChosenTab} buttonText="Повідомлення" frameName="Всі друзі" messageIfNull="У вас поки немає друзів" data={data}/>
+            <FriendFrame onlineUserIds={onlineUserIds} toDetailPage={toDetailPage} setChosenTab={setChosenTab} buttonText="Повідомлення" frameName="Всі друзі" messageIfNull="У вас поки немає друзів" data={data}/>
         </View>
     )
 }
