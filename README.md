@@ -400,7 +400,7 @@ For beginners, this project demonstrates how to build a scalable frontend applic
 | Kyrylo Kharlan | https://github.com/KirillKharlan |
 | Anastasiia Kotsaba | https://github.com/AnastasiiaKotsaba |
 | Yegor Galkin | https://github.com/EgorGalkinORG |
-| Dmytro Markov | https://github.com/ |
+| Dmytro Markov | https://github.com/DmitriyM08 |
 
 ## Table of Contents
 
