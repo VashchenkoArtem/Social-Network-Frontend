@@ -36,7 +36,7 @@
 | Харлан Кирило | https://github.com/KirillKharlan |
 | Коцаба Анастасія | https://github.com/AnastasiiaKotsaba |
 | Галкін Єгор | https://github.com/EgorGalkinORG |
-| Марков Діма | https://github.com/ |
+| Марков Діма | https://github.com/DmitriyM08 |
 
 ## Каталог
 * [Мета створення проекту](#мета-створення-проєкту)
